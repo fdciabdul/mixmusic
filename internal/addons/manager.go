@@ -22,8 +22,8 @@ type Problem struct {
 	Error  string `json:"error"`
 }
 
-// Catalog lists the add-ons available.
-type Catalog struct {
+// Inventory lists the add-ons available.
+type Inventory struct {
 	Themes   []Theme   `json:"themes"`
 	Plugins  []Plugin  `json:"plugins"`
 	Problems []Problem `json:"problems"`
@@ -74,8 +74,8 @@ func (m *Manager) sources() []source {
 
 // List finds every add-on. Add-ons the user installed cannot replace those
 // MixMusic ships with: they are listed as problems.
-func (m *Manager) List() Catalog {
-	c := Catalog{Themes: []Theme{}, Plugins: []Plugin{}, Problems: []Problem{}}
+func (m *Manager) List() Inventory {
+	c := Inventory{Themes: []Theme{}, Plugins: []Plugin{}, Problems: []Problem{}}
 	for _, kind := range []Kind{KindTheme, KindPlugin} {
 		seen := map[string]bool{}
 		for _, src := range m.sources() {
