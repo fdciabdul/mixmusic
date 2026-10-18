@@ -69,11 +69,12 @@ export function Home() {
           const size = offer ? "small" : "wide";
           return (
             <>
-              <Tile tone={2} size={size} title="liked songs" caption={plural(likedIds.value.size, "track")} onClick={() => navigate("/library/liked")} />
-              <Tile tone={3} size={size} title="your mixes" caption={plural(mixes.value.length, "mix", "mixes")} onClick={() => navigate("/library/mixes")} />
+              {/* Before the two others, so they stack in the last column. */}
               {offer && (
                 <Tile tone={4} size="tall" title="add spotify" caption="sign in to search and play your spotify library here" onClick={() => navigate("/settings/accounts")} />
               )}
+              <Tile tone={2} size={size} title="liked songs" caption={plural(likedIds.value.size, "track")} onClick={() => navigate("/library/liked")} />
+              <Tile tone={3} size={size} title="your mixes" caption={plural(mixes.value.length, "mix", "mixes")} onClick={() => navigate("/library/mixes")} />
             </>
           );
         })()}
