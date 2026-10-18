@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Builds
+/dist/
+/build/
+/.mygo/
+mygo_windows_*.syso
+*.exe
+!resources/**/*.exe
+
+# Go
+/bin/
+*.test
+*.out
+coverage.*
+
+# Editors and systems
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local environment
+.env
+.env.*
+!.env.example
