@@ -21,6 +21,22 @@ export const activeTheme = computed<Theme | null>(() => {
 /** artworkAccent is the colour of the artwork playing, when the theme follows it. */
 export const artworkAccent = signal<string | null>(null);
 
+// Narrow windows fold the sidebar to its icons, unless the user unfolds it.
+const narrowQuery = matchMedia("(max-width: 1180px)");
+export const narrowWindow = signal(narrowQuery.matches);
+narrowQuery.addEventListener("change", (e) => {
+  narrowWindow.value = e.matches;
+  sidebarOverride.value = null;
+});
+
+/** sidebarOverride is the user unfolding or folding the sidebar of a narrow window. */
+export const sidebarOverride = signal<boolean | null>(null);
+
+/** sidebarCollapsed is whether the sidebar shows as icons only. */
+export const sidebarCollapsed = computed(
+  () => sidebarOverride.value ?? ((settings.value?.sidebarCollapsed ?? false) || narrowWindow.value),
+);
+
 export async function loadInventory(): Promise<Inventory> {
   inventory.value = await Addons.list();
   events.addonsChanged.on((inv) => (inventory.value = inv));
@@ -54,7 +70,6 @@ function apply(theme: Theme, s: Settings, dynamic: string | null): void {
   root.dataset.scheme = theme.scheme;
   root.dataset.density = s.density;
   style.setProperty("--mm-font-scale", String(s.fontScale || 1));
-  root.dataset.sidebar = s.sidebarCollapsed ? "collapsed" : "expanded";
 
   // The accent: the artwork's, the user's, or the theme's.
   const bg = parseHex(theme.colors["bg"] ?? "") ?? { r: 0, g: 0, b: 0 };
@@ -117,6 +132,9 @@ export function initTheme(currentArtwork: () => string | undefined): void {
     const t = activeTheme.value;
     const s = settings.value;
     if (t && s) apply(t, s, artworkAccent.value);
+  });
+  effect(() => {
+    document.documentElement.dataset.sidebar = sidebarCollapsed.value ? "collapsed" : "expanded";
   });
   let lastUrl: string | undefined;
   effect(() => {

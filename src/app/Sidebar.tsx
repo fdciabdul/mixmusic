@@ -1,11 +1,12 @@
 // The sidebar: where to go, the user's mixes, what plugins add, and a live
 // tile of what plays.
 import { Icon, RawIcon, type IconName } from "../components/Icon";
-import { mixes, createMix } from "../state/library";
+import { likedIds, mixes, createMix } from "../state/library";
 import { navigate, section, current, href } from "../lib/router";
 import { sidebarItems } from "../plugins/contributions";
 import { prompt, toast } from "../state/ui";
-import { settings, update } from "../state/settings";
+import { update } from "../state/settings";
+import { narrowWindow, sidebarCollapsed, sidebarOverride } from "../theme/theme";
 import { artwork, artists, plural } from "../lib/format";
 import { currentTrack, playing, upNext } from "../player/player";
 
@@ -26,7 +27,7 @@ function go(e: MouseEvent, path: string) {
 export function Sidebar() {
   const active = section.value;
   const path = current.value.path;
-  const collapsed = settings.value?.sidebarCollapsed ?? false;
+  const collapsed = sidebarCollapsed.value;
   return (
     <nav class="mm-sidebar" aria-label="MixMusic">
       <div class="mm-brand">
@@ -39,7 +40,7 @@ export function Sidebar() {
           type="button"
           class="mm-icon-button mm-collapse"
           aria-label={collapsed ? "Expand the sidebar" : "Collapse the sidebar"}
-          onClick={() => update({ sidebarCollapsed: !collapsed })}
+          onClick={() => (narrowWindow.value ? (sidebarOverride.value = !collapsed) : void update({ sidebarCollapsed: !collapsed }))}
         >
           <Icon name="sidebar" size={18} />
         </button>
@@ -106,6 +107,7 @@ export function Sidebar() {
               onClick={(e) => go(e, "/library/liked")}
             >
               <span class="mm-ellipsis">liked songs</span>
+              <span class="mm-side-count mm-num">{likedIds.value.size}</span>
             </a>
           </li>
           {mixes.value.map((m) => (
