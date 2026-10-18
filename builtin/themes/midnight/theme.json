@@ -1,0 +1,25 @@
+{
+  "id": "midnight",
+  "name": "Midnight",
+  "version": "1.0.0",
+  "author": "MixMusic",
+  "description": "True black for OLED screens, with a coral accent.",
+  "scheme": "dark",
+  "colors": {
+    "bg": "#000000",
+    "surface": "#0a0a0b",
+    "surface-2": "#121214",
+    "surface-3": "#1b1b1f",
+    "border": "rgba(255, 255, 255, 0.06)",
+    "text": "#ffffff",
+    "text-muted": "#8b8b93",
+    "accent": "#ff5a7a",
+    "accent-text": "#14000a",
+    "danger": "#ff4d5e",
+    "success": "#2ee59d",
+    "youtube": "#ff4e45",
+    "spotify": "#1ed760"
+  },
+  "radius": "10px",
+  "options": []
+}
