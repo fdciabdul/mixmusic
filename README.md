@@ -48,10 +48,13 @@ Download the latest release for your system from
 
 | System | Download |
 |---|---|
-| macOS 12 and later (Apple silicon and Intel) | `MixMusic <version>.dmg` |
-| Windows 10 and 11 (x64, arm64) | `MixMusic Setup <version> <arch>.exe` |
-| Debian, Ubuntu and derivatives | `mixmusic_<version>_<arch>.deb` |
-| Any Linux (x64, arm64) | `mixmusic-<version>-linux-<arch>.tar.gz`, with `install.sh` |
+| macOS 12 and later (Apple silicon and Intel) | `mixmusic-<version>-macos-universal.dmg` |
+| Windows 10 and 11 (x64, Arm) | `mixmusic-<version>-windows-<arch>-setup.exe` |
+| Debian, Ubuntu and derivatives | `mixmusic-<version>-linux-<arch>.deb` |
+| Any Linux (x64, Arm64) | `mixmusic-<version>-linux-<arch>.tar.gz`, with `install.sh` |
+
+`<arch>` is `amd64` for x64 and `arm64` for Arm. Each release lists
+`SHA256SUMS` to verify the downloads with.
 
 ### What it needs
 
@@ -63,7 +66,9 @@ Download the latest release for your system from
   ```sh
   xattr -dr com.apple.quarantine /Applications/MixMusic.app
   ```
-- **Windows:** the WebView2 Runtime, which Windows 11 includes.
+- **Windows:** the WebView2 Runtime, which Windows 11 includes. The
+  installer is not signed yet, so SmartScreen may warn about it: choose
+  More info, then Run anyway.
 - **Linux:** GTK 3, WebKitGTK 4.1 and the GStreamer plugins that play Opus
   and AAC audio. On Debian and Ubuntu:
 

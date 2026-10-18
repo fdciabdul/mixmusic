@@ -1,60 +1,61 @@
 name: Release
 
-# Pushing a tag such as v0.2.0 builds MixMusic for macOS, Windows and Linux,
-# uploads the disk image, installers and packages to a draft release, and
-# publishes it once every platform built.
+# Pushing a tag such as v0.2.0 builds MixMusic for macOS, Windows and Linux
+# and publishes the release: the version's section of CHANGELOG.md, the
+# downloads of .github/release-notes.md, the installers and SHA256SUMS.
+# Run it by hand to build an existing tag again.
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to (re)build, e.g. v0.1.0
+        required: true
 
 permissions:
-  contents: write # the draft release, and the uploads to it
+  contents: write # the release, and the uploads to it
+
+env:
+  TAG: ${{ inputs.tag || github.ref_name }}
 
 jobs:
-  check-version:
+  check:
+    name: Check the version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: The tag matches package.json
+        with:
+          ref: ${{ env.TAG }}
+      - name: The tag matches package.json and CHANGELOG.md
         run: |
           version="$(jq -r .version package.json)"
-          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
-            echo "The tag is $GITHUB_REF_NAME but package.json says $version" >&2
+          if [ "v$version" != "$TAG" ]; then
+            echo "The tag is $TAG but package.json says $version" >&2
+            exit 1
+          fi
+          if ! grep -q "^## \[$version\] - " CHANGELOG.md; then
+            echo "CHANGELOG.md has no \"## [$version] - <date>\" section" >&2
             exit 1
           fi
 
-  draft-release:
-    needs: check-version
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Create the draft release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if ! gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
-            version="${GITHUB_REF_NAME#v}"
-            # The notes are the version's section of CHANGELOG.md.
-            awk -v v="$version" '$0 == "## " v {on=1; next} /^## / {on=0} on' CHANGELOG.md > notes.md
-            gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "MixMusic $version" --notes-file notes.md
-          fi
-
   build:
-    needs: draft-release
+    needs: check
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          # The macOS app is signed ad hoc and put in a disk image, which
-          # needs a macOS runner. Ubuntu cross-compiles the other two.
-          - { name: macOS, os: macos-latest, platform: "darwin/universal" }
-          - { name: Windows, os: ubuntu-latest, platform: "windows/amd64,windows/arm64" }
-          - { name: Linux, os: ubuntu-latest, platform: "linux/amd64,linux/arm64" }
+          # The disk image needs macOS. Ubuntu cross-compiles the others.
+          - { name: macOS, os: macos-latest, platform: "darwin/universal", files: 1 }
+          - { name: Windows, os: ubuntu-latest, platform: "windows/amd64,windows/arm64", files: 2 }
+          - { name: Linux, os: ubuntu-latest, platform: "linux/amd64,linux/arm64", files: 5 }
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@v6
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
       - uses: oven-sh/setup-bun@v2
@@ -64,20 +65,98 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y nsis
       - name: Build
         run: bun run build -- -platform "${{ matrix.platform }}"
-      - name: Upload to the draft release
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Name the downloads
+        shell: bash
         run: |
-          # Disk image, installers, packages and archives; not the bare executables.
-          find build -maxdepth 2 -type f \( -name '*.dmg' -o -name '*Setup*.exe' -o -name '*.deb' -o -name '*.tar.gz' -o -name '*.sh' \) -print0 |
-            xargs -0 -r gh release upload "$GITHUB_REF_NAME" --clobber
+          set -euo pipefail
+          shopt -s nullglob
+          v="${TAG#v}"
+          mkdir -p release
+          for dir in build/*/; do
+            target="$(basename "$dir")" # darwin-universal, windows-arm64, linux-amd64
+            arch="${target#*-}"
+            case "$target" in
+              darwin-*)
+                for f in "$dir"*.dmg; do cp "$f" "release/mixmusic-$v-macos-$arch.dmg"; done ;;
+              windows-*)
+                for f in "$dir"*Setup*.exe; do cp "$f" "release/mixmusic-$v-windows-$arch-setup.exe"; done ;;
+              linux-*)
+                for f in "$dir"*.deb; do cp "$f" "release/mixmusic-$v-linux-$arch.deb"; done
+                # install.sh finds the archive next to it by this name.
+                cp "${dir}mixmusic-$v-linux-$arch.tar.gz" release/
+                cp "${dir}install.sh" release/install.sh ;;
+            esac
+          done
+          ls -l release
+          count="$(ls release | wc -l | tr -d ' ')"
+          if [ "$count" -ne "${{ matrix.files }}" ]; then
+            echo "Expected ${{ matrix.files }} downloads for ${{ matrix.name }}, made $count" >&2
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.name }}
+          path: release/*
+          if-no-files-found: error
 
-  publish:
+  release:
     needs: build
+    name: Publish the release
     runs-on: ubuntu-latest
     steps:
-      - name: Publish the release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: gh release edit "$GITHUB_REF_NAME" --draft=false --latest
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+          fetch-depth: 0 # the earlier tags, for the Full Changelog link
+      - uses: actions/download-artifact@v8
+        with:
+          path: release
+          merge-multiple: true
+      - name: Checksums
+        working-directory: release
+        run: |
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
+      - name: Release notes
+        run: |
+          set -euo pipefail
+          v="${TAG#v}"
+          prev="$(git describe --tags --abbrev=0 --match 'v*' "$TAG^" 2>/dev/null || true)"
+          if [ -n "$prev" ]; then
+            link="https://github.com/$GITHUB_REPOSITORY/compare/$prev...$TAG"
+          else
+            link="https://github.com/$GITHUB_REPOSITORY/commits/$TAG"
+          fi
+          {
+            # The version's section of CHANGELOG.md, without its link
+            # references, with each wrapped paragraph and bullet on one line:
+            # release pages break lines where the file does.
+            awk -v want="[$v]" '
+              /^## \[/ { if (found) exit; if (index($0, want) == 4) { found = 1; next } }
+              /^\[[^]]+\]: / { next }
+              found { print }
+            ' CHANGELOG.md |
+              awk '
+                function flush() { if (buf != "") print buf; buf = "" }
+                /^```/ { flush(); code = !code; print; next }
+                code { print; next }
+                /^[[:space:]]*$/ || /^(#|\|)/ { flush(); print; next }
+                /^([-*]|[0-9]+\.) / { flush(); buf = $0; next }
+                { line = $0; sub(/^[[:space:]]+/, "", line); buf = buf == "" ? line : buf " " line }
+                END { flush() }
+              '
+            echo
+            sed -e "s|{version}|$v|g" -e "s|{tag}|$TAG|g" -e "s|{repo}|$GITHUB_REPOSITORY|g" \
+              .github/release-notes.md
+            echo
+            echo "**Full Changelog**: $link"
+          } | awk 'NF { p = 1 } p' | cat -s > notes.md
+          cat notes.md
+      - uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ env.TAG }}
+          name: MixMusic ${{ env.TAG }}
+          body_path: notes.md
+          files: release/*
+          fail_on_unmatched_files: true
+          make_latest: true
