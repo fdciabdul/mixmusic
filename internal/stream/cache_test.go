@@ -20,7 +20,7 @@ func TestCacheKeepsWholeStreams(t *testing.T) {
 	cp.Commit()
 
 	rec := httptest.NewRecorder()
-	if !c.Serve(rec, httptest.NewRequest("GET", "/yt/w3XzgjlKFjc", nil), "w3XzgjlKFjc") {
+	if !c.Has("w3XzgjlKFjc") || !c.Serve(rec, httptest.NewRequest("GET", "/yt/w3XzgjlKFjc", nil), "w3XzgjlKFjc") {
 		t.Fatal("the committed stream is not served")
 	}
 	if rec.Body.String() != "hello" || rec.Header().Get("Content-Type") != "audio/webm" {

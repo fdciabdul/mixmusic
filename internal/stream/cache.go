@@ -60,6 +60,13 @@ func (c *Cache) find(videoID string) (string, string, bool) {
 	return "", "", false
 }
 
+// Has reports whether the cache holds the audio of a video, which then
+// plays without the network.
+func (c *Cache) Has(videoID string) bool {
+	_, _, ok := c.find(videoID)
+	return ok
+}
+
 // Serve answers r with the cached audio of a video, and reports whether it
 // had it.
 func (c *Cache) Serve(w http.ResponseWriter, r *http.Request, videoID string) bool {
