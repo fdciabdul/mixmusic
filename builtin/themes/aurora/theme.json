@@ -1,0 +1,30 @@
+{
+  "id": "aurora",
+  "name": "Aurora",
+  "version": "1.0.0",
+  "author": "MixMusic",
+  "description": "Frosted glass panels over slowly drifting northern lights.",
+  "scheme": "dark",
+  "colors": {
+    "bg": "#070a16",
+    "surface": "rgba(255, 255, 255, 0.045)",
+    "surface-2": "rgba(255, 255, 255, 0.075)",
+    "surface-3": "rgba(255, 255, 255, 0.12)",
+    "border": "rgba(255, 255, 255, 0.1)",
+    "text": "#eef2ff",
+    "text-muted": "#a2abcf",
+    "accent": "#4ee6c0",
+    "accent-text": "#04221b",
+    "danger": "#ff6b81",
+    "success": "#4ee6c0",
+    "youtube": "#ff5d6c",
+    "spotify": "#3ff08a"
+  },
+  "radius": "18px",
+  "styles": "theme.css",
+  "options": [
+    { "id": "motion", "label": "Drifting lights", "type": "toggle", "default": "true" },
+    { "id": "blur", "label": "Glass blur", "type": "range", "default": "22", "min": 0, "max": 48, "step": 2, "unit": "px" },
+    { "id": "tint", "label": "Light color", "type": "color", "default": "#7b5cff" }
+  ]
+}
