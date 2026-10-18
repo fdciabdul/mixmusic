@@ -65,6 +65,32 @@ Types: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`,
 `themes`, `plugins`, `youtube`, `spotify`, `stream`, `match`, `lyrics`,
 `library`, `addons`, `community`, `sdk`, `tools`.
 
+A change people will notice also gets a line under `## [Unreleased]` in
+[CHANGELOG.md](CHANGELOG.md), in its `### Added`, `### Changed`,
+`### Fixed` or `### Removed` section, as
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/) has them.
+
+## Releases
+
+1. Rename `## [Unreleased]` in CHANGELOG.md to `## [x.y.z] - YYYY-MM-DD`,
+   add an empty `## [Unreleased]` above it, and update the links at the
+   foot of the file.
+2. Set `version` in package.json to `x.y.z`, and commit both as
+   `chore: release vx.y.z`.
+3. Tag the commit and push it with the tag:
+
+   ```sh
+   git tag -a vx.y.z -m "MixMusic vx.y.z"
+   git push origin main vx.y.z
+   ```
+
+The tag runs [the release workflow](.github/workflows/release.yml). It
+checks that the tag, package.json and CHANGELOG.md agree, builds the apps of
+every system, and publishes the release with the version's section of
+CHANGELOG.md, the downloads of
+[.github/release-notes.md](.github/release-notes.md) and `SHA256SUMS`. To
+build a tag again, run the workflow from the Actions tab with the tag.
+
 ## Reports
 
 Open an [issue](https://github.com/fzn0x/mixmusic/issues) with what you did,

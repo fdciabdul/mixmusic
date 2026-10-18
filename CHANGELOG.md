@@ -1,8 +1,17 @@
 # Changelog
 
-## 0.1.0
+All notable changes to MixMusic are documented here. The format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
+[Semantic Versioning](https://semver.org/).
 
-The first release.
+## [Unreleased]
+
+## [0.1.0] - 2026-10-19
+
+The first release of **MixMusic**: Spotify and YouTube Music in one desktop
+player, for macOS, Windows and Linux.
+
+### Added
 
 - Search YouTube Music and Spotify at once, with search suggestions.
 - One queue for tracks of both services: shuffle, repeat, crossfade, and a
@@ -20,4 +29,8 @@ The first release.
 - Six themes, theme options, an accent following the artwork, your own CSS,
   and plugins with a typed API.
 - A marketplace of community themes and plugins.
-- macOS, Windows and Linux.
+- Apps for macOS 12 and later (Apple silicon and Intel), Windows 10 and 11,
+  and Linux, on x64 and Arm64.
+
+[Unreleased]: https://github.com/fzn0x/mixmusic/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/fzn0x/mixmusic/releases/tag/v0.1.0
