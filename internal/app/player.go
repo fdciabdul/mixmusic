@@ -50,6 +50,14 @@ func (p *Player) Prepare(ctx context.Context, track media.Track) (PlaybackSource
 	if track.Source == media.SourceSpotify && s.SpotifyPlayback == settings.SpotifyPlaybackConnect {
 		return PlaybackSource{Mode: PlaybackConnect, Track: track}, nil
 	}
+	return p.PrepareStream(ctx, track)
+}
+
+// PrepareStream finds the audio of a track to play in the page, whatever
+// the settings say of Spotify tracks: those play from their recording on
+// YouTube Music. The player falls back to it when no Spotify Connect device
+// can play.
+func (p *Player) PrepareStream(ctx context.Context, track media.Track) (PlaybackSource, error) {
 	yt, err := p.a.matcher.Match(ctx, track)
 	if err != nil {
 		return PlaybackSource{}, err

@@ -637,6 +637,15 @@ export const Player = {
     return call("Player.Prepare", track);
   },
   /**
+   * PrepareStream finds the audio of a track to play in the page, whatever
+   * the settings say of Spotify tracks: those play from their recording on
+   * YouTube Music. The player falls back to it when no Spotify Connect device
+   * can play.
+   */
+  prepareStream(track: Track): Promise<PlaybackSource> {
+    return call("Player.PrepareStream", track);
+  },
+  /**
    * Report tells the app what the main window's player plays, for the tray,
    * notifications and the mini player.
    */
