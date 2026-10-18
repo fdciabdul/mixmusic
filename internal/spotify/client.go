@@ -122,7 +122,7 @@ func (c *Client) do(ctx context.Context, method, path string, query url.Values, 
 		}
 	}
 	u := path
-	if !strings.HasPrefix(path, "https://") {
+	if !strings.HasPrefix(path, "https://") && !strings.HasPrefix(path, "http://") {
 		u = strings.TrimRight(c.BaseURL, "/") + path
 	}
 	if len(query) > 0 {
