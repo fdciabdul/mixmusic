@@ -116,9 +116,13 @@
   max-width: 1040px;
 }
 
-@container main (max-width: 560px) {
+@container main (max-width: 640px) {
   .mm-tile-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(132px, auto);
+  }
+  .mm-tile-grid .mm-tile-tall {
+    grid-row: span 1;
   }
 }
 
@@ -181,6 +185,7 @@
   font-weight: 300;
   line-height: 0.95;
   letter-spacing: -0.035em;
+  text-wrap: balance;
 }
 
 .mm-tile-large .mm-tile-title {
@@ -202,8 +207,10 @@
   height: 100%;
   object-fit: cover;
   mix-blend-mode: luminosity;
-  /* Faint, so that the tile ink reads anywhere on the artwork. */
-  opacity: 0.3;
+  /* Faint, and faded out under the title and the caption, so the tile ink
+     always sits on the colour of the tile. */
+  opacity: 0.32;
+  mask-image: linear-gradient(to bottom, transparent 0 30%, #000 48% 62%, transparent 78%);
 }
 
 .mm-tile > svg {
