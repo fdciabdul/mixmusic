@@ -1,0 +1,1658 @@
+{
+ "responseContext": {
+  "visitorData": "CgtSRnVqTTFvRjFBVSiQ19PWBjIKCgJJRBIEGgAgUw%3D%3D"
+ },
+ "contents": {
+  "singleColumnBrowseResultsRenderer": {
+   "tabs": [
+    {
+     "tabRenderer": {
+      "endpoint": {
+       "browseEndpoint": {
+        "browseId": "UCbM50mQtG58vhLZonicYUrQ",
+        "params": "EghmZWF0dXJlZA%3D%3D"
+       }
+      },
+      "title": "Music",
+      "selected": true,
+      "content": {
+       "sectionListRenderer": {
+        "contents": [
+         {
+          "musicShelfRenderer": {
+           "title": {
+            "runs": [
+             {
+              "text": "Top songs",
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLOLAK5uy_mfyTs_nCOquqcF9CD4KhiuQ0q36-a6YYg",
+                "params": "ggMCCAI%3D",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            ]
+           },
+           "contents": [
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w60-h60-l90-rj",
+                   "width": 60,
+                   "height": 60
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w120-h120-l90-rj",
+                   "width": 120,
+                   "height": 120
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Draft Punk",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {
+                      "videoId": "w3XzgjlKFjc",
+                      "playlistId": "OLAK5uy_mfyTs_nCOquqcF9CD4KhiuQ0q36-a6YYg",
+                      "watchEndpointMusicSupportedConfigs": {
+                       "watchEndpointMusicConfig": {
+                        "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "DJT",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCbM50mQtG58vhLZonicYUrQ",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "21K plays"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Q-ENA II",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "MPREb_I0lA998lMLT",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_MEDIUM"
+                }
+               }
+              ],
+              "playlistItemData": {
+               "videoId": "w3XzgjlKFjc"
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w60-h60-l90-rj",
+                   "width": 60,
+                   "height": 60
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w120-h120-l90-rj",
+                   "width": 120,
+                   "height": 120
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Retrò",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {
+                      "videoId": "CJdwBPRAMEA",
+                      "playlistId": "OLAK5uy_mfyTs_nCOquqcF9CD4KhiuQ0q36-a6YYg",
+                      "watchEndpointMusicSupportedConfigs": {
+                       "watchEndpointMusicConfig": {
+                        "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "DJT",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCbM50mQtG58vhLZonicYUrQ",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "218 plays"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Q-ENA II",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "MPREb_I0lA998lMLT",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_MEDIUM"
+                }
+               }
+              ],
+              "playlistItemData": {
+               "videoId": "CJdwBPRAMEA"
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/L1KKmjzBkWuwyAVDAoSZcIiCjmvn8n5KEXuImONS_r4nuOCwyrdQWojeBXBd8SzRgad8vxT9cAM7TrMk=w60-h60-l90-rj",
+                   "width": 60,
+                   "height": 60
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/L1KKmjzBkWuwyAVDAoSZcIiCjmvn8n5KEXuImONS_r4nuOCwyrdQWojeBXBd8SzRgad8vxT9cAM7TrMk=w120-h120-l90-rj",
+                   "width": 120,
+                   "height": 120
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Journey Through the Soul",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {
+                      "videoId": "DqjIcgZDsFE",
+                      "playlistId": "OLAK5uy_mfyTs_nCOquqcF9CD4KhiuQ0q36-a6YYg",
+                      "watchEndpointMusicSupportedConfigs": {
+                       "watchEndpointMusicConfig": {
+                        "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Djt",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCbM50mQtG58vhLZonicYUrQ",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "156 plays"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "A Trance Journey",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "MPREb_xbIbTE3YixH",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_MEDIUM"
+                }
+               }
+              ],
+              "playlistItemData": {
+               "videoId": "DqjIcgZDsFE"
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/3wi9_SnUy8lhu7SKnzl8VopZV-jjCk_EgWrieouAgo--FbeL9cTq0Oaqmz2ugl605OggtGH8mLcv1Azr=w60-h60-l90-rj",
+                   "width": 60,
+                   "height": 60
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/3wi9_SnUy8lhu7SKnzl8VopZV-jjCk_EgWrieouAgo--FbeL9cTq0Oaqmz2ugl605OggtGH8mLcv1Azr=w120-h120-l90-rj",
+                   "width": 120,
+                   "height": 120
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Animo",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {
+                      "videoId": "ID4lqbljMmQ",
+                      "playlistId": "OLAK5uy_mfyTs_nCOquqcF9CD4KhiuQ0q36-a6YYg",
+                      "watchEndpointMusicSupportedConfigs": {
+                       "watchEndpointMusicConfig": {
+                        "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "DJT",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCbM50mQtG58vhLZonicYUrQ",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "291 plays"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Animo",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "MPREb_WG2AwQ4QMTe",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_MEDIUM"
+                }
+               }
+              ],
+              "playlistItemData": {
+               "videoId": "ID4lqbljMmQ"
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/VL1PbV5PAe2ACllGmaDFVl_NU6l3ZKcL5GflDX22DzhJ9n5xsm6sXL6-9uKdnpEWUsF2e_kfu_KsNS08=w60-h60-l90-rj",
+                   "width": 60,
+                   "height": 60
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/VL1PbV5PAe2ACllGmaDFVl_NU6l3ZKcL5GflDX22DzhJ9n5xsm6sXL6-9uKdnpEWUsF2e_kfu_KsNS08=w120-h120-l90-rj",
+                   "width": 120,
+                   "height": 120
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Proyecto Uno (FSOE 686)",
+                    "navigationEndpoint": {
+                     "watchEndpoint": {
+                      "videoId": "Tetiua-4jIM",
+                      "playlistId": "OLAK5uy_mfyTs_nCOquqcF9CD4KhiuQ0q36-a6YYg",
+                      "playerParams": "0gcJCTMC0OBS9m0t",
+                      "watchEndpointMusicSupportedConfigs": {
+                       "watchEndpointMusicConfig": {
+                        "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Terra",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCIETFakRj3ohwCanpsMWjzA",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                       }
+                      }
+                     }
+                    }
+                   },
+                   {
+                    "text": " & "
+                   },
+                   {
+                    "text": "DJT",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCbM50mQtG58vhLZonicYUrQ",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "254 plays"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "FSOE 686 - Future Sound Of Egypt Episode 686",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "MPREb_inabC5H6k9e",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_MEDIUM"
+                }
+               }
+              ],
+              "playlistItemData": {
+               "videoId": "Tetiua-4jIM"
+              }
+             }
+            }
+           ],
+           "bottomText": {
+            "runs": [
+             {
+              "text": "Show all"
+             }
+            ]
+           },
+           "bottomEndpoint": {
+            "browseEndpoint": {
+             "browseId": "VLOLAK5uy_mfyTs_nCOquqcF9CD4KhiuQ0q36-a6YYg",
+             "params": "ggMCCAI%3D",
+             "browseEndpointContextSupportedConfigs": {
+              "browseEndpointContextMusicConfig": {
+               "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+              }
+             }
+            }
+           }
+          }
+         },
+         {
+          "musicCarouselShelfRenderer": {
+           "header": {
+            "musicCarouselShelfBasicHeaderRenderer": {
+             "title": {
+              "runs": [
+               {
+                "text": "Albums"
+               }
+              ]
+             },
+             "headerStyle": "MUSIC_CAROUSEL_SHELF_BASIC_HEADER_STYLE_DISPLAY_TWO"
+            }
+           },
+           "contents": [
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w226-h226-l90-rj",
+                   "width": 226,
+                   "height": 226
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w544-h544-l90-rj",
+                   "width": 544,
+                   "height": 544
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "Q-ENA II",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "MPREb_I0lA998lMLT",
+                   "params": "ggMrGilPTEFLNXV5X21CeU1JdFp6UlZwaVBPUGZxTmRDeXpxQ0VzMWs3T3cxNA%3D%3D",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "2021"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "MPREb_I0lA998lMLT",
+                "params": "ggMrGilPTEFLNXV5X21CeU1JdFp6UlZwaVBPUGZxTmRDeXpxQ0VzMWs3T3cxNA%3D%3D",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                 }
+                }
+               }
+              }
+             }
+            }
+           ]
+          }
+         },
+         {
+          "musicCarouselShelfRenderer": {
+           "header": {
+            "musicCarouselShelfBasicHeaderRenderer": {
+             "title": {
+              "runs": [
+               {
+                "text": "Singles & EPs",
+                "navigationEndpoint": {
+                 "browseEndpoint": {
+                  "browseId": "MPADUCbM50mQtG58vhLZonicYUrQ",
+                  "params": "ggMIegYIAhoCAQI%3D",
+                  "browseEndpointContextSupportedConfigs": {
+                   "browseEndpointContextMusicConfig": {
+                    "pageType": "MUSIC_PAGE_TYPE_ARTIST_DISCOGRAPHY"
+                   }
+                  }
+                 }
+                }
+               }
+              ]
+             },
+             "headerStyle": "MUSIC_CAROUSEL_SHELF_BASIC_HEADER_STYLE_DISPLAY_TWO",
+             "moreContentButton": {
+              "buttonRenderer": {
+               "style": "STYLE_TEXT",
+               "text": {
+                "runs": [
+                 {
+                  "text": "More"
+                 }
+                ]
+               },
+               "navigationEndpoint": {
+                "browseEndpoint": {
+                 "browseId": "MPADUCbM50mQtG58vhLZonicYUrQ",
+                 "params": "ggMIegYIAhoCAQI%3D",
+                 "browseEndpointContextSupportedConfigs": {
+                  "browseEndpointContextMusicConfig": {
+                   "pageType": "MUSIC_PAGE_TYPE_ARTIST_DISCOGRAPHY"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "contents": [
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/GmXdNX9kCTbD6Ioh6rn-WgIclagbzk4wICx4ov1L7gBb6ZjwsrBGW3W89Wxtm_JKEuWiHwY2C2sf_1HGNA=w226-h226-l90-rj",
+                   "width": 226,
+                   "height": 226
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/GmXdNX9kCTbD6Ioh6rn-WgIclagbzk4wICx4ov1L7gBb6ZjwsrBGW3W89Wxtm_JKEuWiHwY2C2sf_1HGNA=w544-h544-l90-rj",
+                   "width": 544,
+                   "height": 544
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "New Virus",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "MPREb_U1hsX5ZAq5j",
+                   "params": "ggMrGilPTEFLNXV5X2treFdTcDhIcm1wMW9uNnB1MGdYdThrSmYzOFl5M2NzSQ%3D%3D",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "Single"
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "2026"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "MPREb_U1hsX5ZAq5j",
+                "params": "ggMrGilPTEFLNXV5X2treFdTcDhIcm1wMW9uNnB1MGdYdThrSmYzOFl5M2NzSQ%3D%3D",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/a_OG3oxP3M80QAw-Z3gErNHDWmcgxi9ehcB2Mc6unQ8Pt8Ie67b7B_8Gj5EA_sFpCiqGgwTJa2kIg7c=w226-h226-l90-rj",
+                   "width": 226,
+                   "height": 226
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/a_OG3oxP3M80QAw-Z3gErNHDWmcgxi9ehcB2Mc6unQ8Pt8Ie67b7B_8Gj5EA_sFpCiqGgwTJa2kIg7c=w544-h544-l90-rj",
+                   "width": 544,
+                   "height": 544
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "Toroid",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "MPREb_xweYy8Zbly4",
+                   "params": "ggMrGilPTEFLNXV5X2wtOU0wOE0tRDRlaWwxZWRaRktiWTBqQllZWTN4U0VfNA%3D%3D",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "Single"
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "2026"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "MPREb_xweYy8Zbly4",
+                "params": "ggMrGilPTEFLNXV5X2wtOU0wOE0tRDRlaWwxZWRaRktiWTBqQllZWTN4U0VfNA%3D%3D",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/Rp84-5eLUUwreKX6O6YCfSE-WTjQDJEqLrUo-fSGCdz3iFMHatM0URmritK_-dL70M_Lrx3qr-V4zH0=w226-h226-l90-rj",
+                   "width": 226,
+                   "height": 226
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/Rp84-5eLUUwreKX6O6YCfSE-WTjQDJEqLrUo-fSGCdz3iFMHatM0URmritK_-dL70M_Lrx3qr-V4zH0=w544-h544-l90-rj",
+                   "width": 544,
+                   "height": 544
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "Last night",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "MPREb_Ql5oWPRwGrB",
+                   "params": "ggMrGilPTEFLNXV5X2xDWUdKNENaUjNXQUZ3Q3IyZEwwdGNZTGsyRFdHeXFHbw%3D%3D",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "Single"
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "2026"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "MPREb_Ql5oWPRwGrB",
+                "params": "ggMrGilPTEFLNXV5X2xDWUdKNENaUjNXQUZ3Q3IyZEwwdGNZTGsyRFdHeXFHbw%3D%3D",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/7hT_OV3HCFWxJhkti1scBhiGESMGUpPcXIUR9N3FvMDK_FfLMzymLKCFaXGbr60xAMoHmVlMuuL95lCGPw=w226-h226-l90-rj",
+                   "width": 226,
+                   "height": 226
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/7hT_OV3HCFWxJhkti1scBhiGESMGUpPcXIUR9N3FvMDK_FfLMzymLKCFaXGbr60xAMoHmVlMuuL95lCGPw=w544-h544-l90-rj",
+                   "width": 544,
+                   "height": 544
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "Amigo in blood (short version)",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "MPREb_2Rlvx3jjYpI",
+                   "params": "ggMrGilPTEFLNXV5X2w1d0c0YjRqYUdnRXduRzdybVY2Y0I4M2JrS1NCQ2YtOA%3D%3D",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "Single"
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "2026"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "MPREb_2Rlvx3jjYpI",
+                "params": "ggMrGilPTEFLNXV5X2w1d0c0YjRqYUdnRXduRzdybVY2Y0I4M2JrS1NCQ2YtOA%3D%3D",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/DXGJQBr0mnN9gS_VjpQtu1IhoCIQnQqc768WAtb-69nPxVAf7_UiC655p__HBKlviiCvqJYWJ47dwxXn=w226-h226-l90-rj",
+                   "width": 226,
+                   "height": 226
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/DXGJQBr0mnN9gS_VjpQtu1IhoCIQnQqc768WAtb-69nPxVAf7_UiC655p__HBKlviiCvqJYWJ47dwxXn=w544-h544-l90-rj",
+                   "width": 544,
+                   "height": 544
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "One of the famous day",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "MPREb_99nEtfl0kGy",
+                   "params": "ggMrGilPTEFLNXV5X2x1Rm5ETjhCZjdKdGR4TXRFSGJZbHg5SUh0WWIzZkRNVQ%3D%3D",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "Single"
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "2026"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "MPREb_99nEtfl0kGy",
+                "params": "ggMrGilPTEFLNXV5X2x1Rm5ETjhCZjdKdGR4TXRFSGJZbHg5SUh0WWIzZkRNVQ%3D%3D",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://yt3.googleusercontent.com/9dKhr5pkGeXO0L0IE39G2EISBO8G-9pLyHVeN_PF34TdaR6oQmsjM0YchI3WIS1VcpNxjhyH-BnJOolF=w226-h226-l90-rj",
+                   "width": 226,
+                   "height": 226
+                  },
+                  {
+                   "url": "https://yt3.googleusercontent.com/9dKhr5pkGeXO0L0IE39G2EISBO8G-9pLyHVeN_PF34TdaR6oQmsjM0YchI3WIS1VcpNxjhyH-BnJOolF=w544-h544-l90-rj",
+                   "width": 544,
+                   "height": 544
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "Forever new song",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "MPREb_RdhtxNSHpnY",
+                   "params": "ggMrGilPTEFLNXV5X25OejVlOUZhcHVULVhYRXNPNUgtZE1HbXp2U1V5eHdZcw%3D%3D",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                    }
+                   }
+                  }
+                 }
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "Single"
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "2025"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "MPREb_RdhtxNSHpnY",
+                "params": "ggMrGilPTEFLNXV5X25OejVlOUZhcHVULVhYRXNPNUgtZE1HbXp2U1V5eHdZcw%3D%3D",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                 }
+                }
+               }
+              }
+             }
+            }
+           ]
+          }
+         },
+         {
+          "musicCarouselShelfRenderer": {
+           "header": {
+            "musicCarouselShelfBasicHeaderRenderer": {
+             "title": {
+              "runs": [
+               {
+                "text": "Videos"
+               }
+              ]
+             },
+             "headerStyle": "MUSIC_CAROUSEL_SHELF_BASIC_HEADER_STYLE_DISPLAY_TWO"
+            }
+           },
+           "contents": [
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/YbhW1b8OoCk/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3l-Q7wQQ1wYdLVdVu-6grptcBdu4g",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/YbhW1b8OoCk/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3k8LfLpxTAvSLWc1OGV3kEVxKslfA",
+                   "width": 800,
+                   "height": 450
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "DJT & ThatMusicBrony - Fading Moments"
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "Glitch Hop Community",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "UCPfyre-gaEZkTl5oCoxtkSQ",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_USER_CHANNEL"
+                    }
+                   }
+                  }
+                 }
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "6.2K views"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "watchEndpoint": {
+                "videoId": "YbhW1b8OoCk",
+                "playlistId": "OLAK5uy_ntlSSf0UupyhvrAc22sLKLmVB5c1sOujo",
+                "index": 0,
+                "watchEndpointMusicSupportedConfigs": {
+                 "watchEndpointMusicConfig": {
+                  "musicVideoType": "MUSIC_VIDEO_TYPE_UGC"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/7MC7PSVSebs/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3nIhgNzprvWsgVkPQX5TUfXMerYXg",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/7MC7PSVSebs/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3nKPZEtAK9SqxT9vGZn6exLkur74g",
+                   "width": 800,
+                   "height": 450
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "DJT - Goddesses In Crime [Future Bass]"
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "Ponies At Dawn",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "UCSJW3EMxeuQXZ00h4bihXvA",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_USER_CHANNEL"
+                    }
+                   }
+                  }
+                 }
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "36K views"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "watchEndpoint": {
+                "videoId": "7MC7PSVSebs",
+                "playlistId": "OLAK5uy_ntlSSf0UupyhvrAc22sLKLmVB5c1sOujo",
+                "index": 1,
+                "playerParams": "0gcJCa4Bs75h_Tjp",
+                "watchEndpointMusicSupportedConfigs": {
+                 "watchEndpointMusicConfig": {
+                  "musicVideoType": "MUSIC_VIDEO_TYPE_UGC"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/QTxUVr8yqC0/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3lPz34ZQOjrnSiMPElxwxEVzbSJrQ",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/QTxUVr8yqC0/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3k5U8EdSXTDo-VZqZdhyBneFOs8-w",
+                   "width": 800,
+                   "height": 450
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "[DnB] DJT & NeverLastStanding - Leap of Faith [P@D Enigma]"
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "Dijit / DJT",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "UC09L_fOVn3Tg0NKNJl9njCA",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_USER_CHANNEL"
+                    }
+                   }
+                  }
+                 }
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "3.7K views"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "watchEndpoint": {
+                "videoId": "QTxUVr8yqC0",
+                "playlistId": "OLAK5uy_ntlSSf0UupyhvrAc22sLKLmVB5c1sOujo",
+                "index": 2,
+                "playerParams": "0gcJCa4Bs75h_Tjp",
+                "watchEndpointMusicSupportedConfigs": {
+                 "watchEndpointMusicConfig": {
+                  "musicVideoType": "MUSIC_VIDEO_TYPE_UGC"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicTwoRowItemRenderer": {
+              "thumbnailRenderer": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/2ghpqy4Iam8/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3n1Yv2f_RX2BvtWO7YyhvkQMbKiZg",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/2ghpqy4Iam8/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3kqJ4qVvImePRkdLNVAJOcA6TFHLA",
+                   "width": 800,
+                   "height": 450
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+               }
+              },
+              "title": {
+               "runs": [
+                {
+                 "text": "DJT - Why We (Extended Mix) [PROGRESSIVE VIBES DARK]"
+                }
+               ]
+              },
+              "subtitle": {
+               "runs": [
+                {
+                 "text": "J'ΛIMΞ TRΛNCΞ 🚀",
+                 "navigationEndpoint": {
+                  "browseEndpoint": {
+                   "browseId": "UCH3zNc3XrCXEgeTZKtJL8iA",
+                   "browseEndpointContextSupportedConfigs": {
+                    "browseEndpointContextMusicConfig": {
+                     "pageType": "MUSIC_PAGE_TYPE_USER_CHANNEL"
+                    }
+                   }
+                  }
+                 }
+                },
+                {
+                 "text": " • "
+                },
+                {
+                 "text": "1.5K views"
+                }
+               ]
+              },
+              "navigationEndpoint": {
+               "watchEndpoint": {
+                "videoId": "2ghpqy4Iam8",
+                "playlistId": "OLAK5uy_ntlSSf0UupyhvrAc22sLKLmVB5c1sOujo",
+                "index": 3,
+                "watchEndpointMusicSupportedConfigs": {
+                 "watchEndpointMusicConfig": {
+                  "musicVideoType": "MUSIC_VIDEO_TYPE_UGC"
+                 }
+                }
+               }
+              }
+             }
+            }
+           ]
+          }
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  }
+ },
+ "header": {
+  "musicImmersiveHeaderRenderer": {
+   "title": {
+    "runs": [
+     {
+      "text": "DJT"
+     }
+    ]
+   },
+   "subscriptionButton": {
+    "subscribeButtonRenderer": {
+     "subscriberCountText": {
+      "runs": [
+       {
+        "text": "45"
+       }
+      ]
+     },
+     "subscribed": false,
+     "enabled": true,
+     "type": "FREE",
+     "channelId": "UCbM50mQtG58vhLZonicYUrQ",
+     "showPreferences": false,
+     "subscriberCountWithSubscribeText": {
+      "runs": [
+       {
+        "text": "46"
+       }
+      ]
+     },
+     "subscribedButtonText": {
+      "runs": [
+       {
+        "text": "Subscribed"
+       }
+      ]
+     },
+     "unsubscribedButtonText": {
+      "runs": [
+       {
+        "text": "Subscribe"
+       }
+      ]
+     },
+     "unsubscribeButtonText": {
+      "runs": [
+       {
+        "text": "Unsubscribe"
+       }
+      ]
+     },
+     "serviceEndpoints": [
+      {
+       "subscribeEndpoint": {
+        "channelIds": [
+         "UCbM50mQtG58vhLZonicYUrQ"
+        ],
+        "params": "EgIIGxgA"
+       }
+      },
+      {
+       "signalServiceEndpoint": {
+        "signal": "CLIENT_SIGNAL",
+        "actions": [
+         {
+          "openPopupAction": {
+           "popup": {
+            "confirmDialogRenderer": {
+             "dialogMessages": [
+              {
+               "runs": [
+                {
+                 "text": "Unsubscribe from "
+                },
+                {
+                 "text": "DJT"
+                },
+                {
+                 "text": "?"
+                }
+               ]
+              }
+             ],
+             "confirmButton": {
+              "buttonRenderer": {
+               "style": "STYLE_BRAND",
+               "size": "SIZE_DEFAULT",
+               "text": {
+                "runs": [
+                 {
+                  "text": "Unsubscribe"
+                 }
+                ]
+               },
+               "serviceEndpoint": {
+                "unsubscribeEndpoint": {
+                 "channelIds": [
+                  "UCbM50mQtG58vhLZonicYUrQ"
+                 ]
+                }
+               }
+              }
+             },
+             "cancelButton": {
+              "buttonRenderer": {
+               "style": "STYLE_TEXT",
+               "size": "SIZE_DEFAULT",
+               "text": {
+                "runs": [
+                 {
+                  "text": "Cancel"
+                 }
+                ]
+               }
+              }
+             }
+            }
+           },
+           "popupType": "DIALOG"
+          }
+         }
+        ]
+       }
+      }
+     ],
+     "longSubscriberCountText": {
+      "runs": [
+       {
+        "text": "45 subscribers"
+       }
+      ]
+     },
+     "shortSubscriberCountText": {
+      "runs": [
+       {
+        "text": "45"
+       }
+      ]
+     },
+     "subscribeAccessibility": {},
+     "unsubscribeAccessibility": {},
+     "signInEndpoint": {
+      "modalEndpoint": {
+       "modal": {
+        "modalWithTitleAndButtonRenderer": {
+         "title": {
+          "runs": [
+           {
+            "text": "Subscribe to this artist"
+           }
+          ]
+         },
+         "content": {
+          "runs": [
+           {
+            "text": "Sign in to subscribe to this artist and never miss a beat"
+           }
+          ]
+         },
+         "button": {
+          "buttonRenderer": {
+           "style": "STYLE_BLUE_TEXT",
+           "isDisabled": false,
+           "text": {
+            "runs": [
+             {
+              "text": "Sign in"
+             }
+            ]
+           },
+           "navigationEndpoint": {
+            "signInEndpoint": {
+             "hack": true
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "thumbnail": {
+    "musicThumbnailRenderer": {
+     "thumbnail": {
+      "thumbnails": [
+       {
+        "url": "https://yt3.googleusercontent.com/GmXdNX9kCTbD6Ioh6rn-WgIclagbzk4wICx4ov1L7gBb6ZjwsrBGW3W89Wxtm_JKEuWiHwY2C2sf_1HGNA=w540-h225-p-l90-rj",
+        "width": 540,
+        "height": 225
+       },
+       {
+        "url": "https://yt3.googleusercontent.com/GmXdNX9kCTbD6Ioh6rn-WgIclagbzk4wICx4ov1L7gBb6ZjwsrBGW3W89Wxtm_JKEuWiHwY2C2sf_1HGNA=w816-h340-p-l90-rj",
+        "width": 816,
+        "height": 340
+       },
+       {
+        "url": "https://yt3.googleusercontent.com/GmXdNX9kCTbD6Ioh6rn-WgIclagbzk4wICx4ov1L7gBb6ZjwsrBGW3W89Wxtm_JKEuWiHwY2C2sf_1HGNA=w1440-h600-p-l90-rj",
+        "width": 1440,
+        "height": 600
+       },
+       {
+        "url": "https://yt3.googleusercontent.com/GmXdNX9kCTbD6Ioh6rn-WgIclagbzk4wICx4ov1L7gBb6ZjwsrBGW3W89Wxtm_JKEuWiHwY2C2sf_1HGNA=w1920-h800-p-l90-rj",
+        "width": 1920,
+        "height": 800
+       },
+       {
+        "url": "https://yt3.googleusercontent.com/GmXdNX9kCTbD6Ioh6rn-WgIclagbzk4wICx4ov1L7gBb6ZjwsrBGW3W89Wxtm_JKEuWiHwY2C2sf_1HGNA=w2880-h1200-p-l90-rj",
+        "width": 2880,
+        "height": 1200
+       }
+      ]
+     },
+     "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+     "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+    }
+   }
+  }
+ }
+}
