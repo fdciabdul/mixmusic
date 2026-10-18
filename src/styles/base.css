@@ -223,9 +223,13 @@ textarea {
 }
 
 /* Scrollbars: thin, square, from the palette. */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--mm-surface-3) transparent;
+/* Engines without the pseudo-elements below take the standard properties,
+   which in Chromium would override them. */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--mm-surface-3) transparent;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -233,8 +237,13 @@ textarea {
   height: 10px;
 }
 
-::-webkit-scrollbar-track {
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
   background: transparent;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
 }
 
 ::-webkit-scrollbar-thumb {
