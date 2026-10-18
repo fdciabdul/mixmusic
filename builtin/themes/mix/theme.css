@@ -1,0 +1,16 @@
+/* Mix: a soft glow of the artwork playing behind the top of each page. */
+:root[data-opt-glow="true"] .mm-main::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 360px;
+  background: radial-gradient(ellipse at 30% 0%, color-mix(in srgb, var(--mm-accent) 26%, transparent), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+:root[data-opt-sidebar="flush"] .mm-sidebar {
+  margin: 0;
+  border-radius: 0;
+  border-width: 0 1px 0 0;
+}

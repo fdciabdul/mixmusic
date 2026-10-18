@@ -1,0 +1,42 @@
+{
+  "id": "mix",
+  "name": "Mix",
+  "version": "1.0.0",
+  "author": "MixMusic",
+  "description": "The default: a calm dark theme with a violet accent and a glow of the artwork playing.",
+  "scheme": "dark",
+  "colors": {
+    "bg": "#0e0f13",
+    "surface": "#15161c",
+    "surface-2": "#1c1e26",
+    "surface-3": "#262935",
+    "border": "rgba(255, 255, 255, 0.07)",
+    "text": "#f2f2f6",
+    "text-muted": "#9b9dad",
+    "accent": "#8b6cff",
+    "accent-text": "#ffffff",
+    "danger": "#ff5c6c",
+    "success": "#3ddc97",
+    "youtube": "#ff4e45",
+    "spotify": "#1ed760"
+  },
+  "fonts": {
+    "body": "'Segoe UI Variable Text', 'Segoe UI', Cantarell, Ubuntu, 'Noto Sans', system-ui, sans-serif",
+    "display": "'Segoe UI Variable Display', 'Segoe UI', Cantarell, Ubuntu, 'Noto Sans', system-ui, sans-serif"
+  },
+  "radius": "14px",
+  "styles": "theme.css",
+  "options": [
+    { "id": "glow", "label": "Artwork glow behind pages", "type": "toggle", "default": "true" },
+    {
+      "id": "sidebar",
+      "label": "Sidebar",
+      "type": "select",
+      "default": "floating",
+      "choices": [
+        { "value": "floating", "label": "Floating" },
+        { "value": "flush", "label": "Flush" }
+      ]
+    }
+  ]
+}
