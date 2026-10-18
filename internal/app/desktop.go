@@ -31,7 +31,8 @@ func (a *App) Start() {
 			log.Printf("mixmusic: registering %s links: %v", URLScheme, err)
 		}
 	}
-	a.openMain(mygo.App.WasOpenedAtLogin())
+	win := a.openMain(mygo.App.WasOpenedAtLogin())
+	a.captureFromEnv(win)
 	a.setupTray()
 	a.applyMediaKeys(a.settings.Get().MediaKeys)
 }
