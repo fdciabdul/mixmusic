@@ -1,0 +1,29 @@
+{
+  "id": "daylight",
+  "name": "Daylight",
+  "version": "1.0.0",
+  "author": "MixMusic",
+  "description": "A bright theme for sunny rooms.",
+  "scheme": "light",
+  "colors": {
+    "bg": "#f4f4f8",
+    "surface": "#ffffff",
+    "surface-2": "#eeeef4",
+    "surface-3": "#e2e2ec",
+    "border": "rgba(20, 20, 40, 0.09)",
+    "text": "#16161d",
+    "text-muted": "#5d5f70",
+    "accent": "#6a4cff",
+    "accent-text": "#ffffff",
+    "danger": "#d92d42",
+    "success": "#13a36d",
+    "youtube": "#e62117",
+    "spotify": "#14a84a"
+  },
+  "fonts": {
+    "body": "'Segoe UI Variable Text', 'Segoe UI', Cantarell, Ubuntu, 'Noto Sans', system-ui, sans-serif",
+    "display": "'Segoe UI Variable Display', 'Segoe UI', Cantarell, Ubuntu, 'Noto Sans', system-ui, sans-serif"
+  },
+  "radius": "14px",
+  "options": []
+}
