@@ -5,6 +5,8 @@ package main
 import (
 	_ "embed"
 	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/egoist/mygo"
 
@@ -20,6 +22,12 @@ var trayIcon []byte
 const version = "0.1.0"
 
 func main() {
+	// MIXMUSIC_DATA_DIR keeps everything in one folder: a portable copy,
+	// or a test run apart from the user's own data.
+	if dir := os.Getenv("MIXMUSIC_DATA_DIR"); dir != "" {
+		mygo.App.SetPath(mygo.PathUserData, filepath.Join(dir, "data"))
+		mygo.App.SetPath(mygo.PathCache, filepath.Join(dir, "cache"))
+	}
 	if !mygo.App.RequestSingleInstanceLock() {
 		return // the running instance takes over
 	}
