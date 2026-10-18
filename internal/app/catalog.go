@@ -105,7 +105,7 @@ func (c *Catalog) localShelves() []media.Shelf {
 		for i := range recent {
 			items[i] = media.Item{Kind: media.ItemTrack, Track: &recent[i]}
 		}
-		shelves = append(shelves, media.Shelf{Title: "Jump back in", Source: media.SourceLocal, Items: items})
+		shelves = append(shelves, media.Shelf{Title: "Recently played", Source: media.SourceLocal, Items: items})
 	}
 	if playlists := c.a.library.Playlists(); len(playlists) > 0 {
 		items := make([]media.Item, len(playlists))
