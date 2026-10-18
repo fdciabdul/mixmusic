@@ -1,0 +1,270 @@
+// Package stream finds the audio streams of YouTube videos with yt-dlp,
+// and serves them to the player's audio element through a local scheme,
+// with range requests, so it can seek.
+package stream
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"net/http"
+	"net/url"
+	"regexp"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
+	"github.com/fzn0x/mixmusic/internal/proc"
+	"github.com/fzn0x/mixmusic/internal/tools"
+)
+
+// Quality chooses between the best audio and smaller streams.
+type Quality string
+
+const (
+	QualityBest  Quality = "best"
+	QualitySaver Quality = "saver"
+)
+
+// formats are yt-dlp's format selectors for each quality. Opus in WebM
+// plays in every webview MixMusic runs in; AAC in MP4 is the fallback.
+var formats = map[Quality]string{
+	QualityBest:  "bestaudio[acodec=opus]/bestaudio[ext=m4a]/bestaudio",
+	QualitySaver: "worstaudio[acodec=opus]/worstaudio[ext=m4a]/worstaudio",
+}
+
+// resolveTimeout bounds one run of yt-dlp.
+const resolveTimeout = 90 * time.Second
+
+// expiryMargin is how long before a stream URL expires it is resolved
+// again, so that a track started near the expiry plays to its end.
+const expiryMargin = 30 * time.Minute
+
+var videoIDRe = regexp.MustCompile(`^[A-Za-z0-9_-]{11}$`)
+
+// ErrBadVideoID is returned for strings that are not YouTube video IDs.
+var ErrBadVideoID = errors.New("stream: not a YouTube video id")
+
+// ValidVideoID reports whether id is a YouTube video ID.
+func ValidVideoID(id string) bool { return videoIDRe.MatchString(id) }
+
+// Stream is the audio stream of a video.
+type Stream struct {
+	URL      string
+	Header   http.Header
+	MimeType string
+	// Size is the length of the stream in bytes, 0 when unknown.
+	Size     int64
+	Duration time.Duration
+	Codec    string
+	// Bitrate is in kbit/s.
+	Bitrate float64
+	Expires time.Time
+}
+
+// Resolver finds streams and remembers them until they expire.
+type Resolver struct {
+	Tools *tools.Manager
+	// CacheDir is where yt-dlp caches what it learns of YouTube's player.
+	CacheDir string
+	// Run runs yt-dlp with args and returns what it printed; tests replace
+	// it.
+	Run func(ctx context.Context, args ...string) ([]byte, error)
+
+	mu      sync.Mutex
+	quality Quality
+	calls   map[string]*resolution
+}
+
+// resolution is the result of resolving a video, shared by every caller
+// asking for it while it runs.
+type resolution struct {
+	done   chan struct{}
+	stream Stream
+	err    error
+}
+
+// NewResolver returns a resolver that runs the yt-dlp of t.
+func NewResolver(t *tools.Manager, cacheDir string) *Resolver {
+	r := &Resolver{Tools: t, CacheDir: cacheDir, quality: QualityBest, calls: map[string]*resolution{}}
+	r.Run = r.runYTDLP
+	return r
+}
+
+// SetQuality changes the quality of the streams resolved from now on.
+func (r *Resolver) SetQuality(q Quality) {
+	if _, ok := formats[q]; !ok {
+		q = QualityBest
+	}
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.quality != q {
+		r.quality = q
+		r.calls = map[string]*resolution{}
+	}
+}
+
+// Resolve returns the audio stream of a video.
+func (r *Resolver) Resolve(ctx context.Context, videoID string) (Stream, error) {
+	if !ValidVideoID(videoID) {
+		return Stream{}, ErrBadVideoID
+	}
+	r.mu.Lock()
+	res := r.calls[videoID]
+	if res != nil {
+		select {
+		case <-res.done:
+			if res.err != nil || time.Until(res.stream.Expires) < expiryMargin {
+				res = nil // failed or about to expire: resolve again
+			}
+		default: // running: wait for it below
+		}
+	}
+	if res == nil {
+		res = &resolution{done: make(chan struct{})}
+		r.calls[videoID] = res
+		quality := r.quality
+		go func() {
+			defer close(res.done)
+			// Not the caller's context: other callers may wait for this.
+			ctx, cancel := context.WithTimeout(context.Background(), resolveTimeout)
+			defer cancel()
+			res.stream, res.err = r.resolve(ctx, videoID, quality)
+		}()
+	}
+	r.mu.Unlock()
+
+	select {
+	case <-res.done:
+		return res.stream, res.err
+	case <-ctx.Done():
+		return Stream{}, ctx.Err()
+	}
+}
+
+// Forget drops what the resolver remembers of a video, for example after
+// its stream URL was refused.
+func (r *Resolver) Forget(videoID string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if res := r.calls[videoID]; res != nil {
+		select {
+		case <-res.done:
+			delete(r.calls, videoID)
+		default:
+		}
+	}
+}
+
+func (r *Resolver) resolve(ctx context.Context, videoID string, quality Quality) (Stream, error) {
+	args := []string{"-J", "--no-playlist", "-f", formats[quality]}
+	if r.Tools != nil {
+		args = append(args, r.Tools.YTDLPArgs(r.CacheDir)...)
+	}
+	args = append(args, "--", "https://music.youtube.com/watch?v="+videoID)
+	out, err := r.Run(ctx, args...)
+	if err != nil {
+		return Stream{}, err
+	}
+	return parseInfo(out)
+}
+
+// runYTDLP runs yt-dlp, turning its error output into the error.
+func (r *Resolver) runYTDLP(ctx context.Context, args ...string) ([]byte, error) {
+	path, err := r.Tools.YTDLP()
+	if err != nil {
+		return nil, err
+	}
+	var stderr strings.Builder
+	cmd := proc.Command(ctx, path, args...)
+	cmd.Stderr = &stderr
+	out, err := cmd.Output()
+	if err != nil {
+		if msg := ytdlpError(stderr.String()); msg != "" {
+			return nil, errors.New(msg)
+		}
+		return nil, fmt.Errorf("yt-dlp: %w", err)
+	}
+	return out, nil
+}
+
+// ytdlpError returns the last error line yt-dlp printed, without its
+// prefixes.
+func ytdlpError(stderr string) string {
+	lines := strings.Split(strings.TrimSpace(stderr), "\n")
+	for i := len(lines) - 1; i >= 0; i-- {
+		if line := strings.TrimSpace(lines[i]); strings.HasPrefix(line, "ERROR:") {
+			line = strings.TrimSpace(strings.TrimPrefix(line, "ERROR:"))
+			if _, rest, ok := strings.Cut(line, "] "); ok && strings.HasPrefix(line, "[") {
+				line = rest
+			}
+			return "yt-dlp: " + line
+		}
+	}
+	return ""
+}
+
+// info is what yt-dlp prints of a video with one format selected.
+type info struct {
+	URL            string            `json:"url"`
+	Ext            string            `json:"ext"`
+	ACodec         string            `json:"acodec"`
+	ABR            float64           `json:"abr"`
+	Filesize       int64             `json:"filesize"`
+	FilesizeApprox int64             `json:"filesize_approx"`
+	Duration       float64           `json:"duration"`
+	Headers        map[string]string `json:"http_headers"`
+}
+
+// parseInfo reads the stream of yt-dlp's -J output.
+func parseInfo(out []byte) (Stream, error) {
+	var in info
+	if err := json.Unmarshal(out, &in); err != nil {
+		return Stream{}, fmt.Errorf("yt-dlp: unexpected output: %w", err)
+	}
+	if in.URL == "" {
+		return Stream{}, errors.New("yt-dlp found no audio stream")
+	}
+	s := Stream{
+		URL:      in.URL,
+		Header:   http.Header{},
+		MimeType: mimeType(in.Ext, in.ACodec),
+		Size:     in.Filesize,
+		Duration: time.Duration(in.Duration * float64(time.Second)),
+		Codec:    in.ACodec,
+		Bitrate:  in.ABR,
+		Expires:  expiry(in.URL),
+	}
+	for k, v := range in.Headers {
+		s.Header.Set(k, v)
+	}
+	return s, nil
+}
+
+// mimeType returns the content type of a stream of a container and codec.
+func mimeType(ext, codec string) string {
+	switch {
+	case ext == "webm" && codec != "":
+		return `audio/webm; codecs="` + codec + `"`
+	case ext == "webm":
+		return "audio/webm"
+	case ext == "m4a" || ext == "mp4":
+		return "audio/mp4"
+	case ext == "mp3":
+		return "audio/mpeg"
+	}
+	return "application/octet-stream"
+}
+
+// expiry reads when a googlevideo URL expires, from its expire parameter;
+// in six hours when it has none.
+func expiry(raw string) time.Time {
+	if u, err := url.Parse(raw); err == nil {
+		if sec, err := strconv.ParseInt(u.Query().Get("expire"), 10, 64); err == nil {
+			return time.Unix(sec, 0)
+		}
+	}
+	return time.Now().Add(6 * time.Hour)
+}

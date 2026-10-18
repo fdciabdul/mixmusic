@@ -1,0 +1,99 @@
+package stream
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"slices"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+)
+
+// fakeYTDLP returns a Run function printing what yt-dlp prints for a
+// stream at streamURL, and counts its runs.
+func fakeYTDLP(streamURL string, runs *atomic.Int32) func(context.Context, ...string) ([]byte, error) {
+	return func(ctx context.Context, args ...string) ([]byte, error) {
+		runs.Add(1)
+		if !slices.Contains(args, "--") {
+			return nil, errors.New("the URL must follow --")
+		}
+		expire := time.Now().Add(6 * time.Hour).Unix()
+		return fmt.Appendf(nil, `{"url": "%s?expire=%d", "ext": "webm", "acodec": "opus", "abr": 139.3,
+			"filesize": 1000, "duration": 207.5, "http_headers": {"User-Agent": "test"}}`, streamURL, expire), nil
+	}
+}
+
+func TestResolveParsesAndCaches(t *testing.T) {
+	var runs atomic.Int32
+	r := NewResolver(nil, "")
+	r.Run = fakeYTDLP("https://example.com/audio", &runs)
+
+	var wg sync.WaitGroup
+	for range 5 {
+		wg.Go(func() {
+			s, err := r.Resolve(context.Background(), "w3XzgjlKFjc")
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if s.MimeType != `audio/webm; codecs="opus"` || s.Size != 1000 || s.Header.Get("User-Agent") != "test" {
+				t.Errorf("stream = %+v", s)
+			}
+			if s.Duration != 207500*time.Millisecond {
+				t.Errorf("duration = %s", s.Duration)
+			}
+		})
+	}
+	wg.Wait()
+	if runs.Load() != 1 {
+		t.Errorf("yt-dlp ran %d times for one video", runs.Load())
+	}
+	r.Forget("w3XzgjlKFjc")
+	if _, err := r.Resolve(context.Background(), "w3XzgjlKFjc"); err != nil {
+		t.Fatal(err)
+	}
+	if runs.Load() != 2 {
+		t.Errorf("a forgotten video was not resolved again")
+	}
+}
+
+func TestResolveRejectsBadIDs(t *testing.T) {
+	r := NewResolver(nil, "")
+	r.Run = func(context.Context, ...string) ([]byte, error) {
+		t.Fatal("yt-dlp ran for a bad id")
+		return nil, nil
+	}
+	for _, id := range []string{"", "--exec=calc", "short", "w3XzgjlKFjc/x"} {
+		if _, err := r.Resolve(context.Background(), id); !errors.Is(err, ErrBadVideoID) {
+			t.Errorf("Resolve(%q) = %v", id, err)
+		}
+	}
+}
+
+func TestYTDLPError(t *testing.T) {
+	stderr := "WARNING: something\nERROR: [youtube] w3XzgjlKFjc: Video unavailable\n"
+	if got := ytdlpError(stderr); got != "yt-dlp: w3XzgjlKFjc: Video unavailable" {
+		t.Errorf("ytdlpError = %q", got)
+	}
+	if got := ytdlpError("just noise"); got != "" {
+		t.Errorf("ytdlpError(noise) = %q", got)
+	}
+}
+
+func TestExpiry(t *testing.T) {
+	if got := expiry("https://x.googlevideo.com/videoplayback?expire=1792361335&id=1"); got.Unix() != 1792361335 {
+		t.Errorf("expiry = %v", got)
+	}
+	if got := expiry("https://example.com/a"); time.Until(got) < 5*time.Hour {
+		t.Errorf("default expiry = %v", got)
+	}
+}
+
+func TestMimeType(t *testing.T) {
+	if got := mimeType("m4a", "mp4a.40.2"); !strings.HasPrefix(got, "audio/mp4") {
+		t.Errorf("m4a = %q", got)
+	}
+}
