@@ -125,8 +125,15 @@
 .mm-side-section {
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 88px;
   flex: 1;
+}
+
+/* On short windows the player bar already shows what plays. */
+@media (max-height: 720px) {
+  .mm-live {
+    display: none;
+  }
 }
 
 .mm-side-head {
@@ -403,6 +410,13 @@
 .mm-palette-button kbd {
   font: inherit;
   font-size: var(--mm-size-caption);
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+  .mm-palette-button kbd {
+    display: none;
+  }
 }
 
 /* The main pane. */
