@@ -134,6 +134,7 @@ html,
 body {
   height: 100%;
   margin: 0;
+  overflow: clip;
 }
 
 body {
@@ -145,7 +146,9 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow: hidden;
+  /* clip, not hidden: scrollIntoView, of the app or of a plugin, can
+     never scroll the shell itself. */
+  overflow: clip;
   user-select: none;
   cursor: default;
 }
