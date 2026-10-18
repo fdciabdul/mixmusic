@@ -424,6 +424,7 @@
 .mm-main {
   grid-area: main;
   position: relative;
+  container: main / inline-size;
   overflow-x: hidden;
   overflow-y: auto;
   min-width: 0;
