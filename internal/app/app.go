@@ -129,8 +129,11 @@ func (a *App) apply(s settings.Settings) {
 // Bind registers the services pages call and the schemes they load from.
 // It must run before mygo.App.Run.
 func (a *App) Bind() {
+	mygo.Bind(&Catalog{a})
+	mygo.Bind(&Collection{a})
 	mygo.Bind(&Accounts{a})
 	mygo.Bind(&Preferences{a})
+	mygo.Bind(&Addons{a})
 	if err := mygo.Protocol.Handle(streamScheme, a.proxy); err != nil {
 		log.Fatal(err)
 	}
