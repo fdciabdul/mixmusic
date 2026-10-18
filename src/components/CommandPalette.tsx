@@ -44,7 +44,7 @@ export function CommandPalette() {
     >
       <div class="mm-palette-box">
         <label class="mm-palette-input">
-          <Icon name="command" size={18} />
+          <Icon name="search" size={20} />
           <input
             class="mm-input-bare"
             placeholder="type a command or search music"

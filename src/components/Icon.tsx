@@ -46,7 +46,6 @@ const paths = {
   link: "M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1",
   edit: "M4 20h4l11-11-4-4L4 16zM13 7l4 4",
   sidebar: "M3.5 4.5h17v15h-17zM9 4.5v15",
-  command: "M7 4a3 3 0 1 0 3 3v10a3 3 0 1 0-3-3h10a3 3 0 1 0-3 3V7a3 3 0 1 0 3 3z",
 } as const;
 
 export type IconName = keyof typeof paths;

@@ -413,12 +413,6 @@
   white-space: nowrap;
 }
 
-@media (max-width: 1100px) {
-  .mm-palette-button kbd {
-    display: none;
-  }
-}
-
 /* The main pane. */
 
 .mm-main {

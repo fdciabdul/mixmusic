@@ -21,7 +21,6 @@ export function TopBar() {
       </div>
       <SearchBox />
       <button type="button" class="mm-palette-button" onClick={() => (paletteOpen.value = true)} aria-label="Open the command palette">
-        <Icon name="command" size={16} />
         <kbd>{modKey()} K</kbd>
       </button>
     </div>
