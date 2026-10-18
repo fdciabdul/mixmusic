@@ -1,0 +1,201 @@
+package app
+
+import (
+	"context"
+	"errors"
+	"log"
+	"strings"
+
+	"github.com/egoist/mygo"
+
+	"github.com/fzn0x/mixmusic/internal/media"
+	"github.com/fzn0x/mixmusic/internal/settings"
+	"github.com/fzn0x/mixmusic/internal/spotify"
+	"github.com/fzn0x/mixmusic/internal/stream"
+)
+
+// PlaybackMode is how a track plays.
+type PlaybackMode string
+
+const (
+	// PlaybackStream plays the track in the page, from Url.
+	PlaybackStream PlaybackMode = "stream"
+	// PlaybackConnect plays the track on a Spotify Connect device.
+	PlaybackConnect PlaybackMode = "connect"
+)
+
+// PlaybackSource tells the player how to play a track.
+type PlaybackSource struct {
+	Mode PlaybackMode `json:"mode"`
+	// URL is the audio of a stream.
+	URL string `json:"url,omitempty"`
+	// Track is the track that plays: for a Spotify track played from
+	// YouTube Music, its recording there.
+	Track media.Track `json:"track"`
+	// Cached is set when the audio plays from the cache, without the
+	// network.
+	Cached bool `json:"cached,omitempty"`
+}
+
+// Player prepares tracks for the player of the main window, controls
+// Spotify Connect devices, and relays the player's state and commands
+// between windows.
+type Player struct{ a *App }
+
+// Prepare finds how to play a track: the URL of its audio, found ahead so
+// that errors such as a missing yt-dlp show before playback starts, or a
+// Spotify Connect device.
+func (p *Player) Prepare(ctx context.Context, track media.Track) (PlaybackSource, error) {
+	s := p.a.settings.Get()
+	if track.Source == media.SourceSpotify && s.SpotifyPlayback == settings.SpotifyPlaybackConnect {
+		return PlaybackSource{Mode: PlaybackConnect, Track: track}, nil
+	}
+	yt, err := p.a.matcher.Match(ctx, track)
+	if err != nil {
+		return PlaybackSource{}, err
+	}
+	_, videoID, err := media.ParseID(yt.ID)
+	if err != nil {
+		return PlaybackSource{}, err
+	}
+	src := PlaybackSource{Mode: PlaybackStream, URL: schemeURL(streamScheme) + strings.TrimPrefix(stream.Path(videoID), "/"), Track: yt}
+	if p.a.cache.Has(videoID) {
+		src.Cached = true
+		return src, nil
+	}
+	if _, err := p.a.resolver.Resolve(ctx, videoID); err != nil {
+		return PlaybackSource{}, err
+	}
+	return src, nil
+}
+
+// ForgetMatch drops the YouTube Music recording found for a Spotify track,
+// so that the next play searches again.
+func (p *Player) ForgetMatch(trackID string) error {
+	return p.a.matcher.Forget(trackID)
+}
+
+// Report tells the app what the main window's player plays, for the tray,
+// notifications and the mini player.
+func (p *Player) Report(np NowPlaying) {
+	p.a.mu.Lock()
+	prev := p.a.nowPlaying
+	p.a.nowPlaying = np
+	tray := p.a.tray
+	main := p.a.main
+	p.a.mu.Unlock()
+	NowPlayingChanged.Broadcast(np)
+
+	changed := np.Track != nil && (prev.Track == nil || prev.Track.ID != np.Track.ID)
+	if tray != nil && (changed || prev.Playing != np.Playing) {
+		tray.SetToolTip(trayTip(np))
+	}
+	if changed && np.Playing && p.a.settings.Get().Notifications && (main == nil || !main.IsFocused()) {
+		go p.a.notifyTrack(*np.Track)
+	}
+}
+
+// NowPlaying returns what the player plays, for windows that open later.
+func (p *Player) NowPlaying() NowPlaying {
+	p.a.mu.Lock()
+	defer p.a.mu.Unlock()
+	return p.a.nowPlaying
+}
+
+// Command asks the main window's player to do something.
+func (p *Player) Command(cmd PlayerCommand) {
+	p.a.command(cmd)
+}
+
+func (a *App) command(cmd PlayerCommand) {
+	a.mu.Lock()
+	main := a.main
+	a.mu.Unlock()
+	if main == nil {
+		return
+	}
+	if err := PlayerCommandSent.Emit(main, cmd); err != nil {
+		log.Printf("mixmusic: sending %s to the player: %v", cmd.Command, err)
+	}
+}
+
+// trayTip is the tray's tooltip for what plays.
+func trayTip(np NowPlaying) string {
+	if np.Track == nil {
+		return "MixMusic"
+	}
+	tip := np.Track.Title + " — " + np.Track.ArtistNames()
+	if !np.Playing {
+		tip = "Paused: " + tip
+	}
+	// Windows cuts tooltips at 127 characters.
+	if r := []rune(tip); len(r) > 120 {
+		tip = string(r[:119]) + "…"
+	}
+	return tip
+}
+
+// notifyTrack shows a notification of the track that started.
+func (a *App) notifyTrack(t media.Track) {
+	body := t.ArtistNames()
+	if t.Album != nil && t.Album.Name != "" {
+		body += " • " + t.Album.Name
+	}
+	n := mygo.NewNotification(mygo.NotificationOptions{ID: "now-playing", Title: t.Title, Body: body, Silent: true})
+	n.OnClick(a.showMain)
+	if err := n.Show(); err != nil && !errors.Is(err, mygo.ErrNotificationsDenied) {
+		log.Printf("mixmusic: notification: %v", err)
+	}
+}
+
+// Devices returns the user's Spotify Connect devices.
+func (p *Player) Devices(ctx context.Context) ([]spotify.Device, error) {
+	return p.a.spotify.Devices(ctx)
+}
+
+// ConnectPlay plays a Spotify track on the Spotify Connect device of the
+// settings, or the active one, from positionMs.
+func (p *Player) ConnectPlay(ctx context.Context, track media.Track, positionMs int) error {
+	_, id, err := media.ParseID(track.ID)
+	if err != nil || track.Source != media.SourceSpotify {
+		return errors.New("only Spotify tracks play on Spotify Connect")
+	}
+	device := p.a.settings.Get().SpotifyDevice
+	err = p.a.spotify.Play(ctx, device, []string{spotify.URI("track", id)}, positionMs)
+	var apiErr *spotify.APIError
+	if errors.As(err, &apiErr) && apiErr.Status == 404 && device == "" {
+		// No device is active: wake up the first one there is.
+		devices, derr := p.a.spotify.Devices(ctx)
+		if derr != nil || len(devices) == 0 {
+			return err
+		}
+		return p.a.spotify.Play(ctx, devices[0].ID, []string{spotify.URI("track", id)}, positionMs)
+	}
+	return err
+}
+
+// ConnectPause pauses the Spotify Connect device.
+func (p *Player) ConnectPause(ctx context.Context) error {
+	return p.a.spotify.Pause(ctx, p.a.settings.Get().SpotifyDevice)
+}
+
+// ConnectResume resumes the Spotify Connect device.
+func (p *Player) ConnectResume(ctx context.Context) error {
+	return p.a.spotify.Resume(ctx, p.a.settings.Get().SpotifyDevice)
+}
+
+// ConnectSeek moves the Spotify Connect device to positionMs.
+func (p *Player) ConnectSeek(ctx context.Context, positionMs int) error {
+	return p.a.spotify.Seek(ctx, p.a.settings.Get().SpotifyDevice, positionMs)
+}
+
+// ConnectVolume sets the volume of the Spotify Connect device, from 0 to 1.
+func (p *Player) ConnectVolume(ctx context.Context, volume float64) error {
+	return p.a.spotify.SetVolume(ctx, p.a.settings.Get().SpotifyDevice, int(volume*100+0.5))
+}
+
+// ConnectState returns what the Spotify Connect device plays, or nil when
+// no device is active.
+func (p *Player) ConnectState(ctx context.Context) (*spotify.PlaybackState, error) {
+	return p.a.spotify.State(ctx)
+}
