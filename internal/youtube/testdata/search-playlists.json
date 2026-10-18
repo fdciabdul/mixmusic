@@ -1,0 +1,531 @@
+{
+ "responseContext": {
+  "visitorData": "Cgtxa1BHRjhzTmJFYyiS19PWBjIKCgJJRBIEGgAgZA%3D%3D"
+ },
+ "contents": {
+  "tabbedSearchResultsRenderer": {
+   "tabs": [
+    {
+     "tabRenderer": {
+      "title": "YT Music",
+      "selected": true,
+      "content": {
+       "sectionListRenderer": {
+        "contents": [
+         {
+          "musicShelfRenderer": {
+           "title": {
+            "runs": [
+             {
+              "text": "Community playlists"
+             }
+            ]
+           },
+           "contents": [
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/BH-SnQ8J1VU/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3lpgBDzi0RgrBqUBzjOq9C7_O1WSA",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/BH-SnQ8J1VU/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3k21t_ffKEnZElhnVCsg0norSr-Ag",
+                   "width": 800,
+                   "height": 450
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/BH-SnQ8J1VU/hq720.jpg?sqp=-oaymwEKCNUGEN8DIABIWg&rs=AMzJL3lm-xmTG8Sb59jYeepqJBRA12fi_A",
+                   "width": 853,
+                   "height": 479
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Lofi Music (No Copyright) ☕"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "BreakingCopyright — Royalty Free Music",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCUFDNffZtBGisDliMx12fYw",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_USER_CHANNEL"
+                       }
+                      }
+                     }
+                    }
+                   },
+                   {
+                    "text": " • "
+                   },
+                   {
+                    "text": "5.9M views"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               }
+              ],
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLPLfP6i5T0-DkIMLNRwmJpRBs4PJvxfgwBg",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/ZOEi3VvQ5pk/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3mYgYv48mr4DCZQPhqz-Sq5qmZlUg",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/ZOEi3VvQ5pk/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3lIIbX5eGcxZnx0frt5COLJIWEGfg",
+                   "width": 800,
+                   "height": 450
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/ZOEi3VvQ5pk/hq720.jpg?sqp=-oaymwEKCNUGEN8DIABIWg&rs=AMzJL3lC2ULC5n0hgPn5-SeNu7u6eRUaag",
+                   "width": 853,
+                   "height": 479
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Blue Archive lofi mix 1hour"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "ChestnutWhale",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCo5lo6YcM8IQDuHw8DM1aVw",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                       }
+                      }
+                     }
+                    }
+                   },
+                   {
+                    "text": " • "
+                   },
+                   {
+                    "text": "88K views"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               }
+              ],
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLPLVoPea78gyzKVwdk0tC6wx9HuXPsfGKEQ",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/fSOgJ0Vnn1Q/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3nYGsKJbMsYIJwpIiyi_b1t6NkLQQ",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/fSOgJ0Vnn1Q/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3nWh2YR8LBEeuBfvDHcePPgncsoSw",
+                   "width": 800,
+                   "height": 450
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/fSOgJ0Vnn1Q/hq720.jpg?sqp=-oaymwEKCNUGEN8DIABIWg&rs=AMzJL3ke7GQUpGUsWCVJ7q5UpuZ3yCMvOA",
+                   "width": 853,
+                   "height": 479
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Sonic 2 (Lofi Album)"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "SuperChaosControl",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCAT8BfzZipaEulnOtMii9-w",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_USER_CHANNEL"
+                       }
+                      }
+                     }
+                    }
+                   },
+                   {
+                    "text": " • "
+                   },
+                   {
+                    "text": "127K views"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               }
+              ],
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLPLXRkwGvXTai4-TWd6zTFo-qZd6vppuLYx",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/FkfEMReEl5g/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3mVI19gXtCtcOWW0FphOcEbo2oLVw",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/FkfEMReEl5g/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3kTJzoZvaHTVYbkofzzol3Gx4b-aw",
+                   "width": 800,
+                   "height": 450
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/FkfEMReEl5g/hq720.jpg?sqp=-oaymwEKCNUGEN8DIABIWg&rs=AMzJL3lUQSMuej65Jz3oezXzsKVmre-YrQ",
+                   "width": 853,
+                   "height": 479
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Mix - Fresh Morning 🍞 Lofi Deep Focus Study/Work Concentration [chill lo-fi hip hop beats]"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "𝗖𝗛𝗜𝗟𝗟 𝗩𝗜𝗟𝗟𝗔𝗚𝗘",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCsxTsDvh-xQnShEtN1M64zQ",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                       }
+                      }
+                     }
+                    }
+                   },
+                   {
+                    "text": " • "
+                   },
+                   {
+                    "text": "29K views"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               }
+              ],
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLPLweC10nDnpdXSmmMf3grfaoNMDCje5LwL",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/zQ6Qt1pTnLM/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3mO8cRnOmbRM0rUlttFdhoSbpWhAg",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/zQ6Qt1pTnLM/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3kcvO0h5bb6izp9T3lV-hmUS6S7hg",
+                   "width": 800,
+                   "height": 450
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/zQ6Qt1pTnLM/hq720.jpg?sqp=-oaymwEKCNUGEN8DIABIWg&rs=AMzJL3ne7WvCAEAE7twb4ucyL0oF3wJ54Q",
+                   "width": 853,
+                   "height": 479
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Simpsons lofi"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Solid Boss Man X",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCl9APhMfTzuagPBfNC8IhiA",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_USER_CHANNEL"
+                       }
+                      }
+                     }
+                    }
+                   },
+                   {
+                    "text": " • "
+                   },
+                   {
+                    "text": "11K views"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               }
+              ],
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLPLfW7fyScNspBOdfLGyRTniFZhTZ65nBp6",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            },
+            {
+             "musicResponsiveListItemRenderer": {
+              "thumbnail": {
+               "musicThumbnailRenderer": {
+                "thumbnail": {
+                 "thumbnails": [
+                  {
+                   "url": "https://i.ytimg.com/vi/ff5lO8TkVX8/hqdefault.jpg?sqp=-oaymwEWCJADEOEBIAQqCggAEOADGC0guwJIWg&rs=AMzJL3nfJWcInFNJRGgQoV2_t6xmZ29uqg",
+                   "width": 400,
+                   "height": 225
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/ff5lO8TkVX8/hq720.jpg?sqp=-oaymwEKCKAGEMIDIABIWg&rs=AMzJL3kuiOtpRtNUUuyUKKaEK-JvQ4yGTQ",
+                   "width": 800,
+                   "height": 450
+                  },
+                  {
+                   "url": "https://i.ytimg.com/vi/ff5lO8TkVX8/hq720.jpg?sqp=-oaymwEKCNUGEN8DIABIWg&rs=AMzJL3nGWRygJKfpIxxKZjImnSDiJQ54xg",
+                   "width": 853,
+                   "height": 479
+                  }
+                 ]
+                },
+                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FIT"
+               }
+              },
+              "flexColumns": [
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Sleepy Lofi 💤 Lofi playlist for your sleep ~ Deep Sleeping Music [ Beats To Sleep / Chill To ]"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               },
+               {
+                "musicResponsiveListItemFlexColumnRenderer": {
+                 "text": {
+                  "runs": [
+                   {
+                    "text": "Music chill",
+                    "navigationEndpoint": {
+                     "browseEndpoint": {
+                      "browseId": "UCStddLPOmTZcfc88s7cIApA",
+                      "browseEndpointContextSupportedConfigs": {
+                       "browseEndpointContextMusicConfig": {
+                        "pageType": "MUSIC_PAGE_TYPE_USER_CHANNEL"
+                       }
+                      }
+                     }
+                    }
+                   },
+                   {
+                    "text": " • "
+                   },
+                   {
+                    "text": "3.9K views"
+                   }
+                  ]
+                 },
+                 "displayPriority": "MUSIC_RESPONSIVE_LIST_ITEM_COLUMN_DISPLAY_PRIORITY_HIGH"
+                }
+               }
+              ],
+              "navigationEndpoint": {
+               "browseEndpoint": {
+                "browseId": "VLPL3Rd_Q1n-uEm9Cv_fiW2nYeSLREMB9a6o",
+                "browseEndpointContextSupportedConfigs": {
+                 "browseEndpointContextMusicConfig": {
+                  "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                 }
+                }
+               }
+              }
+             }
+            }
+           ],
+           "continuations": [
+            {
+             "nextContinuationData": {
+              "continuation": "EokIEgRsb2ZpGoAIRWdlS0FRUW9BRUFCU0JScUNoQUpFQW9RQlJBREVBU0NBU0pRVEdaUU5tazFWREF0Ukd0SlRVeE9VbmR0U25CU1FuTTBVRXAyZUdabmQwSm5nZ0VpVUV4V2IxQmxZVGM0WjNsNlMxWjNaR3N3ZEVNMmQzZzVTSFZZVUhObVIwdEZVWUlCSWxCTVdGSnJkMGQyV0ZSaGFUUXRWRmRrTm5wVVJtOHRjVnBrTm5ad2NIVk1XWGlDQVNKUVRIZGxRekV3YmtSdWNHUllVMjF0VFdZelozSm1ZVzlPVFVSRGFtVTFUSGRNZ2dFaVVFeG1WemRtZVZOalRuTndRazlrWmt4SGVWSlVibWxHV21oVVdqWTFia0p3Tm9JQklsQk1NMUprWDFFeGJpMTFSVzA1UTNaZlptbFhNbTVaWlZOTVVrVk5RamxoTm0tQ0FTSlFURkF4ZWw5WVUxVktkRFZ1ZFVJNE1IZFhXRVJ4UzNKRmNVMUtWMDV3WkRsNGdnRWlVRXd6TUdFd1JIRm1OV0ZvVERaaVMwNVdUekZXYWtkaWVrbFJSWHBEUlVkQ1lZSUJJbEJNWVU5NVUxWk9Nbmx4ZWkwNU1GcGhXRmRJU0VoUGMyMTBaMDFSVG5aNldHV0NBU0pRVEZGM1VtMVVkMWQ0TUhWaVkzQjJNRk5yU0hKdmRYQnFNVXh4VnpWZlZtRTFnZ0VpVUV4Q2MyMWZVMkZuUmsxdFpXWmFlbkZRV0RScFJEaEdlR3hpVVUxSk5XVkljNElCSWxCTVpFaHlRV2w0ZEVnNFExRmlaV1ppY21OSk1UUTFTR2MyZEhKdFJXTldkMmlDQVNKUVRHUlhRMk51YTFOemJEZHFhWE5PV1dwV1N6Z3hOSFEyWlVsRVdGTm1TVlpXZ2dFaVVFeDBZalZ4Wlcxc1YwSk9helpFUmt4T2JFaFRjV2h5VjJKTlNXWlZUR1ZFVG9JQklsQk1aMmgwVkVaUmJIWnBiamd4Y0RoVlZYUjJNMWREVkdGS01FTkxhVWRpWkRPQ0FTSlFURlZPZWpOeVRETkxTemxYTWpGVmMzQjJiVkowTTJKM2MwdGFSbGczTTBSRmdnRWlVRXh5Y3pCcU4ySm1ZbTFmWWsxV09XeFJiVTVhVFU1V1ZXeGFiMGQxVERjd2E0SUJJbEJNU2t0U1FscHlYemhpT1ZaNGJVbFJPVGxzVVU1SVNtNU1ObGc1TlcxVVVWV0NBU0pRVEdVMldYSllTamc0WWpkRkxUaHJWa2g0VW5WZlEwNHRVM2x3Tm1JeVkxVmFnZ0VpVUV4SGQycGxOM1F0VldkYU1HcEtUR3hUTjJ4Zk55MUtRMkpWVEdRNE0zSnhPQSUzRCUzRBjx6tAu"
+             }
+            }
+           ]
+          }
+         }
+        ],
+        "header": {}
+       }
+      },
+      "tabIdentifier": "music_search_catalog"
+     }
+    }
+   ]
+  }
+ }
+}
