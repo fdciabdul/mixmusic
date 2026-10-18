@@ -16,9 +16,9 @@ import (
 // MIXMUSIC_CAPTURE names a directory: a tool for the screenshots of the
 // documentation and for checking the interface.
 //
-//	MIXMUSIC_CAPTURE=shots MIXMUSIC_CAPTURE_ROUTES=/,/settings MIXMUSIC_CAPTURE_SIZE=1440x900 mixmusic
+//	MIXMUSIC_CAPTURE=shots MIXMUSIC_CAPTURE_ROUTES="/|/settings" MIXMUSIC_CAPTURE_SIZE=1440x900 mixmusic
 //
-// MIXMUSIC_CAPTURE_WAIT is how long each page gets to load, as "5s". A
+// Routes are separated by "|". MIXMUSIC_CAPTURE_WAIT is how long each page gets to load, as "5s". A
 // route starting with "js:" runs its script in the page instead of
 // navigating, as clicking a button, before its screenshot.
 func (a *App) captureFromEnv(win *mygo.Window) {
@@ -28,7 +28,7 @@ func (a *App) captureFromEnv(win *mygo.Window) {
 	}
 	routes := []string{"/"}
 	if r := os.Getenv("MIXMUSIC_CAPTURE_ROUTES"); r != "" {
-		routes = strings.Split(r, ",")
+		routes = strings.Split(r, "|")
 	}
 	wait := 5 * time.Second
 	if d, err := time.ParseDuration(os.Getenv("MIXMUSIC_CAPTURE_WAIT")); err == nil {
