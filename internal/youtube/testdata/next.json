@@ -1,0 +1,1225 @@
+{
+ "responseContext": {
+  "visitorData": "Cgt3bjExRmM5OVpJYyiR19PWBjIKCgJJRBIEGgAgVA%3D%3D"
+ },
+ "contents": {
+  "singleColumnMusicWatchNextResultsRenderer": {
+   "tabbedRenderer": {
+    "watchNextTabbedResultsRenderer": {
+     "tabs": [
+      {
+       "tabRenderer": {
+        "title": "Up next",
+        "content": {
+         "musicQueueRenderer": {
+          "content": {
+           "playlistPanelRenderer": {
+            "contents": [
+             {
+              "playlistPanelVideoRenderer": {
+               "title": {
+                "runs": [
+                 {
+                  "text": "Draft Punk"
+                 }
+                ]
+               },
+               "longBylineText": {
+                "runs": [
+                 {
+                  "text": "DJT",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "UCbM50mQtG58vhLZonicYUrQ",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "Q-ENA II",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "MPREb_I0lA998lMLT",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "2021"
+                 }
+                ]
+               },
+               "thumbnail": {
+                "thumbnails": [
+                 {
+                  "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w60-h60-l90-rj",
+                  "width": 60,
+                  "height": 60
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w120-h120-l90-rj",
+                  "width": 120,
+                  "height": 120
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w180-h180-l90-rj",
+                  "width": 180,
+                  "height": 180
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w226-h226-l90-rj",
+                  "width": 226,
+                  "height": 226
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w302-h302-l90-rj",
+                  "width": 302,
+                  "height": 302
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w544-h544-l90-rj",
+                  "width": 544,
+                  "height": 544
+                 }
+                ]
+               },
+               "lengthText": {
+                "runs": [
+                 {
+                  "text": "3:28"
+                 }
+                ]
+               },
+               "selected": true,
+               "navigationEndpoint": {
+                "watchEndpoint": {
+                 "videoId": "w3XzgjlKFjc",
+                 "playlistId": "RDAMVMw3XzgjlKFjc",
+                 "index": 0,
+                 "params": "OAHyAQIIAQ%3D%3D",
+                 "playerParams": "8AUBygYQNTZCNDRGNkQxMDU1N0NDNrAIAg%3D%3D",
+                 "playlistSetVideoId": "56B44F6D10557CC6",
+                 "watchEndpointMusicSupportedConfigs": {
+                  "watchEndpointMusicConfig": {
+                   "hasPersistentPlaylistPanel": true,
+                   "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                  }
+                 }
+                }
+               },
+               "videoId": "w3XzgjlKFjc",
+               "shortBylineText": {
+                "runs": [
+                 {
+                  "text": "DJT"
+                 }
+                ]
+               },
+               "playlistSetVideoId": "56B44F6D10557CC6",
+               "canReorder": true,
+               "queueNavigationEndpoint": {
+                "queueAddEndpoint": {
+                 "queueInsertPosition": "INSERT_AT_END",
+                 "params": "Q0FJJTNE"
+                }
+               }
+              }
+             },
+             {
+              "playlistPanelVideoRenderer": {
+               "title": {
+                "runs": [
+                 {
+                  "text": "serenity"
+                 }
+                ]
+               },
+               "longBylineText": {
+                "runs": [
+                 {
+                  "text": "KLXIU",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "UCjcLNukgMkjIFmEkLIvw9Ww",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "serenity",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "MPREb_lhkEZuoZbyJ",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "2025"
+                 }
+                ]
+               },
+               "thumbnail": {
+                "thumbnails": [
+                 {
+                  "url": "https://yt3.googleusercontent.com/NjCxqpflx296WuhZ4BMHrcjry3ofqAF58HQwaTn8c3VuvEAR_WhlSxq91kTNVPGX692Yvn3MaDc6Xyow=w60-h60-l90-rj",
+                  "width": 60,
+                  "height": 60
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/NjCxqpflx296WuhZ4BMHrcjry3ofqAF58HQwaTn8c3VuvEAR_WhlSxq91kTNVPGX692Yvn3MaDc6Xyow=w120-h120-l90-rj",
+                  "width": 120,
+                  "height": 120
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/NjCxqpflx296WuhZ4BMHrcjry3ofqAF58HQwaTn8c3VuvEAR_WhlSxq91kTNVPGX692Yvn3MaDc6Xyow=w180-h180-l90-rj",
+                  "width": 180,
+                  "height": 180
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/NjCxqpflx296WuhZ4BMHrcjry3ofqAF58HQwaTn8c3VuvEAR_WhlSxq91kTNVPGX692Yvn3MaDc6Xyow=w226-h226-l90-rj",
+                  "width": 226,
+                  "height": 226
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/NjCxqpflx296WuhZ4BMHrcjry3ofqAF58HQwaTn8c3VuvEAR_WhlSxq91kTNVPGX692Yvn3MaDc6Xyow=w302-h302-l90-rj",
+                  "width": 302,
+                  "height": 302
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/NjCxqpflx296WuhZ4BMHrcjry3ofqAF58HQwaTn8c3VuvEAR_WhlSxq91kTNVPGX692Yvn3MaDc6Xyow=w544-h544-l90-rj",
+                  "width": 544,
+                  "height": 544
+                 }
+                ]
+               },
+               "lengthText": {
+                "runs": [
+                 {
+                  "text": "1:59"
+                 }
+                ]
+               },
+               "selected": false,
+               "navigationEndpoint": {
+                "watchEndpoint": {
+                 "videoId": "fvSPKLO8qDM",
+                 "playlistId": "RDAMVMw3XzgjlKFjc",
+                 "index": 1,
+                 "params": "OAHyAQIIAQ%3D%3D",
+                 "playerParams": "8AUBygYQMjg5RjRBNDZERjBBMzBEMrAIAg%3D%3D",
+                 "playlistSetVideoId": "289F4A46DF0A30D2",
+                 "watchEndpointMusicSupportedConfigs": {
+                  "watchEndpointMusicConfig": {
+                   "hasPersistentPlaylistPanel": true,
+                   "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                  }
+                 }
+                }
+               },
+               "videoId": "fvSPKLO8qDM",
+               "shortBylineText": {
+                "runs": [
+                 {
+                  "text": "KLXIU"
+                 }
+                ]
+               },
+               "playlistSetVideoId": "289F4A46DF0A30D2",
+               "canReorder": true,
+               "queueNavigationEndpoint": {
+                "queueAddEndpoint": {
+                 "queueInsertPosition": "INSERT_AT_END",
+                 "params": "Q0FJJTNE"
+                }
+               }
+              }
+             },
+             {
+              "playlistPanelVideoRenderer": {
+               "title": {
+                "runs": [
+                 {
+                  "text": "pupils"
+                 }
+                ]
+               },
+               "longBylineText": {
+                "runs": [
+                 {
+                  "text": "KREZUS",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "UCovggpfU0T0ssWwcoE5cihQ",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " & "
+                 },
+                 {
+                  "text": "Navjaxx",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "UCXuxp8ykEgi3yDFLPPIWCCw",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "pupils",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "MPREb_Jpv2RR4H5Tq",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "2025"
+                 }
+                ]
+               },
+               "thumbnail": {
+                "thumbnails": [
+                 {
+                  "url": "https://yt3.googleusercontent.com/n7pROYcJ6ixsPV0iBxBE-JWOUto-srPFn_j9c8nbxGS0LER14UhjbLbzhXtIRo-fFyLOrYzWljps22rV=w60-h60-l90-rj",
+                  "width": 60,
+                  "height": 60
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/n7pROYcJ6ixsPV0iBxBE-JWOUto-srPFn_j9c8nbxGS0LER14UhjbLbzhXtIRo-fFyLOrYzWljps22rV=w120-h120-l90-rj",
+                  "width": 120,
+                  "height": 120
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/n7pROYcJ6ixsPV0iBxBE-JWOUto-srPFn_j9c8nbxGS0LER14UhjbLbzhXtIRo-fFyLOrYzWljps22rV=w180-h180-l90-rj",
+                  "width": 180,
+                  "height": 180
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/n7pROYcJ6ixsPV0iBxBE-JWOUto-srPFn_j9c8nbxGS0LER14UhjbLbzhXtIRo-fFyLOrYzWljps22rV=w226-h226-l90-rj",
+                  "width": 226,
+                  "height": 226
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/n7pROYcJ6ixsPV0iBxBE-JWOUto-srPFn_j9c8nbxGS0LER14UhjbLbzhXtIRo-fFyLOrYzWljps22rV=w302-h302-l90-rj",
+                  "width": 302,
+                  "height": 302
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/n7pROYcJ6ixsPV0iBxBE-JWOUto-srPFn_j9c8nbxGS0LER14UhjbLbzhXtIRo-fFyLOrYzWljps22rV=w544-h544-l90-rj",
+                  "width": 544,
+                  "height": 544
+                 }
+                ]
+               },
+               "lengthText": {
+                "runs": [
+                 {
+                  "text": "2:44"
+                 }
+                ]
+               },
+               "selected": false,
+               "navigationEndpoint": {
+                "watchEndpoint": {
+                 "videoId": "BCweSDkjxGU",
+                 "playlistId": "RDAMVMw3XzgjlKFjc",
+                 "index": 2,
+                 "params": "OAHyAQIIAQ%3D%3D",
+                 "playerParams": "8AUBygYQMDE3MjA4RkFBODUyMzNGOdIHCQlOARCCnT_ysLAIAg%3D%3D",
+                 "playlistSetVideoId": "017208FAA85233F9",
+                 "watchEndpointMusicSupportedConfigs": {
+                  "watchEndpointMusicConfig": {
+                   "hasPersistentPlaylistPanel": true,
+                   "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                  }
+                 }
+                }
+               },
+               "videoId": "BCweSDkjxGU",
+               "shortBylineText": {
+                "runs": [
+                 {
+                  "text": "KREZUS"
+                 },
+                 {
+                  "text": " & "
+                 },
+                 {
+                  "text": "Navjaxx"
+                 }
+                ]
+               },
+               "playlistSetVideoId": "017208FAA85233F9",
+               "canReorder": true,
+               "queueNavigationEndpoint": {
+                "queueAddEndpoint": {
+                 "queueInsertPosition": "INSERT_AT_END",
+                 "params": "Q0FJJTNE"
+                }
+               }
+              }
+             },
+             {
+              "playlistPanelVideoRenderer": {
+               "title": {
+                "runs": [
+                 {
+                  "text": "La leçon particulière"
+                 }
+                ]
+               },
+               "longBylineText": {
+                "runs": [
+                 {
+                  "text": "Lavern",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "UCzQ4gcRHoDyVF3ghGn9gWlA",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " & "
+                 },
+                 {
+                  "text": "Francis Lai",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "UCkEoq_hWWXMHm4xC15X2b7w",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "La leçon particulière",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "MPREb_PtmBiUHqS1h",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "2023"
+                 }
+                ]
+               },
+               "thumbnail": {
+                "thumbnails": [
+                 {
+                  "url": "https://yt3.googleusercontent.com/q69jbqWu6pihrLV1Or9OVTg_GMYXX4-Fy3LGwDDgaQlhJlKRa0_dXhPuw3AQVx6HYPlLUcIEQ5Zqy1A=w60-h60-l90-rj",
+                  "width": 60,
+                  "height": 60
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/q69jbqWu6pihrLV1Or9OVTg_GMYXX4-Fy3LGwDDgaQlhJlKRa0_dXhPuw3AQVx6HYPlLUcIEQ5Zqy1A=w120-h120-l90-rj",
+                  "width": 120,
+                  "height": 120
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/q69jbqWu6pihrLV1Or9OVTg_GMYXX4-Fy3LGwDDgaQlhJlKRa0_dXhPuw3AQVx6HYPlLUcIEQ5Zqy1A=w180-h180-l90-rj",
+                  "width": 180,
+                  "height": 180
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/q69jbqWu6pihrLV1Or9OVTg_GMYXX4-Fy3LGwDDgaQlhJlKRa0_dXhPuw3AQVx6HYPlLUcIEQ5Zqy1A=w226-h226-l90-rj",
+                  "width": 226,
+                  "height": 226
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/q69jbqWu6pihrLV1Or9OVTg_GMYXX4-Fy3LGwDDgaQlhJlKRa0_dXhPuw3AQVx6HYPlLUcIEQ5Zqy1A=w302-h302-l90-rj",
+                  "width": 302,
+                  "height": 302
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/q69jbqWu6pihrLV1Or9OVTg_GMYXX4-Fy3LGwDDgaQlhJlKRa0_dXhPuw3AQVx6HYPlLUcIEQ5Zqy1A=w544-h544-l90-rj",
+                  "width": 544,
+                  "height": 544
+                 }
+                ]
+               },
+               "lengthText": {
+                "runs": [
+                 {
+                  "text": "2:35"
+                 }
+                ]
+               },
+               "selected": false,
+               "navigationEndpoint": {
+                "watchEndpoint": {
+                 "videoId": "RU-41119yAI",
+                 "playlistId": "RDAMVMw3XzgjlKFjc",
+                 "index": 3,
+                 "params": "OAHyAQIIAQ%3D%3D",
+                 "playerParams": "8AUBygYQNTIxNTJCNDk0NkMyRjczRtIHCQlOARCCnT_ysLAIAg%3D%3D",
+                 "playlistSetVideoId": "52152B4946C2F73F",
+                 "watchEndpointMusicSupportedConfigs": {
+                  "watchEndpointMusicConfig": {
+                   "hasPersistentPlaylistPanel": true,
+                   "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                  }
+                 }
+                }
+               },
+               "videoId": "RU-41119yAI",
+               "shortBylineText": {
+                "runs": [
+                 {
+                  "text": "Lavern"
+                 },
+                 {
+                  "text": " & "
+                 },
+                 {
+                  "text": "Francis Lai"
+                 }
+                ]
+               },
+               "playlistSetVideoId": "52152B4946C2F73F",
+               "canReorder": true,
+               "queueNavigationEndpoint": {
+                "queueAddEndpoint": {
+                 "queueInsertPosition": "INSERT_AT_END",
+                 "params": "Q0FJJTNE"
+                }
+               }
+              }
+             },
+             {
+              "playlistPanelVideoRenderer": {
+               "title": {
+                "runs": [
+                 {
+                  "text": "DEAD EARTH"
+                 }
+                ]
+               },
+               "longBylineText": {
+                "runs": [
+                 {
+                  "text": "YOHYOSAN",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "UCGf-fV5NKJStdzbe4tzEE5Q",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "DEAD EARTH",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "MPREb_6PgE4ui0YJL",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "2024"
+                 }
+                ]
+               },
+               "thumbnail": {
+                "thumbnails": [
+                 {
+                  "url": "https://yt3.googleusercontent.com/f1w3mo133E04YYqJOWvmVhpidA36NPvROpQEANMbMe1AsrwS9n5WdWQVVHjkir72HyPVyXB5KTVMtSXvhg=w60-h60-l90-rj",
+                  "width": 60,
+                  "height": 60
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/f1w3mo133E04YYqJOWvmVhpidA36NPvROpQEANMbMe1AsrwS9n5WdWQVVHjkir72HyPVyXB5KTVMtSXvhg=w120-h120-l90-rj",
+                  "width": 120,
+                  "height": 120
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/f1w3mo133E04YYqJOWvmVhpidA36NPvROpQEANMbMe1AsrwS9n5WdWQVVHjkir72HyPVyXB5KTVMtSXvhg=w180-h180-l90-rj",
+                  "width": 180,
+                  "height": 180
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/f1w3mo133E04YYqJOWvmVhpidA36NPvROpQEANMbMe1AsrwS9n5WdWQVVHjkir72HyPVyXB5KTVMtSXvhg=w226-h226-l90-rj",
+                  "width": 226,
+                  "height": 226
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/f1w3mo133E04YYqJOWvmVhpidA36NPvROpQEANMbMe1AsrwS9n5WdWQVVHjkir72HyPVyXB5KTVMtSXvhg=w302-h302-l90-rj",
+                  "width": 302,
+                  "height": 302
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/f1w3mo133E04YYqJOWvmVhpidA36NPvROpQEANMbMe1AsrwS9n5WdWQVVHjkir72HyPVyXB5KTVMtSXvhg=w544-h544-l90-rj",
+                  "width": 544,
+                  "height": 544
+                 }
+                ]
+               },
+               "lengthText": {
+                "runs": [
+                 {
+                  "text": "2:00"
+                 }
+                ]
+               },
+               "selected": false,
+               "navigationEndpoint": {
+                "watchEndpoint": {
+                 "videoId": "FQZiz5PK3Tw",
+                 "playlistId": "RDAMVMw3XzgjlKFjc",
+                 "index": 4,
+                 "params": "OAHyAQIIAQ%3D%3D",
+                 "playerParams": "8AUBygYQMDkwNzk2QTc1RDE1MzkzMrAIAg%3D%3D",
+                 "playlistSetVideoId": "090796A75D153932",
+                 "watchEndpointMusicSupportedConfigs": {
+                  "watchEndpointMusicConfig": {
+                   "hasPersistentPlaylistPanel": true,
+                   "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                  }
+                 }
+                }
+               },
+               "videoId": "FQZiz5PK3Tw",
+               "shortBylineText": {
+                "runs": [
+                 {
+                  "text": "YOHYOSAN"
+                 }
+                ]
+               },
+               "playlistSetVideoId": "090796A75D153932",
+               "canReorder": true,
+               "queueNavigationEndpoint": {
+                "queueAddEndpoint": {
+                 "queueInsertPosition": "INSERT_AT_END",
+                 "params": "Q0FJJTNE"
+                }
+               }
+              }
+             },
+             {
+              "playlistPanelVideoRenderer": {
+               "title": {
+                "runs": [
+                 {
+                  "text": "I Still Love"
+                 }
+                ]
+               },
+               "longBylineText": {
+                "runs": [
+                 {
+                  "text": "Aver King",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "UCv_jB8dWH-E5KaF8x2WNvxw",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "I Still Love",
+                  "navigationEndpoint": {
+                   "browseEndpoint": {
+                    "browseId": "MPREb_LMaHD2ATnZ3",
+                    "browseEndpointContextSupportedConfigs": {
+                     "browseEndpointContextMusicConfig": {
+                      "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 {
+                  "text": " • "
+                 },
+                 {
+                  "text": "2025"
+                 }
+                ]
+               },
+               "thumbnail": {
+                "thumbnails": [
+                 {
+                  "url": "https://yt3.googleusercontent.com/mTgiABNewXeHo1rh2J9xHm2qHPcabwoxxj3zB7zvOcvlRMGp0F0v-lWS5whfUC2gwClYYplaWjI2vIRqVg=w60-h60-l90-rj",
+                  "width": 60,
+                  "height": 60
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/mTgiABNewXeHo1rh2J9xHm2qHPcabwoxxj3zB7zvOcvlRMGp0F0v-lWS5whfUC2gwClYYplaWjI2vIRqVg=w120-h120-l90-rj",
+                  "width": 120,
+                  "height": 120
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/mTgiABNewXeHo1rh2J9xHm2qHPcabwoxxj3zB7zvOcvlRMGp0F0v-lWS5whfUC2gwClYYplaWjI2vIRqVg=w180-h180-l90-rj",
+                  "width": 180,
+                  "height": 180
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/mTgiABNewXeHo1rh2J9xHm2qHPcabwoxxj3zB7zvOcvlRMGp0F0v-lWS5whfUC2gwClYYplaWjI2vIRqVg=w226-h226-l90-rj",
+                  "width": 226,
+                  "height": 226
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/mTgiABNewXeHo1rh2J9xHm2qHPcabwoxxj3zB7zvOcvlRMGp0F0v-lWS5whfUC2gwClYYplaWjI2vIRqVg=w302-h302-l90-rj",
+                  "width": 302,
+                  "height": 302
+                 },
+                 {
+                  "url": "https://yt3.googleusercontent.com/mTgiABNewXeHo1rh2J9xHm2qHPcabwoxxj3zB7zvOcvlRMGp0F0v-lWS5whfUC2gwClYYplaWjI2vIRqVg=w544-h544-l90-rj",
+                  "width": 544,
+                  "height": 544
+                 }
+                ]
+               },
+               "lengthText": {
+                "runs": [
+                 {
+                  "text": "2:09"
+                 }
+                ]
+               },
+               "selected": false,
+               "navigationEndpoint": {
+                "watchEndpoint": {
+                 "videoId": "aev5FotlvtQ",
+                 "playlistId": "RDAMVMw3XzgjlKFjc",
+                 "index": 5,
+                 "params": "OAHyAQIIAQ%3D%3D",
+                 "playerParams": "8AUBygYQMTJFRkIzQjFDNTdERTRFMbAIAg%3D%3D",
+                 "playlistSetVideoId": "12EFB3B1C57DE4E1",
+                 "watchEndpointMusicSupportedConfigs": {
+                  "watchEndpointMusicConfig": {
+                   "hasPersistentPlaylistPanel": true,
+                   "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                  }
+                 }
+                }
+               },
+               "videoId": "aev5FotlvtQ",
+               "shortBylineText": {
+                "runs": [
+                 {
+                  "text": "Aver King"
+                 }
+                ]
+               },
+               "playlistSetVideoId": "12EFB3B1C57DE4E1",
+               "canReorder": true,
+               "queueNavigationEndpoint": {
+                "queueAddEndpoint": {
+                 "queueInsertPosition": "INSERT_AT_END",
+                 "params": "Q0FJJTNE"
+                }
+               }
+              }
+             }
+            ],
+            "playlistId": "RDAMVMw3XzgjlKFjc",
+            "isInfinite": true,
+            "continuations": [
+             {
+              "nextRadioContinuationData": {
+               "continuation": "CDISOBILalBqbTRuU3Z3cU0iEVJEQU1WTXczWHpnamxLRmpjODHQAQH6ARBENjI1QUI0MDI5NEQzODFEGAo%3D"
+              }
+             }
+            ],
+            "numItemsToShow": 25,
+            "shuffleToggleButton": {
+             "toggleButtonRenderer": {
+              "defaultIcon": {
+               "iconType": "MUSIC_SHUFFLE"
+              },
+              "defaultServiceEndpoint": {
+               "watchPlaylistEndpoint": {
+                "playlistId": "RDAMVMw3XzgjlKFjc",
+                "params": "wAEB8gECGAE%3D"
+               }
+              },
+              "toggledIcon": {
+               "iconType": "MUSIC_SHUFFLE"
+              },
+              "toggledServiceEndpoint": {
+               "watchPlaylistEndpoint": {
+                "playlistId": "RDAMVMw3XzgjlKFjc",
+                "params": "wAEB"
+               }
+              }
+             }
+            }
+           }
+          },
+          "hack": true,
+          "musicQueueConfig": {},
+          "header": {
+           "musicQueueHeaderRenderer": {
+            "title": {
+             "runs": [
+              {
+               "text": "Playing from"
+              }
+             ]
+            },
+            "subtitle": {
+             "runs": [
+              {
+               "text": "Draft Punk Mix"
+              }
+             ]
+            }
+           }
+          },
+          "subHeaderChipCloud": {}
+         }
+        }
+       }
+      },
+      {
+       "tabRenderer": {
+        "endpoint": {
+         "browseEndpoint": {
+          "browseId": "MPLYt_I0lA998lMLT-8",
+          "browseEndpointContextSupportedConfigs": {
+           "browseEndpointContextMusicConfig": {
+            "pageType": "MUSIC_PAGE_TYPE_TRACK_LYRICS"
+           }
+          }
+         }
+        },
+        "title": "Lyrics",
+        "unselectable": true
+       }
+      },
+      {
+       "tabRenderer": {
+        "title": "Comments",
+        "content": {
+         "messageRenderer": {
+          "text": {
+           "runs": [
+            {
+             "text": "Comments are turned off. "
+            },
+            {
+             "text": "Learn more",
+             "navigationEndpoint": {
+              "urlEndpoint": {
+               "url": "https://support.google.com/youtube/answer/9706180?hl=en",
+               "target": "TARGET_NEW_WINDOW"
+              }
+             }
+            }
+           ]
+          }
+         }
+        },
+        "unselectable": true
+       }
+      },
+      {
+       "tabRenderer": {
+        "endpoint": {
+         "browseEndpoint": {
+          "browseId": "MPTRt_I0lA998lMLT-8",
+          "browseEndpointContextSupportedConfigs": {
+           "browseEndpointContextMusicConfig": {
+            "pageType": "MUSIC_PAGE_TYPE_TRACK_RELATED"
+           }
+          }
+         }
+        },
+        "title": "Related"
+       }
+      }
+     ]
+    }
+   }
+  }
+ },
+ "currentVideoEndpoint": {
+  "watchEndpoint": {
+   "videoId": "w3XzgjlKFjc",
+   "playlistId": "RDAMVMw3XzgjlKFjc",
+   "index": 0,
+   "playerParams": "ygYQNTZCNDRGNkQxMDU1N0NDNg%3D%3D",
+   "playlistSetVideoId": "56B44F6D10557CC6"
+  }
+ },
+ "playerOverlays": {
+  "playerOverlayRenderer": {
+   "actions": [
+    {
+     "likeButtonRenderer": {
+      "target": {
+       "videoId": "w3XzgjlKFjc"
+      },
+      "likeStatus": "INDIFFERENT",
+      "likesAllowed": true,
+      "dislikeNavigationEndpoint": {
+       "modalEndpoint": {
+        "modal": {
+         "modalWithTitleAndButtonRenderer": {
+          "title": {
+           "runs": [
+            {
+             "text": "Not a fan?"
+            }
+           ]
+          },
+          "content": {
+           "runs": [
+            {
+             "text": "Improve your recommendations after signing in"
+            }
+           ]
+          },
+          "button": {
+           "buttonRenderer": {
+            "style": "STYLE_BLUE_TEXT",
+            "isDisabled": false,
+            "text": {
+             "runs": [
+              {
+               "text": "Sign in"
+              }
+             ]
+            },
+            "navigationEndpoint": {
+             "signInEndpoint": {
+              "hack": true
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      },
+      "likeCommand": {
+       "modalEndpoint": {
+        "modal": {
+         "modalWithTitleAndButtonRenderer": {
+          "title": {
+           "runs": [
+            {
+             "text": "Like this song"
+            }
+           ]
+          },
+          "content": {
+           "runs": [
+            {
+             "text": "Improve recommendations and save music after signing in"
+            }
+           ]
+          },
+          "button": {
+           "buttonRenderer": {
+            "style": "STYLE_BLUE_TEXT",
+            "isDisabled": false,
+            "text": {
+             "runs": [
+              {
+               "text": "Sign in"
+              }
+             ]
+            },
+            "navigationEndpoint": {
+             "signInEndpoint": {
+              "hack": true
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ],
+   "browserMediaSession": {
+    "browserMediaSessionRenderer": {
+     "album": {
+      "runs": [
+       {
+        "text": "Q-ENA II"
+       }
+      ]
+     },
+     "thumbnailDetails": {
+      "thumbnails": [
+       {
+        "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w60-h60-l90-rj",
+        "width": 60,
+        "height": 60
+       },
+       {
+        "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w120-h120-l90-rj",
+        "width": 120,
+        "height": 120
+       },
+       {
+        "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w226-h226-l90-rj",
+        "width": 226,
+        "height": 226
+       },
+       {
+        "url": "https://yt3.googleusercontent.com/9XQ6lKJM8e4Npw6qXrzVGez2UekcQJuaYDoGoPDpXTWw0o5sgTXoUfPuLGxPUQJNIgjRvxWrUf5Iw0Uy1Q=w544-h544-l90-rj",
+        "width": 544,
+        "height": 544
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "videoReporting": {
+  "reportFormModalRenderer": {
+   "optionsSupportedRenderers": {
+    "optionsRenderer": {
+     "items": [
+      {
+       "optionSelectableItemRenderer": {
+        "text": {
+         "runs": [
+          {
+           "text": "Sexual content"
+          }
+         ]
+        },
+        "submitEndpoint": {
+         "flagEndpoint": {
+          "flagAction": "EAciDwoLdzNYemdqbEtGamNQBTILdzNYemdqbEtGamOQASyYAQGoAQM%3D"
+         }
+        }
+       }
+      },
+      {
+       "optionSelectableItemRenderer": {
+        "text": {
+         "runs": [
+          {
+           "text": "Violent or repulsive content"
+          }
+         ]
+        },
+        "submitEndpoint": {
+         "flagEndpoint": {
+          "flagAction": "EAciDwoLdzNYemdqbEtGamNQBTILdzNYemdqbEtGamOQATaYAQGoAQM%3D"
+         }
+        }
+       }
+      },
+      {
+       "optionSelectableItemRenderer": {
+        "text": {
+         "runs": [
+          {
+           "text": "Hateful or abusive content"
+          }
+         ]
+        },
+        "submitEndpoint": {
+         "flagEndpoint": {
+          "flagAction": "EAciDwoLdzNYemdqbEtGamNQBTILdzNYemdqbEtGamOQARSYAQGoAQM%3D"
+         }
+        }
+       }
+      },
+      {
+       "optionSelectableItemRenderer": {
+        "text": {
+         "runs": [
+          {
+           "text": "Harassment or bullying"
+          }
+         ]
+        },
+        "submitEndpoint": {
+         "flagEndpoint": {
+          "flagAction": "EAciDwoLdzNYemdqbEtGamNQBTILdzNYemdqbEtGamOQARGYAQGoAQM%3D"
+         }
+        }
+       }
+      },
+      {
+       "optionSelectableItemRenderer": {
+        "text": {
+         "runs": [
+          {
+           "text": "Harmful or dangerous acts"
+          }
+         ]
+        },
+        "submitEndpoint": {
+         "flagEndpoint": {
+          "flagAction": "EAciDwoLdzNYemdqbEtGamNQBTILdzNYemdqbEtGamOQAQ2YAQGoAQM%3D"
+         }
+        }
+       }
+      },
+      {
+       "optionSelectableItemRenderer": {
+        "text": {
+         "runs": [
+          {
+           "text": "Misinformation"
+          }
+         ]
+        },
+        "submitEndpoint": {
+         "flagEndpoint": {
+          "flagAction": "EAciDwoLdzNYemdqbEtGamNQBTILdzNYemdqbEtGamOQAUGYAQGoAQM%3D"
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   "title": {
+    "runs": [
+     {
+      "text": "Report video"
+     }
+    ]
+   },
+   "submitButton": {
+    "buttonRenderer": {
+     "style": "STYLE_BRAND",
+     "isDisabled": true,
+     "text": {
+      "runs": [
+       {
+        "text": "Report"
+       }
+      ]
+     }
+    }
+   },
+   "cancelButton": {
+    "buttonRenderer": {
+     "style": "STYLE_TEXT",
+     "isDisabled": false,
+     "text": {
+      "runs": [
+       {
+        "text": "Cancel"
+       }
+      ]
+     }
+    }
+   },
+   "footer": {
+    "runs": [
+     {
+      "text": "If you are the copyright owner of this video and believe it has been uploaded without your permission, please follow "
+     },
+     {
+      "text": "these directions",
+      "navigationEndpoint": {
+       "urlEndpoint": {
+        "url": "//support.google.com/youtube/answer/2807622?hl=en"
+       }
+      }
+     },
+     {
+      "text": " to submit a copyright infringement notice."
+     }
+    ]
+   }
+  }
+ },
+ "queueContextParams": "CAIaEVJEQU1WTXczWHpnamxLRmpjIPaT_rv2w5cDQhFSREFNVk13M1h6Z2psS0ZqY1ABWgQIABABYgBwAXgBkgEMRWdBWUFRJTNEJTNEogEfEhA1NkI0NEY2RDEwNTU3Q0M2Ggt3M1h6Z2psS0ZqYw=="
+}

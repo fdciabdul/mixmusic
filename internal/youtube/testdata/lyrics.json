@@ -1,0 +1,26 @@
+{
+ "contents": {
+  "sectionListRenderer": {
+   "contents": [
+    {
+     "musicDescriptionShelfRenderer": {
+      "description": {
+       "runs": [
+        {
+         "text": "First line of the song\nSecond line of the song\n\nThe chorus comes here"
+        }
+       ]
+      },
+      "footer": {
+       "runs": [
+        {
+         "text": "Source: Example Lyrics"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ }
+}
