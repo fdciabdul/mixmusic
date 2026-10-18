@@ -11,7 +11,7 @@ plugin: a pull request adding one folder.
 
 ## The app
 
-You need [Go](https://go.dev/dl/) 1.27 or later and [Bun](https://bun.sh).
+You need [Go](https://go.dev/dl/) 1.27 or later and [Bun](https://bun.sh) 1.2 or later.
 
 ```sh
 git clone https://github.com/fzn0x/mixmusic
