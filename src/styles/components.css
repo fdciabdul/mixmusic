@@ -177,6 +177,7 @@
 .mm-tile-caption {
   position: relative;
   z-index: 1;
+  max-width: 66%;
   font-size: var(--mm-size-small);
   line-height: 1.3;
 }
