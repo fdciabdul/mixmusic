@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -68,15 +69,34 @@ func (t Token) Valid() bool {
 // Auth signs users in with the authorization code flow and PKCE, which
 // needs no client secret.
 type Auth struct {
-	ClientID string
-	HTTP     *http.Client
+	HTTP *http.Client
 	// TokenURL is the token endpoint, replaced in tests.
 	TokenURL string
+
+	mu       sync.Mutex
+	clientID string
 }
 
 // NewAuth returns an Auth for the app of clientID.
 func NewAuth(clientID string) *Auth {
-	return &Auth{ClientID: clientID, HTTP: &http.Client{Timeout: 30 * time.Second}, TokenURL: tokenURL}
+	a := &Auth{HTTP: &http.Client{Timeout: 30 * time.Second}, TokenURL: tokenURL}
+	a.SetClientID(clientID)
+	return a
+}
+
+// ClientID returns the Client ID of the app users sign in to.
+func (a *Auth) ClientID() string {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return a.clientID
+}
+
+// SetClientID changes the Client ID of the app users sign in to. Tokens of
+// the former app no longer refresh.
+func (a *Auth) SetClientID(id string) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	a.clientID = strings.TrimSpace(id)
 }
 
 // ErrNoClientID is returned when signing in without a Client ID.
@@ -86,7 +106,8 @@ var ErrNoClientID = errors.New("spotify: set your Client ID in Settings › Acco
 // sign-in page, which the app opens in the browser, waits for Spotify to
 // send the user back, and returns the token. It gives up when ctx is done.
 func (a *Auth) Login(ctx context.Context, open func(url string) error) (Token, error) {
-	if strings.TrimSpace(a.ClientID) == "" {
+	clientID := a.ClientID()
+	if clientID == "" {
 		return Token{}, ErrNoClientID
 	}
 	verifier := randomString(64)
@@ -140,7 +161,7 @@ func (a *Auth) Login(ctx context.Context, open func(url string) error) (Token, e
 			"grant_type":    {"authorization_code"},
 			"code":          {res.code},
 			"redirect_uri":  {RedirectURI},
-			"client_id":     {a.ClientID},
+			"client_id":     {clientID},
 			"code_verifier": {verifier},
 		})
 	}
@@ -148,8 +169,9 @@ func (a *Auth) Login(ctx context.Context, open func(url string) error) (Token, e
 
 // AuthorizeURL returns the address of Spotify's sign-in page.
 func (a *Auth) AuthorizeURL(state, codeChallenge string) string {
+	clientID := a.ClientID()
 	q := url.Values{
-		"client_id":             {a.ClientID},
+		"client_id":             {clientID},
 		"response_type":         {"code"},
 		"redirect_uri":          {RedirectURI},
 		"state":                 {state},
@@ -162,10 +184,11 @@ func (a *Auth) AuthorizeURL(state, codeChallenge string) string {
 
 // Refresh exchanges a refresh token for a new access token.
 func (a *Auth) Refresh(ctx context.Context, refreshToken string) (Token, error) {
+	clientID := a.ClientID()
 	t, err := a.exchange(ctx, url.Values{
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {refreshToken},
-		"client_id":     {a.ClientID},
+		"client_id":     {clientID},
 	})
 	if err == nil && t.RefreshToken == "" {
 		t.RefreshToken = refreshToken // Spotify may keep the old one
