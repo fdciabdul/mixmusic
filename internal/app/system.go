@@ -71,6 +71,20 @@ func (s *System) InstallYTDLP(ctx context.Context, progress *mygo.Channel[Instal
 	return s.a.tools.Status(ctx), nil
 }
 
+// ArtworkColor returns the accent color of a piece of artwork, as
+// "#rrggbb", for themes that follow what plays.
+func (s *System) ArtworkColor(ctx context.Context, url string) (string, error) {
+	if c, ok := s.a.colors.get(url); ok {
+		return c, nil
+	}
+	c, err := s.a.artwork.Color(ctx, url)
+	if err != nil {
+		return "", err
+	}
+	s.a.colors.put(url, c)
+	return c, nil
+}
+
 // OpenExternal opens a web page in the default browser.
 func (s *System) OpenExternal(rawURL string) error {
 	u, err := url.Parse(rawURL)

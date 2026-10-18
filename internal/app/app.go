@@ -14,6 +14,7 @@ import (
 	"github.com/egoist/mygo"
 
 	"github.com/fzn0x/mixmusic/internal/addons"
+	"github.com/fzn0x/mixmusic/internal/artwork"
 	"github.com/fzn0x/mixmusic/internal/library"
 	"github.com/fzn0x/mixmusic/internal/lyrics"
 	"github.com/fzn0x/mixmusic/internal/match"
@@ -65,6 +66,8 @@ type App struct {
 	addons     *addons.Manager
 	storage    *addons.Storage
 	lyricsMemo *memo[lyrics.Lyrics]
+	artwork    *artwork.Client
+	colors     *memo[string]
 
 	mu         sync.Mutex
 	spotifyMe  *spotify.Profile
@@ -110,6 +113,8 @@ func New(opts Options) (*App, error) {
 	a.matcher = match.New(a.youtube, matches)
 	a.lyrics = lyrics.New("MixMusic/" + opts.Version + " (https://github.com/fzn0x/mixmusic)")
 	a.lyricsMemo = newMemo[lyrics.Lyrics](200)
+	a.artwork = artwork.New()
+	a.colors = newMemo[string](500)
 	a.addons = addons.NewManager(filepath.Join(opts.DataDir, "addons"), opts.Builtin, schemeURL(addonsScheme))
 	a.storage = addons.NewStorage(filepath.Join(opts.DataDir, "addons", ".storage"))
 	a.apply(s)

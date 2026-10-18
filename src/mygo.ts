@@ -854,6 +854,13 @@ export const Addons = {
 
 /** System gives pages what they need of the desktop and the app. */
 export const System = {
+  /**
+   * ArtworkColor returns the accent color of a piece of artwork, as
+   * "#rrggbb", for themes that follow what plays.
+   */
+  artworkColor(url: string): Promise<string> {
+    return call("System.ArtworkColor", url);
+  },
   /** CacheUsage returns what the audio cache holds. */
   cacheUsage(): Promise<CacheUsage> {
     return call("System.CacheUsage");
