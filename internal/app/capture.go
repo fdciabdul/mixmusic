@@ -38,6 +38,9 @@ func (a *App) captureFromEnv(win *mygo.Window) {
 		wi, _ := strconv.Atoi(w)
 		hi, _ := strconv.Atoi(h)
 		if wi > 0 && hi > 0 {
+			if win.IsMaximized() {
+				win.Restore() // a window state may open it maximized
+			}
 			win.SetSize(wi, hi)
 		}
 	}
