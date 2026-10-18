@@ -18,7 +18,9 @@ import (
 //
 //	MIXMUSIC_CAPTURE=shots MIXMUSIC_CAPTURE_ROUTES=/,/settings MIXMUSIC_CAPTURE_SIZE=1440x900 mixmusic
 //
-// MIXMUSIC_CAPTURE_WAIT is how long each page gets to load, as "5s".
+// MIXMUSIC_CAPTURE_WAIT is how long each page gets to load, as "5s". A
+// route starting with "js:" runs its script in the page instead of
+// navigating, as clicking a button, before its screenshot.
 func (a *App) captureFromEnv(win *mygo.Window) {
 	dir := os.Getenv("MIXMUSIC_CAPTURE")
 	if dir == "" {
@@ -46,7 +48,14 @@ func (a *App) captureFromEnv(win *mygo.Window) {
 		time.Sleep(wait) // the first load
 		for i, route := range routes {
 			route = strings.TrimSpace(route)
-			NavigateRequested.Emit(win, route)
+			if script, ok := strings.CutPrefix(route, "js:"); ok {
+				if _, err := win.Page().Eval(script); err != nil {
+					log.Printf("mixmusic: running %q: %v", script, err)
+				}
+				route = "/script"
+			} else {
+				NavigateRequested.Emit(win, route)
+			}
 			time.Sleep(wait)
 			png, err := win.CapturePage()
 			if err != nil {
