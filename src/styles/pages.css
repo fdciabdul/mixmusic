@@ -796,7 +796,9 @@
   position: absolute;
   left: 0;
   bottom: 0;
+  width: 100%;
   height: 2px;
   background: var(--mm-accent);
-  transition: width 500ms linear;
+  transform-origin: left center;
+  transition: transform 500ms linear;
 }

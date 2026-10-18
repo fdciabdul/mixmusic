@@ -74,7 +74,7 @@ export function Mini() {
           <Icon name="close" size={16} />
         </button>
       </div>
-      <div class="mm-mini-progress" style={{ width: `${pct}%` }} />
+      <div class="mm-mini-progress" style={{ transform: `scaleX(${pct / 100})` }} />
     </div>
   );
 }
