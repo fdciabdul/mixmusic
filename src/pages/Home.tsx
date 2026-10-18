@@ -10,7 +10,7 @@ import { useAsync } from "../lib/async";
 import { navigate } from "../lib/router";
 import { artwork, artists, plural } from "../lib/format";
 import { mixes, likedIds } from "../state/library";
-import { playTracks } from "../player/player";
+import { currentTrack, playTracks } from "../player/player";
 import { accounts } from "../state/accounts";
 import { InstallYTDLP } from "./Settings";
 
@@ -28,7 +28,7 @@ export function Home() {
     return filter === "all" ? all : all.filter((s) => s.source === filter);
   }, [home.data, filter]);
 
-  const last = recent.data?.[0]?.track;
+  const last = recent.data?.[0]?.track ?? currentTrack.value ?? undefined;
   const lastArt = last ? artwork(last.artwork, 300) : undefined;
   const spotify = accounts.value?.spotify;
 
