@@ -40,7 +40,10 @@ export function PageHeader({ title, pivots, active, onPivot, children }: Props) 
               role="tab"
               aria-selected={p.id === active}
               class="mm-pivot"
-              onClick={() => onPivot?.(p.id)}
+              onClick={(e) => {
+                (e.currentTarget as HTMLElement).scrollIntoView({ inline: "nearest", block: "nearest" });
+                onPivot?.(p.id);
+              }}
             >
               {p.label}
               {p.count != null && <span class="mm-pivot-count mm-num">{p.count}</span>}

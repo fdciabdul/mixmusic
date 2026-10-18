@@ -32,7 +32,7 @@ interface TileProps {
   title: string;
   /** caption sits at the bottom: a count, a hint. */
   caption?: string;
-  size?: "small" | "wide" | "large";
+  size?: "small" | "wide" | "tall" | "large";
   onClick?: () => void;
   href?: string;
   children?: ComponentChildren;

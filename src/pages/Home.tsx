@@ -4,7 +4,6 @@ import { PageHeader } from "../components/PageHeader";
 import { Tile } from "../components/Tile";
 import { ItemTile, Shelf } from "../components/Shelf";
 import { LoadingTiles, Problem } from "../components/States";
-import { Icon } from "../components/Icon";
 import { Catalog, Collection, System, type Shelf as ShelfData, type Source } from "../mygo";
 import { useAsync } from "../lib/async";
 import { navigate } from "../lib/router";
@@ -20,7 +19,6 @@ export function Home() {
   const [filter, setFilter] = useState<Filter>("all");
   const home = useAsync(() => Catalog.home(), []);
   const recent = useAsync(() => Collection.history(1), []);
-  const week = useAsync(() => Collection.stats(7), []);
   const tools = useAsync(() => System.tools(), []);
 
   const shelves = useMemo(() => {
@@ -66,19 +64,19 @@ export function Home() {
         >
           {lastArt && <img class="mm-tile-art" src={lastArt} alt="" />}
         </Tile>
-        <Tile tone={2} title="liked songs" caption={plural(likedIds.value.size, "track")} onClick={() => navigate("/library/liked")} />
-        <Tile tone={3} title="your mixes" caption={plural(mixes.value.length, "mix", "mixes")} onClick={() => navigate("/library/mixes")} />
-        <Tile
-          tone={4}
-          title="this week"
-          caption={week.data ? `${plural(week.data.plays, "play")} · ${week.data.minutes} min` : "your listening"}
-          onClick={() => navigate("/stats")}
-        />
-        {spotify && !spotify.signedIn && (
-          <Tile tone={2} size="wide" title="add spotify" caption="sign in to search and play your spotify library here" onClick={() => navigate("/settings/accounts")}>
-            <Icon name="user" size={28} />
-          </Tile>
-        )}
+        {(() => {
+          const offer = spotify && !spotify.signedIn;
+          const size = offer ? "small" : "wide";
+          return (
+            <>
+              <Tile tone={2} size={size} title="liked songs" caption={plural(likedIds.value.size, "track")} onClick={() => navigate("/library/liked")} />
+              <Tile tone={3} size={size} title="your mixes" caption={plural(mixes.value.length, "mix", "mixes")} onClick={() => navigate("/library/mixes")} />
+              {offer && (
+                <Tile tone={4} size="tall" title="add spotify" caption="sign in to search and play your spotify library here" onClick={() => navigate("/settings/accounts")} />
+              )}
+            </>
+          );
+        })()}
       </div>
 
       {home.error && !home.data && (
