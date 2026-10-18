@@ -25,11 +25,11 @@ export function CollectionHead({ image, source, facts, onPlay, onShuffle, onMenu
       </div>
       <div class="mm-collection-info">
         <p class="mm-collection-facts">
-          <SourceMark source={source} label />
           <span class="mm-collection-fact-line">
+            <SourceMark source={source} label />
             {facts.filter(Boolean).map((f, i) => (
               <span key={i}>
-                {i > 0 && " · "}
+                {" · "}
                 {f}
               </span>
             ))}
