@@ -1,0 +1,31 @@
+{
+  "id": "sakura",
+  "name": "Sakura",
+  "version": "1.0.0",
+  "author": "MixMusic",
+  "description": "Cherry blossom pinks on paper white.",
+  "scheme": "light",
+  "colors": {
+    "bg": "#fff5f7",
+    "surface": "#ffffff",
+    "surface-2": "#ffedf2",
+    "surface-3": "#ffe0e9",
+    "border": "#f4d3dd",
+    "text": "#3a2430",
+    "text-muted": "#8d6b78",
+    "accent": "#e0457b",
+    "accent-text": "#ffffff",
+    "danger": "#d1344b",
+    "success": "#2f9e72",
+    "youtube": "#e62117",
+    "spotify": "#17a44c"
+  },
+  "fonts": {
+    "display": "Georgia, 'Noto Serif', 'DejaVu Serif', serif"
+  },
+  "radius": "20px",
+  "styles": "theme.css",
+  "options": [
+    { "id": "petals", "label": "Petal pattern", "type": "toggle", "default": "true" }
+  ]
+}
