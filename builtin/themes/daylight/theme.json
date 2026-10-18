@@ -3,7 +3,7 @@
   "name": "Daylight",
   "version": "1.0.0",
   "author": "MixMusic",
-  "description": "Metro in daylight: black ink and deep tiles on white.",
+  "description": "Black ink and deep tiles on white, for bright rooms.",
   "scheme": "light",
   "colors": {
     "bg": "#ffffff",
