@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  go:
+    name: Go (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - name: Formatting
+        if: runner.os == 'Linux'
+        run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+      - name: Vet for Linux and Windows
+        shell: bash
+        run: |
+          go vet ./...
+          GOOS=linux go vet ./...
+          GOOS=windows go vet ./...
+      - name: Test
+        run: go test ./...
+      - name: Community registry
+        run: go run ./tools/registry -check
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run build:web
+
+  build:
+    name: Build ${{ matrix.platform }}
+    needs: [go, frontend]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows/amd64, linux/amd64]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Install NSIS, for the Windows installer
+        if: startsWith(matrix.platform, 'windows/')
+        run: sudo apt-get update && sudo apt-get install -y nsis
+      - run: bun run build -- -platform "${{ matrix.platform }}"
