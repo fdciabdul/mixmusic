@@ -8,7 +8,7 @@ import { SourceMark } from "../components/SourceMark";
 import { Lyrics } from "../app/SidePanel";
 import { Progress } from "../app/PlayerBar";
 import * as player from "../player/player";
-import { artwork, artists } from "../lib/format";
+import { artwork } from "../lib/format";
 import { href, navigate } from "../lib/router";
 import { widgets, type Widget } from "../plugins/contributions";
 import { isLiked, likedIds, toggleLiked } from "../state/library";
@@ -24,7 +24,6 @@ export function NowPlaying() {
       </div>
     );
   }
-  const next = player.upNext.value;
   const liked = isLiked(t.id);
   return (
     <div class="mm-page mm-now">
@@ -82,14 +81,6 @@ export function NowPlaying() {
               <Icon name="heart" size={18} fill={liked} />
             </button>
           </div>
-          {next && next.track.id !== t.id && (
-            <button type="button" class="mm-now-next" onClick={() => void player.next()}>
-              <span class="mm-now-next-label">up next</span>
-              <span class="mm-ellipsis">
-                {next.track.title} — {artists(next.track.artists)}
-              </span>
-            </button>
-          )}
           <div class="mm-now-lyrics">
             <Lyrics />
           </div>

@@ -174,7 +174,8 @@ export function Lyrics({ compact }: { compact?: boolean }) {
     const el = box?.querySelector<HTMLElement>(`[data-line="${activeLine}"]`);
     if (!box || !el) return;
     const top = el.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop;
-    box.scrollTo({ top: top - box.clientHeight / 2 + el.clientHeight / 2, behavior: "smooth" });
+    // The line sung sits a third of the way down: what comes next shows.
+    box.scrollTo({ top: top - box.clientHeight / 3, behavior: "smooth" });
   }, [activeLine]);
 
   let body;

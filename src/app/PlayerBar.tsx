@@ -53,7 +53,7 @@ export function PlayerBar() {
                 {matched && <span class="mm-player-via"> · via YouTube Music</span>}
                 {src?.mode === "connect" && <span class="mm-player-via"> · on Spotify</span>}
               </span>
-              {next && next.track.id !== t.id && (
+              {next && next.track.id !== t.id && sidePanel.value !== "queue" && (
                 <span class="mm-player-next mm-ellipsis">
                   next · {next.track.title} — {artists(next.track.artists)}
                 </span>
