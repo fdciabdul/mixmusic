@@ -1,0 +1,97 @@
+package spotify
+
+import (
+	"context"
+	"errors"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"sync/atomic"
+	"testing"
+	"time"
+)
+
+// testClient returns a client of srv, signed in with an access token that
+// expired and a refresh token the token server of the test accepts.
+func testClient(t *testing.T, srv *httptest.Server) *Client {
+	t.Helper()
+	tokens := tokenServer(t, func(url.Values) {})
+	a := NewAuth("client")
+	a.TokenURL = tokens.URL
+	c := NewClient(a)
+	c.BaseURL = srv.URL
+	c.SetToken(Token{AccessToken: "EXPIRED", RefreshToken: "REFRESH", Expiry: time.Now().Add(-time.Hour)})
+	return c
+}
+
+func TestClientRefreshesExpiredTokens(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("Authorization") != "Bearer ACCESS" {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.Write([]byte(`{"id": "me"}`))
+	}))
+	defer srv.Close()
+	c := testClient(t, srv)
+	saved := make(chan Token, 1)
+	c.OnToken = func(tok Token) { saved <- tok }
+	var me struct{ ID string }
+	if err := c.get(context.Background(), "/me", nil, &me); err != nil || me.ID != "me" {
+		t.Fatalf("me = %+v, %v", me, err)
+	}
+	select {
+	case tok := <-saved:
+		if tok.AccessToken != "ACCESS" {
+			t.Errorf("saved %+v", tok)
+		}
+	case <-time.After(5 * time.Second):
+		t.Error("the new token was not handed to OnToken")
+	}
+}
+
+func TestClientRetriesOnUnauthorized(t *testing.T) {
+	var calls atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if calls.Add(1) == 1 {
+			w.WriteHeader(http.StatusUnauthorized) // revoked early
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer srv.Close()
+	c := testClient(t, srv)
+	c.SetToken(Token{AccessToken: "STALE", RefreshToken: "REFRESH", Expiry: time.Now().Add(time.Hour)})
+	if err := c.do(context.Background(), http.MethodPut, "/me/player/pause", nil, nil, nil); err != nil {
+		t.Fatal(err)
+	}
+	if calls.Load() != 2 {
+		t.Errorf("calls = %d", calls.Load())
+	}
+}
+
+func TestClientReportsAPIErrors(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte(`{"error": {"status": 403, "message": "Player command failed: Premium required", "reason": "PREMIUM_REQUIRED"}}`))
+	}))
+	defer srv.Close()
+	err := testClient(t, srv).do(context.Background(), http.MethodPut, "/me/player/play", nil, map[string]any{}, nil)
+	var apiErr *APIError
+	if !errors.As(err, &apiErr) || apiErr.Reason != "PREMIUM_REQUIRED" {
+		t.Fatalf("err = %v", err)
+	}
+	if apiErr.Error() != "spotify: playback control needs Spotify Premium" {
+		t.Errorf("message = %q", apiErr.Error())
+	}
+}
+
+func TestClientNotSignedIn(t *testing.T) {
+	c := NewClient(NewAuth("client"))
+	if err := c.get(context.Background(), "/me", nil, nil); !errors.Is(err, ErrNotSignedIn) {
+		t.Errorf("err = %v", err)
+	}
+	if c.SignedIn() {
+		t.Error("SignedIn without a token")
+	}
+}
