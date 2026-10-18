@@ -296,13 +296,28 @@
 }
 
 .mm-now-artists {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  display: grid;
   gap: var(--mm-space-2);
+  justify-items: start;
   font-family: var(--mm-font-display);
   font-size: var(--mm-size-subtitle);
   font-weight: 300;
+}
+
+.mm-now-credits {
+  line-height: 1.3;
+}
+
+.mm-now-album {
+  display: block;
+  font-size: var(--mm-size-body);
+  font-family: var(--mm-font-body);
+  color: var(--mm-text-muted);
+  margin-top: var(--mm-space-1);
+}
+
+.mm-now-album a {
+  color: inherit;
 }
 
 .mm-now-info .mm-progress {

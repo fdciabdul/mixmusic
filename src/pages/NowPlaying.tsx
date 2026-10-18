@@ -35,33 +35,34 @@ export function NowPlaying() {
           <Visualizer />
         </div>
         <div class="mm-now-info">
-          <p class="mm-now-artists">
+          <div class="mm-now-artists">
             <SourceMark source={t.source} label />
-            {t.artists.map((a, i) => (
-              <span key={i}>
-                {i > 0 && ", "}
-                {a.id ? (
-                  <a href={href.artist(a.id)} onClick={(e) => (e.preventDefault(), navigate(href.artist(a.id!)))}>
-                    {a.name}
-                  </a>
-                ) : (
-                  a.name
-                )}
-              </span>
-            ))}
-            {t.album?.name && (
-              <>
-                {" · "}
-                {t.album.id ? (
-                  <a href={href.album(t.album.id)} onClick={(e) => (e.preventDefault(), navigate(href.album(t.album!.id!)))}>
-                    {t.album.name}
-                  </a>
-                ) : (
-                  t.album.name
-                )}
-              </>
-            )}
-          </p>
+            <span class="mm-now-credits">
+              {t.artists.map((a, i) => (
+                <span key={i}>
+                  {i > 0 && ", "}
+                  {a.id ? (
+                    <a href={href.artist(a.id)} onClick={(e) => (e.preventDefault(), navigate(href.artist(a.id!)))}>
+                      {a.name}
+                    </a>
+                  ) : (
+                    a.name
+                  )}
+                </span>
+              ))}
+              {t.album?.name && (
+                <span class="mm-now-album">
+                  {t.album.id ? (
+                    <a href={href.album(t.album.id)} onClick={(e) => (e.preventDefault(), navigate(href.album(t.album!.id!)))}>
+                      {t.album.name}
+                    </a>
+                  ) : (
+                    t.album.name
+                  )}
+                </span>
+              )}
+            </span>
+          </div>
           <Progress />
           <div class="mm-actions">
             <button type="button" class="mm-round mm-round-main" aria-label={player.playing.value ? "Pause" : "Play"} onClick={() => void player.toggle()}>
