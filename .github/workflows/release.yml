@@ -1,0 +1,69 @@
+name: Release
+
+# Pushing a tag such as v0.2.0 builds MixMusic for Windows and Linux and
+# uploads the installers and packages to a draft release, to publish.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write # the draft release, and the uploads to it
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: The tag matches package.json
+        run: |
+          version="$(jq -r .version package.json)"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "The tag is $GITHUB_REF_NAME but package.json says $version" >&2
+            exit 1
+          fi
+
+  draft-release:
+    needs: check-version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Create the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            version="${GITHUB_REF_NAME#v}"
+            # The notes are the version's section of CHANGELOG.md.
+            awk -v v="$version" '$0 == "## " v {on=1; next} /^## / {on=0} on' CHANGELOG.md > notes.md
+            gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "MixMusic $version" --notes-file notes.md
+          fi
+
+  build:
+    needs: draft-release
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: Windows, platform: "windows/amd64,windows/arm64" }
+          - { name: Linux, platform: "linux/amd64,linux/arm64" }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Install NSIS, for the Windows installers
+        if: matrix.name == 'Windows'
+        run: sudo apt-get update && sudo apt-get install -y nsis
+      - name: Build
+        run: bun run build -- -platform "${{ matrix.platform }}"
+      - name: Upload to the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Installers, packages and archives; not the bare executables.
+          find build -maxdepth 2 -type f \( -name '*Setup*.exe' -o -name '*.deb' -o -name '*.tar.gz' -o -name '*.sh' \) -print0 |
+            xargs -0 -r gh release upload "$GITHUB_REF_NAME" --clobber
