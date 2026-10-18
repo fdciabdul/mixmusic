@@ -169,8 +169,12 @@ export function Lyrics({ compact }: { compact?: boolean }) {
   }
   useEffect(() => {
     if (activeLine < 0 || Date.now() - lastUserScroll.current < 4000) return;
-    const el = scroller.current?.querySelector<HTMLElement>(`[data-line="${activeLine}"]`);
-    el?.scrollIntoView({ block: "center", behavior: "smooth" });
+    // Scroll the lyrics alone: scrollIntoView would scroll the shell too.
+    const box = scroller.current;
+    const el = box?.querySelector<HTMLElement>(`[data-line="${activeLine}"]`);
+    if (!box || !el) return;
+    const top = el.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop;
+    box.scrollTo({ top: top - box.clientHeight / 2 + el.clientHeight / 2, behavior: "smooth" });
   }, [activeLine]);
 
   let body;
