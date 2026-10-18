@@ -5,7 +5,7 @@ import * as player from "../player/player";
 import { paletteOpen, togglePanel, toast } from "../state/ui";
 import { toggleLiked } from "../state/library";
 import { settings, update } from "../state/settings";
-import { System } from "../mygo";
+import { Addons, System } from "../mygo";
 import { searchInputId } from "./TopBar";
 import { startRadio } from "../lib/trackMenu";
 
@@ -70,6 +70,7 @@ export function registerBuiltinCommands(): void {
       group: "view",
       run: () => void update({ sidebarCollapsed: !settings.value?.sidebarCollapsed }),
     },
+    { id: "addons.reload", title: "Reload add-ons", group: "add-ons", run: () => void Addons.reload().then(() => toast("Add-ons reloaded")) },
   ];
   for (const c of cmds) registerCommand(c);
 }
