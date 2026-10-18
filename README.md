@@ -6,7 +6,7 @@
 
 <p align="center"><strong>Spotify and YouTube Music in one player, shaped the way you like it.</strong></p>
 
-MixMusic is an open-source desktop music player for Windows and Linux. One
+MixMusic is an open-source desktop music player for macOS, Windows and Linux. One
 search looks through YouTube Music and Spotify at once, one queue mixes
 tracks of both, and one library keeps liked songs and playlists that hold
 tracks of either service. Its whole look is a theme, and the community adds
@@ -48,12 +48,21 @@ Download the latest release for your system from
 
 | System | Download |
 |---|---|
+| macOS 12 and later (Apple silicon and Intel) | `MixMusic <version>.dmg` |
 | Windows 10 and 11 (x64, arm64) | `MixMusic Setup <version> <arch>.exe` |
 | Debian, Ubuntu and derivatives | `mixmusic_<version>_<arch>.deb` |
 | Any Linux (x64, arm64) | `mixmusic-<version>-linux-<arch>.tar.gz`, with `install.sh` |
 
 ### What it needs
 
+- **macOS:** nothing more. The app is not notarized by Apple yet, so the
+  first time you open it macOS says it cannot check it. Open it anyway
+  from System Settings › Privacy & Security, with Open Anyway, or clear
+  the download mark once in Terminal:
+
+  ```sh
+  xattr -dr com.apple.quarantine /Applications/MixMusic.app
+  ```
 - **Windows:** the WebView2 Runtime, which Windows 11 includes.
 - **Linux:** GTK 3, WebKitGTK 4.1 and the GStreamer plugins that play Opus
   and AAC audio. On Debian and Ubuntu:

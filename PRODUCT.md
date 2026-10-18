@@ -36,7 +36,7 @@ One queue and one library across Spotify and YouTube Music, in an open-source de
 - Themes: a manifest of 18 color tokens (four of them tile colors and their ink), fonts, a corner radius, optional stylesheet and options (toggle, select, color, range). Six built-in themes: Mix (default), Daylight, Midnight, Sakura, Terminal, Aurora. Themes reach the interface only through `--mm-*` CSS variables, `data-opt-*` attributes and documented `mm-*` class hooks, which are a public contract for theme authors.
 - Plugins: ES modules given a plugin API (player, queue, UI slots, commands, settings, storage). They run with the app's privileges; the app tells users so before enabling a community plugin.
 - Community registry: themes and plugins live in the repository's `community/` folder and are installed from it over HTTPS.
-- Windows and Linux are the supported platforms.
+- macOS, Windows and Linux are the supported platforms.
 
 ## Brand Commitments
 

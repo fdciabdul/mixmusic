@@ -24,12 +24,13 @@ jobs:
       - name: Formatting
         if: runner.os == 'Linux'
         run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
-      - name: Vet for Linux and Windows
+      - name: Vet for Linux, Windows and macOS
         shell: bash
         run: |
           go vet ./...
           GOOS=linux go vet ./...
           GOOS=windows go vet ./...
+          GOOS=darwin go vet ./...
       - name: Test
         run: go test ./...
       - name: Community registry
@@ -52,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows/amd64, linux/amd64]
+        platform: [windows/amd64, linux/amd64, darwin/universal]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-go@v6

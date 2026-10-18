@@ -20,4 +20,4 @@ The first release.
 - Six themes, theme options, an accent following the artwork, your own CSS,
   and plugins with a typed API.
 - A marketplace of community themes and plugins.
-- Windows and Linux.
+- macOS, Windows and Linux.

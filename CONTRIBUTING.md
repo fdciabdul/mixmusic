@@ -28,7 +28,7 @@ Before you open a pull request:
 
 ```sh
 gofmt -l .                      # prints nothing
-go vet ./... && GOOS=linux go vet ./...
+go vet ./... && GOOS=linux go vet ./... && GOOS=darwin go vet ./...
 go test ./...
 bun run typecheck
 go run ./tools/registry -check
@@ -37,7 +37,7 @@ go run ./tools/registry -check
 [docs/architecture.md](docs/architecture.md) tells where things live. A few
 rules keep the project healthy:
 
-- **Both systems.** Changes must build for Windows and Linux; `GOOS=linux go vet ./...` checks it from Windows.
+- **Every system.** Changes must build for macOS, Windows and Linux; `GOOS=linux go vet ./...` and `GOOS=darwin go vet ./...` check them from Windows.
 - **The theme contract is public.** Community themes style the `--mm-*`
   variables, root attributes and `mm-*` classes of
   [docs/themes.md](docs/themes.md): rename or remove one only with a plan

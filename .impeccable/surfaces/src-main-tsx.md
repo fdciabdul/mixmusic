@@ -9,7 +9,7 @@ related_targets: ["src/app"]
 
 The MixMusic app shell and its pages (home, search, album, artist, playlist, library, now playing with lyrics, settings, marketplace, stats) and the mini player window. Visitor mode: Operate.
 
-Audience and job: power listeners on Windows and Linux who keep the player open for hours, search fast, queue tracks of Spotify and YouTube Music together, and theme and extend the player. Constraints: every surface is themeable through `--mm-*` tokens, `data-opt-*` attributes and documented `mm-*` hooks; standard controls; keyboard first.
+Audience and job: power listeners on macOS, Windows and Linux who keep the player open for hours, search fast, queue tracks of Spotify and YouTube Music together, and theme and extend the player. Constraints: every surface is themeable through `--mm-*` tokens, `data-opt-*` attributes and documented `mm-*` hooks; standard controls; keyboard first.
 
 ## Direction contract
 
