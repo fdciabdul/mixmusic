@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: A security problem
+    url: https://github.com/fzn0x/mixmusic/security/advisories/new
+    about: Report it privately, please.
+  - name: Share a theme or a plugin
+    url: https://github.com/fzn0x/mixmusic/blob/main/community/README.md
+    about: Add it to the community registry with a pull request.

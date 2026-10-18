@@ -1,0 +1,49 @@
+name: Something does not work
+description: Tell us what went wrong in MixMusic.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what happened, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to make it happen again
+      placeholder: |
+        1. Search for …
+        2. Play …
+  - type: input
+    id: version
+    attributes:
+      label: MixMusic version
+      description: Settings › About shows it.
+    validations:
+      required: true
+  - type: dropdown
+    id: system
+    attributes:
+      label: System
+      options:
+        - Windows 11
+        - Windows 10
+        - Linux (tell which distribution below)
+    validations:
+      required: true
+  - type: dropdown
+    id: service
+    attributes:
+      label: Which service
+      options:
+        - YouTube Music
+        - Spotify (Spotify Connect)
+        - Spotify (played from YouTube Music)
+        - Both, or neither
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else
+      description: Error messages, screenshots, the theme and plugins you use.

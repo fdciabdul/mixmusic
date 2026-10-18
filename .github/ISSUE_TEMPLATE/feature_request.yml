@@ -1,0 +1,25 @@
+name: An idea
+description: Suggest something MixMusic could do.
+labels: [idea]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would it make easier
+      description: What you are trying to do, and what gets in the way today.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How you picture it
+  - type: dropdown
+    id: where
+    attributes:
+      label: Could it be a plugin or a theme?
+      description: Many ideas fit as plugins, which anyone can write and share.
+      options:
+        - It needs a change to the app
+        - It could be a plugin
+        - It could be a theme
+        - Not sure
