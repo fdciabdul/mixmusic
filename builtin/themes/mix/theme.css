@@ -4,9 +4,9 @@
 :root[data-opt-texture="slashes"] .mm-tile::after {
   content: "";
   position: absolute;
-  inset: 12px 12px auto auto;
-  width: 34%;
-  height: 34%;
+  inset: auto 12px 12px auto;
+  width: 30%;
+  height: 30%;
   pointer-events: none;
   opacity: 0.55;
 }
