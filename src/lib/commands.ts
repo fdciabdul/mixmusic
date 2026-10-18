@@ -19,9 +19,9 @@ export const commands = signal<Command[]>([]);
 
 /** registerCommand adds a command, and returns the function removing it. */
 export function registerCommand(cmd: Command): () => void {
-  commands.value = [...commands.value.filter((c) => c.id !== cmd.id), cmd];
+  commands.value = [...commands.peek().filter((c) => c.id !== cmd.id), cmd];
   return () => {
-    commands.value = commands.value.filter((c) => c !== cmd);
+    commands.value = commands.peek().filter((c) => c !== cmd);
   };
 }
 

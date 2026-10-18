@@ -44,17 +44,17 @@ export const trackActions = signal<TrackAction[]>([]);
 export const widgets = signal<Widget[]>([]);
 
 /** add appends an entry to a list, returning the function removing it. */
-export function add<T>(list: { value: T[] }, entry: T): () => void {
-  list.value = [...list.value, entry];
+export function add<T>(list: { value: T[]; peek(): T[] }, entry: T): () => void {
+  list.value = [...list.peek(), entry];
   return () => {
-    list.value = list.value.filter((x) => x !== entry);
+    list.value = list.peek().filter((x) => x !== entry);
   };
 }
 
 /** removePlugin removes everything a plugin added. */
 export function removePlugin(plugin: string): void {
-  sidebarItems.value = sidebarItems.value.filter((x) => x.plugin !== plugin);
-  pluginPages.value = pluginPages.value.filter((x) => x.plugin !== plugin);
-  trackActions.value = trackActions.value.filter((x) => x.plugin !== plugin);
-  widgets.value = widgets.value.filter((x) => x.plugin !== plugin);
+  sidebarItems.value = sidebarItems.peek().filter((x) => x.plugin !== plugin);
+  pluginPages.value = pluginPages.peek().filter((x) => x.plugin !== plugin);
+  trackActions.value = trackActions.peek().filter((x) => x.plugin !== plugin);
+  widgets.value = widgets.peek().filter((x) => x.plugin !== plugin);
 }

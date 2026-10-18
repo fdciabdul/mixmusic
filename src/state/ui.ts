@@ -27,12 +27,12 @@ let toastSeq = 0;
 /** toast shows a short notice at the bottom of the window. */
 export function toast(message: string, opts: { tone?: Toast["tone"]; action?: Toast["action"]; ms?: number } = {}): void {
   const t: Toast = { id: ++toastSeq, message, tone: opts.tone ?? "info", action: opts.action };
-  toasts.value = [...toasts.value.slice(-3), t];
+  toasts.value = [...toasts.peek().slice(-3), t];
   setTimeout(() => dismissToast(t.id), opts.ms ?? (opts.action ? 8000 : 4500));
 }
 
 export function dismissToast(id: number): void {
-  toasts.value = toasts.value.filter((t) => t.id !== id);
+  toasts.value = toasts.peek().filter((t) => t.id !== id);
 }
 
 // Context menus.

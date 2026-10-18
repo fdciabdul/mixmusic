@@ -49,13 +49,13 @@ async function start(p: Plugin): Promise<void> {
     if (typeof activate !== "function") throw new Error("its module exports no activate function");
     const result = await activate(createAPI(p.id, cleanups));
     if (typeof result === "function") cleanups.push(result as () => void);
-    const { [p.id]: _, ...rest } = failures.value;
+    const { [p.id]: _, ...rest } = failures.peek();
     failures.value = rest;
   } catch (err) {
     stop();
     running.delete(p.id);
     const message = errorMessage(err);
-    failures.value = { ...failures.value, [p.id]: message };
+    failures.value = { ...failures.peek(), [p.id]: message };
     toast(`The plugin ${p.name} failed to start: ${message}`, { tone: "error" });
   }
 }
