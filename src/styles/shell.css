@@ -131,7 +131,7 @@
 
 /* On short windows the player bar already shows what plays. */
 @media (max-height: 720px) {
-  .mm-live {
+  .mm-sidebar .mm-live {
     display: none;
   }
 }
