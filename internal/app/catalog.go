@@ -202,7 +202,9 @@ func (c *Catalog) Lyrics(ctx context.Context, track media.Track) (lyrics.Lyrics,
 	clean := track
 	clean.Title = match.CleanTitle(track.Title)
 	l, err := c.a.lyrics.Get(ctx, clean)
-	if errors.Is(err, lyrics.ErrNotFound) || (err == nil && !l.Synced && !l.Instrumental) {
+	// YouTube Music fills in when LRCLIB has nothing, or is down, and
+	// when its plain lyrics are longer than LRCLIB's.
+	if err != nil || (!l.Synced && !l.Instrumental) {
 		if yt, ytErr := c.youtubeLyrics(ctx, track); ytErr == nil && (err != nil || len(yt.Lines) > len(l.Lines)) {
 			l, err = yt, nil
 		}
