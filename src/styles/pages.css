@@ -209,7 +209,7 @@
   gap: var(--mm-space-3);
   padding: var(--mm-space-2) var(--mm-space-3) 40vh;
   font-family: var(--mm-font-display);
-  font-size: 1.375rem;
+  font-size: calc(1.375rem * var(--mm-font-scale));
   font-weight: 300;
   line-height: 1.3;
   user-select: text;
@@ -255,7 +255,7 @@
 }
 
 .mm-lyrics-page .mm-lyrics {
-  font-size: 2rem;
+  font-size: calc(2rem * var(--mm-font-scale));
   padding-bottom: 20vh;
 }
 

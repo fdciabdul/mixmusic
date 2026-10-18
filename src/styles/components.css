@@ -181,7 +181,7 @@
   position: relative;
   z-index: 1;
   font-family: var(--mm-font-display);
-  font-size: clamp(1.75rem, 2.6vw, 2.375rem);
+  font-size: calc(clamp(1.75rem, 2.6vw, 2.375rem) * var(--mm-font-scale));
   font-weight: 300;
   line-height: 0.95;
   letter-spacing: -0.035em;
@@ -189,7 +189,7 @@
 }
 
 .mm-tile-large .mm-tile-title {
-  font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+  font-size: calc(clamp(2.5rem, 4.4vw, 3.75rem) * var(--mm-font-scale));
 }
 
 .mm-tile-caption {
