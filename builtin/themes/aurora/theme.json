@@ -18,13 +18,37 @@
     "danger": "#ff6b81",
     "success": "#4ee6c0",
     "youtube": "#ff5d6c",
-    "spotify": "#3ff08a"
+    "spotify": "#3ff08a",
+    "tile-1": "#4ee6c0",
+    "tile-2": "#7b5cff",
+    "tile-3": "#3fa9ff",
+    "tile-4": "#ff6b9a",
+    "tile-text": "#04121e"
   },
   "radius": "18px",
   "styles": "theme.css",
   "options": [
-    { "id": "motion", "label": "Drifting lights", "type": "toggle", "default": "true" },
-    { "id": "blur", "label": "Glass blur", "type": "range", "default": "22", "min": 0, "max": 48, "step": 2, "unit": "px" },
-    { "id": "tint", "label": "Light color", "type": "color", "default": "#7b5cff" }
+    {
+      "id": "motion",
+      "label": "Drifting lights",
+      "type": "toggle",
+      "default": "true"
+    },
+    {
+      "id": "blur",
+      "label": "Glass blur",
+      "type": "range",
+      "default": "22",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "id": "tint",
+      "label": "Light color",
+      "type": "color",
+      "default": "#7b5cff"
+    }
   ]
 }

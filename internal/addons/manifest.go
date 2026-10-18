@@ -37,6 +37,7 @@ var ColorKeys = []string{
 	"bg", "surface", "surface-2", "surface-3", "border",
 	"text", "text-muted", "accent", "accent-text",
 	"danger", "success", "youtube", "spotify",
+	"tile-1", "tile-2", "tile-3", "tile-4", "tile-text",
 }
 
 // OptionType is the kind of control a theme option shows.

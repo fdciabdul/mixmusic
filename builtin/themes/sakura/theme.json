@@ -18,7 +18,12 @@
     "danger": "#d1344b",
     "success": "#2f9e72",
     "youtube": "#e62117",
-    "spotify": "#17a44c"
+    "spotify": "#17a44c",
+    "tile-1": "#e0457b",
+    "tile-2": "#f7a8c4",
+    "tile-3": "#9fd6c2",
+    "tile-4": "#f9c784",
+    "tile-text": "#3a2430"
   },
   "fonts": {
     "display": "Georgia, 'Noto Serif', 'DejaVu Serif', serif"
@@ -26,6 +31,11 @@
   "radius": "20px",
   "styles": "theme.css",
   "options": [
-    { "id": "petals", "label": "Petal pattern", "type": "toggle", "default": "true" }
+    {
+      "id": "petals",
+      "label": "Petal pattern",
+      "type": "toggle",
+      "default": "true"
+    }
   ]
 }

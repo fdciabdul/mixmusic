@@ -18,7 +18,12 @@
     "danger": "#ff4d5e",
     "success": "#2ee59d",
     "youtube": "#ff4e45",
-    "spotify": "#1ed760"
+    "spotify": "#1ed760",
+    "tile-1": "#ff5a7a",
+    "tile-2": "#7b5cff",
+    "tile-3": "#00c2a8",
+    "tile-4": "#ffb000",
+    "tile-text": "#000000"
   },
   "radius": "10px",
   "options": []

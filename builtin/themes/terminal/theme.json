@@ -18,7 +18,12 @@
     "danger": "#ff5f56",
     "success": "#39ff14",
     "youtube": "#ff5f56",
-    "spotify": "#39ff14"
+    "spotify": "#39ff14",
+    "tile-1": "#39ff14",
+    "tile-2": "#1f8f1f",
+    "tile-3": "#b8ffb0",
+    "tile-4": "#ffb000",
+    "tile-text": "#021402"
   },
   "fonts": {
     "body": "'JetBrains Mono', 'Cascadia Code', Consolas, 'DejaVu Sans Mono', ui-monospace, monospace",
@@ -28,7 +33,21 @@
   "radius": "2px",
   "styles": "theme.css",
   "options": [
-    { "id": "scanlines", "label": "Scanlines", "type": "toggle", "default": "true" },
-    { "id": "glow", "label": "Text glow", "type": "range", "default": "6", "min": 0, "max": 16, "step": 1, "unit": "px" }
+    {
+      "id": "scanlines",
+      "label": "Scanlines",
+      "type": "toggle",
+      "default": "true"
+    },
+    {
+      "id": "glow",
+      "label": "Text glow",
+      "type": "range",
+      "default": "6",
+      "min": 0,
+      "max": 16,
+      "step": 1,
+      "unit": "px"
+    }
   ]
 }

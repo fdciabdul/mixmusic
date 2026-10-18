@@ -3,27 +3,32 @@
   "name": "Daylight",
   "version": "1.0.0",
   "author": "MixMusic",
-  "description": "A bright theme for sunny rooms.",
+  "description": "Metro in daylight: black ink and deep tiles on white.",
   "scheme": "light",
   "colors": {
-    "bg": "#f4f4f8",
-    "surface": "#ffffff",
-    "surface-2": "#eeeef4",
-    "surface-3": "#e2e2ec",
-    "border": "rgba(20, 20, 40, 0.09)",
-    "text": "#16161d",
-    "text-muted": "#5d5f70",
-    "accent": "#6a4cff",
+    "bg": "#ffffff",
+    "surface": "#f6f6f6",
+    "surface-2": "#ebebeb",
+    "surface-3": "#dddddd",
+    "border": "rgba(0, 0, 0, 0.14)",
+    "text": "#000000",
+    "text-muted": "#5a5a5a",
+    "accent": "#0078d7",
     "accent-text": "#ffffff",
     "danger": "#d92d42",
     "success": "#13a36d",
     "youtube": "#e62117",
-    "spotify": "#14a84a"
+    "spotify": "#14a84a",
+    "tile-1": "#0078d7",
+    "tile-2": "#c30052",
+    "tile-3": "#107c10",
+    "tile-4": "#ca5010",
+    "tile-text": "#ffffff"
   },
   "fonts": {
-    "body": "'Segoe UI Variable Text', 'Segoe UI', Cantarell, Ubuntu, 'Noto Sans', system-ui, sans-serif",
-    "display": "'Segoe UI Variable Display', 'Segoe UI', Cantarell, Ubuntu, 'Noto Sans', system-ui, sans-serif"
+    "body": "Selawik, 'Segoe UI', 'Noto Sans', 'DejaVu Sans', system-ui, sans-serif",
+    "display": "Selawik, 'Segoe UI', 'Noto Sans', 'DejaVu Sans', system-ui, sans-serif"
   },
-  "radius": "14px",
+  "radius": "0px",
   "options": []
 }
