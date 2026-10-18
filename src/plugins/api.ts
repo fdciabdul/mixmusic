@@ -196,3 +196,6 @@ export function createAPI(plugin: string, cleanups: (() => void)[]): API {
     openExternal: (url) => System.openExternal(url),
   };
 }
+
+// The API must keep the shape published to plugin authors in sdk/index.d.ts.
+export const sdkCompatible: (plugin: string, cleanups: (() => void)[]) => import("../../sdk").MixMusicAPI = createAPI;
