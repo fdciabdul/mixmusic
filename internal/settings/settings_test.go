@@ -27,7 +27,7 @@ func TestCleanClampsAndRepairs(t *testing.T) {
 		EnabledPlugins:  []string{"sleep-timer", "sleep-timer", "Bad ID", "../x"},
 		RegistryURL:     "http://insecure.example",
 	}.Clean()
-	if s.Theme != "mix" || s.Accent != "" || s.FontScale != 1 || s.SpotifyPlayback != SpotifyPlaybackMatch {
+	if s.Theme != "mix" || s.Accent != "" || s.FontScale != 1 || s.SpotifyPlayback != SpotifyPlaybackConnect {
 		t.Errorf("appearance and playback not repaired: %+v", s)
 	}
 	if s.Crossfade != 12 || s.Volume != 0 || len(s.Equalizer.Gains) != len(Bands) {

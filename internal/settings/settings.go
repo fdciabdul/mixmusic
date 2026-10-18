@@ -114,7 +114,7 @@ func Default() Settings {
 		DynamicAccent:   true,
 		Density:         DensityComfortable,
 		FontScale:       1,
-		SpotifyPlayback: SpotifyPlaybackMatch,
+		SpotifyPlayback: SpotifyPlaybackConnect,
 		Quality:         QualityBest,
 		Autoplay:        true,
 		Equalizer:       Equalizer{Preset: "flat", Gains: make([]float64, len(Bands))},
@@ -156,8 +156,8 @@ func (s Settings) Clean() Settings {
 	if s.FontScale < 0.85 || s.FontScale > 1.3 {
 		s.FontScale = d.FontScale
 	}
-	if s.SpotifyPlayback != SpotifyPlaybackConnect {
-		s.SpotifyPlayback = SpotifyPlaybackMatch
+	if s.SpotifyPlayback != SpotifyPlaybackMatch && s.SpotifyPlayback != SpotifyPlaybackConnect {
+		s.SpotifyPlayback = d.SpotifyPlayback
 	}
 	if s.Quality != QualitySaver {
 		s.Quality = QualityBest
