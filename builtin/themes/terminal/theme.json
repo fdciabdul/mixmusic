@@ -1,0 +1,34 @@
+{
+  "id": "terminal",
+  "name": "Terminal",
+  "version": "1.0.0",
+  "author": "MixMusic",
+  "description": "Green phosphor on black, in a monospaced font.",
+  "scheme": "dark",
+  "colors": {
+    "bg": "#030603",
+    "surface": "#081008",
+    "surface-2": "#0c180c",
+    "surface-3": "#122312",
+    "border": "rgba(57, 255, 20, 0.2)",
+    "text": "#b8ffb0",
+    "text-muted": "#5ea85a",
+    "accent": "#39ff14",
+    "accent-text": "#021402",
+    "danger": "#ff5f56",
+    "success": "#39ff14",
+    "youtube": "#ff5f56",
+    "spotify": "#39ff14"
+  },
+  "fonts": {
+    "body": "'JetBrains Mono', 'Cascadia Code', Consolas, 'DejaVu Sans Mono', ui-monospace, monospace",
+    "display": "'JetBrains Mono', 'Cascadia Code', Consolas, 'DejaVu Sans Mono', ui-monospace, monospace",
+    "mono": "'JetBrains Mono', 'Cascadia Code', Consolas, 'DejaVu Sans Mono', ui-monospace, monospace"
+  },
+  "radius": "2px",
+  "styles": "theme.css",
+  "options": [
+    { "id": "scanlines", "label": "Scanlines", "type": "toggle", "default": "true" },
+    { "id": "glow", "label": "Text glow", "type": "range", "default": "6", "min": 0, "max": 16, "step": 1, "unit": "px" }
+  ]
+}
