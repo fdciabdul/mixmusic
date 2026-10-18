@@ -154,7 +154,7 @@ func Best(t media.Track, candidates []media.Item) (media.Track, bool) {
 // Score rates how likely candidate is the recording of t, from 0 to 1, by
 // their titles, artists and durations.
 func Score(t, candidate media.Track) float64 {
-	title := similarity(words(cleanTitle(t.Title)), words(cleanTitle(candidate.Title)))
+	title := similarity(words(CleanTitle(t.Title)), words(CleanTitle(candidate.Title)))
 	artist := artistScore(t.Artists, candidate)
 	duration := durationScore(t.DurationMs, candidate.DurationMs)
 	score := 0.45*title + 0.35*artist + 0.2*duration
@@ -212,7 +212,9 @@ func durationScore(a, b int) float64 {
 // song: "(Remastered 2011)", "- Radio Edit", "[Official Video]".
 var noise = regexp.MustCompile(`(?i)\s*([(\[][^)\]]*(remaster|version|edit|mono|stereo|deluxe|official|video|audio|lyrics?|visuali[sz]er|feat\.?|ft\.?|with )[^)\]]*[)\]]|\s-\s.*(remaster|version|edit|mono|stereo)\b.*$)`)
 
-func cleanTitle(s string) string { return noise.ReplaceAllString(s, "") }
+// CleanTitle removes from a title what names the release rather than the
+// song, such as "(Remastered 2011)" or "[Official Video]".
+func CleanTitle(s string) string { return noise.ReplaceAllString(s, "") }
 
 // normalize lowercases s, strips its accents and punctuation, and
 // collapses its spaces.

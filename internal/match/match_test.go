@@ -49,10 +49,10 @@ func TestNormalize(t *testing.T) {
 			t.Errorf("normalize(%q) = %q, want %q", in, got, want)
 		}
 	}
-	if got := cleanTitle("Song (Remastered 2011)"); got != "Song" {
+	if got := CleanTitle("Song (Remastered 2011)"); got != "Song" {
 		t.Errorf("cleanTitle = %q", got)
 	}
-	if got := cleanTitle("Song - 2011 Remaster"); got != "Song" {
+	if got := CleanTitle("Song - 2011 Remaster"); got != "Song" {
 		t.Errorf("cleanTitle = %q", got)
 	}
 }
