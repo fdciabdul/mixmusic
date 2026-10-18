@@ -18,6 +18,7 @@ import { isLiked, likedIds, toggleLiked } from "../state/library";
 import { toast } from "../state/ui";
 import { artwork, artists, errorMessage, trackLine } from "../lib/format";
 import { debounce, local, throttle } from "../lib/async";
+import { navigate } from "../lib/router";
 
 export interface QueueItem {
   /** uid tells apart two entries of the same track. */
@@ -142,7 +143,7 @@ export async function playAt(i: number, startMs = 0, autoplay = true): Promise<v
         if (token !== loadToken) return;
         toast(`${errorMessage(err)} — playing it from YouTube Music instead`, {
           tone: "error",
-          action: { label: "settings", run: () => import("../lib/router").then((r) => r.navigate("/settings/playback")) },
+          action: { label: "settings", run: () => navigate("/settings/playback") },
         });
         src = await Player.prepareStream(entry.track);
         if (token !== loadToken) return;
