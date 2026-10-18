@@ -146,9 +146,10 @@ The colors above as `--mm-<name>`, plus:
 | `--mm-hover`, `--mm-press` | tints of hovered and pressed things |
 | `--mm-rule` | the accent hairline under section titles |
 | `--mm-outline` | the 2px outline of secondary buttons and inputs |
+| `--mm-scrim` | the veil behind dialogs and the command palette |
 | `--mm-size-poster`, `--mm-size-hero`, `--mm-size-title`, `--mm-size-pivot`, `--mm-size-subtitle`, `--mm-size-body`, `--mm-size-small`, `--mm-size-caption` | the type scale |
 | `--mm-row`, `--mm-sidebar-width`, `--mm-queue-width`, `--mm-player-height`, `--mm-page-gutter` | measures of the shell |
-| `--mm-ease-out`, `--mm-fast`, `--mm-medium`, `--mm-slow` | motion, all 0 when the user asks for reduced motion |
+| `--mm-ease-out`, `--mm-ease-in-out`, `--mm-fast`, `--mm-medium`, `--mm-slow` | motion, all 0 when the user asks for reduced motion |
 
 ### Attributes of the root element
 
