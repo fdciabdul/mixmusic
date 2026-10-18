@@ -26,16 +26,21 @@ export function CollectionHead({ image, source, facts, onPlay, onShuffle, onMenu
       <div class="mm-collection-info">
         <p class="mm-collection-facts">
           <SourceMark source={source} label />
-          {facts.filter(Boolean).map((f, i) => (
-            <span key={i}>{f}</span>
-          ))}
+          <span class="mm-collection-fact-line">
+            {facts.filter(Boolean).map((f, i) => (
+              <span key={i}>
+                {i > 0 && " · "}
+                {f}
+              </span>
+            ))}
+          </span>
         </p>
         {description && <p class="mm-collection-description">{description}</p>}
         <div class="mm-actions">
           {onPlay && (
             <button type="button" class="mm-button mm-button-primary" onClick={onPlay}>
-              <Icon name="play" size={16} />
               {playLabel}
+              <Icon name="play" size={16} />
             </button>
           )}
           {onShuffle && (
