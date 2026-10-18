@@ -1,16 +1,30 @@
-/* Mix: a soft glow of the artwork playing behind the top of each page. */
-:root[data-opt-glow="true"] .mm-main::before {
+/* Mix: the dot matrix, pinstripe and slash textures printed inside tiles. */
+:root[data-opt-texture="dots"] .mm-tile::after,
+:root[data-opt-texture="stripes"] .mm-tile::after,
+:root[data-opt-texture="slashes"] .mm-tile::after {
   content: "";
   position: absolute;
-  inset: 0 0 auto 0;
-  height: 360px;
-  background: radial-gradient(ellipse at 30% 0%, color-mix(in srgb, var(--mm-accent) 26%, transparent), transparent 70%);
+  inset: 12px 12px auto auto;
+  width: 34%;
+  height: 34%;
   pointer-events: none;
-  z-index: 0;
+  opacity: 0.55;
 }
 
-:root[data-opt-sidebar="flush"] .mm-sidebar {
-  margin: 0;
-  border-radius: 0;
-  border-width: 0 1px 0 0;
+:root[data-opt-texture="dots"] .mm-tile::after {
+  background-image: radial-gradient(currentColor 1.1px, transparent 1.4px);
+  background-size: 8px 8px;
+}
+
+:root[data-opt-texture="stripes"] .mm-tile::after {
+  background-image: repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 7px);
+}
+
+:root[data-opt-texture="slashes"] .mm-tile::after {
+  background-image: repeating-linear-gradient(135deg, currentColor 0 1px, transparent 1px 8px);
+}
+
+/* Classic white ink on tiles, for those who prefer it to contrast. */
+:root[data-opt-white-tiles="true"] {
+  --mm-tile-text: #ffffff;
 }

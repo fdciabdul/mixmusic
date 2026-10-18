@@ -3,40 +3,47 @@
   "name": "Mix",
   "version": "1.0.0",
   "author": "MixMusic",
-  "description": "The default: a calm dark theme with a violet accent and a glow of the artwork playing.",
+  "description": "The default: flat colour tiles and giant lowercase on true black, with cyan for everything live.",
   "scheme": "dark",
   "colors": {
-    "bg": "#0e0f13",
-    "surface": "#15161c",
-    "surface-2": "#1c1e26",
-    "surface-3": "#262935",
-    "border": "rgba(255, 255, 255, 0.07)",
-    "text": "#f2f2f6",
-    "text-muted": "#9b9dad",
-    "accent": "#8b6cff",
-    "accent-text": "#ffffff",
-    "danger": "#ff5c6c",
-    "success": "#3ddc97",
-    "youtube": "#ff4e45",
-    "spotify": "#1ed760"
+    "bg": "#000000",
+    "surface": "#0b0b0b",
+    "surface-2": "#181818",
+    "surface-3": "#272727",
+    "border": "rgba(255, 255, 255, 0.16)",
+    "text": "#ffffff",
+    "text-muted": "#a3a3a3",
+    "accent": "#00bde3",
+    "accent-text": "#000000",
+    "danger": "#ff5a4f",
+    "success": "#a4e600",
+    "youtube": "#ff4040",
+    "spotify": "#1ed760",
+    "tile-1": "#00bde3",
+    "tile-2": "#e6007e",
+    "tile-3": "#a4e600",
+    "tile-4": "#ffb000",
+    "tile-text": "#000000"
   },
   "fonts": {
-    "body": "'Segoe UI Variable Text', 'Segoe UI', Cantarell, Ubuntu, 'Noto Sans', system-ui, sans-serif",
-    "display": "'Segoe UI Variable Display', 'Segoe UI', Cantarell, Ubuntu, 'Noto Sans', system-ui, sans-serif"
+    "body": "Selawik, 'Segoe UI', 'Noto Sans', 'DejaVu Sans', system-ui, sans-serif",
+    "display": "Selawik, 'Segoe UI', 'Noto Sans', 'DejaVu Sans', system-ui, sans-serif"
   },
-  "radius": "14px",
+  "radius": "0px",
   "styles": "theme.css",
   "options": [
-    { "id": "glow", "label": "Artwork glow behind pages", "type": "toggle", "default": "true" },
     {
-      "id": "sidebar",
-      "label": "Sidebar",
+      "id": "texture",
+      "label": "Tile texture",
       "type": "select",
-      "default": "floating",
+      "default": "dots",
       "choices": [
-        { "value": "floating", "label": "Floating" },
-        { "value": "flush", "label": "Flush" }
+        { "value": "dots", "label": "Dot matrix" },
+        { "value": "stripes", "label": "Pinstripes" },
+        { "value": "slashes", "label": "Slashes" },
+        { "value": "none", "label": "None" }
       ]
-    }
+    },
+    { "id": "white-tiles", "label": "White text on tiles", "type": "toggle", "default": "false" }
   ]
 }
