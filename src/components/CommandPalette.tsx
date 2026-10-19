@@ -1,6 +1,6 @@
 // The command palette: every command, and a search, one keystroke away.
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
-import { commands, shortcutLabel, type Command } from "../lib/commands";
+import { commands, shortcutLabel, shortcutOf, type Command } from "../lib/commands";
 import { paletteOpen } from "../state/ui";
 import { href, navigate } from "../lib/router";
 import { Icon } from "./Icon";
@@ -75,7 +75,7 @@ export function CommandPalette() {
             >
               <span class="mm-palette-group">{c.group}</span>
               <span class="mm-ellipsis">{c.title}</span>
-              {c.shortcut && <kbd class="mm-menu-shortcut">{shortcutLabel(c.shortcut)}</kbd>}
+              {shortcutOf(c) && <kbd class="mm-menu-shortcut">{shortcutLabel(shortcutOf(c)!)}</kbd>}
             </li>
           ))}
           {results.length === 0 && <li class="mm-palette-empty">No command matches.</li>}

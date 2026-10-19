@@ -418,6 +418,11 @@ export interface Settings {
   /** Tools. */
   ytdlpPath: string;
   jsRuntime: string;
+  /**
+   * Shortcuts replaces the keys of commands, by command ID; an empty
+   * value takes a command's shortcut away.
+   */
+  shortcuts: Record<string, string>;
   /** Add-ons. */
   enabledPlugins: string[];
   /**

@@ -2,6 +2,7 @@ package settings
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 )
 
@@ -62,5 +63,23 @@ func TestActiveTheme(t *testing.T) {
 	s.LightTheme, s.DarkTheme = "Not An ID", ""
 	if c := s.Clean(); c.LightTheme != "daylight" || c.DarkTheme != "mix" {
 		t.Errorf("cleaned to %q and %q", c.LightTheme, c.DarkTheme)
+	}
+}
+
+func TestShortcutsClean(t *testing.T) {
+	s := Default()
+	s.Shortcuts = map[string]string{"player.toggle": "Mod+P", "player.mute": "", "": "K", "x": strings.Repeat("A", 65)}
+	c := s.Clean()
+	if c.Shortcuts["player.toggle"] != "Mod+P" {
+		t.Errorf("chosen keys dropped: %v", c.Shortcuts)
+	}
+	if v, ok := c.Shortcuts["player.mute"]; !ok || v != "" {
+		t.Errorf("a removed shortcut must stay removed: %v", c.Shortcuts)
+	}
+	if _, ok := c.Shortcuts[""]; ok || len(c.Shortcuts) != 2 {
+		t.Errorf("invalid entries kept: %v", c.Shortcuts)
+	}
+	if (Settings{}).Clean().Shortcuts == nil {
+		t.Error("Clean must give an empty map, not nil")
 	}
 }

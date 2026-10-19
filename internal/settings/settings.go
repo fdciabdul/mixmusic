@@ -101,6 +101,10 @@ type Settings struct {
 	YTDLPPath string `json:"ytdlpPath"`
 	JSRuntime string `json:"jsRuntime"`
 
+	// Shortcuts replaces the keys of commands, by command ID; an empty
+	// value takes a command's shortcut away.
+	Shortcuts map[string]string `json:"shortcuts"`
+
 	// Add-ons.
 	EnabledPlugins []string `json:"enabledPlugins"`
 	// RegistryURL is the address of the community registry of themes and
@@ -130,6 +134,7 @@ func Default() Settings {
 		CloseToTray:     false,
 		Notifications:   true,
 		MediaKeys:       true,
+		Shortcuts:       map[string]string{},
 		EnabledPlugins:  []string{},
 		RegistryURL:     DefaultRegistryURL,
 	}
@@ -205,6 +210,13 @@ func (s Settings) Clean() Settings {
 	if !slices.Contains([]string{"", "deno", "node", "bun", "quickjs"}, s.JSRuntime) {
 		s.JSRuntime = ""
 	}
+	shortcuts := map[string]string{}
+	for id, keys := range s.Shortcuts {
+		if id != "" && len(id) <= 128 && len(keys) <= 64 && len(shortcuts) < 500 {
+			shortcuts[id] = keys
+		}
+	}
+	s.Shortcuts = shortcuts
 	plugins := []string{}
 	for _, id := range s.EnabledPlugins {
 		if ValidID(id) && !slices.Contains(plugins, id) {

@@ -23,6 +23,12 @@ export function themeIdOf(s: Settings | null): string {
   return systemDark.value ? s.darkTheme : s.lightTheme;
 }
 
+/** themePatch is the change of settings that shows a theme: the theme itself, or the one of the mode the computer is in. */
+export function themePatch(s: Settings | null, id: string): Partial<Settings> {
+  if (!s?.followSystem) return { theme: id };
+  return systemDark.value ? { darkTheme: id } : { lightTheme: id };
+}
+
 /** activeTheme is the theme of the settings, or the default. */
 export const activeTheme = computed<Theme | null>(() => {
   const id = themeIdOf(settings.value);

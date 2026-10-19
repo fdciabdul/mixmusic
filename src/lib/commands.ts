@@ -2,6 +2,7 @@
 // palette lists and the keyboard runs. Plugins add their own.
 import { signal } from "@preact/signals";
 import { isMac } from "./runtime";
+import { settings } from "../state/settings";
 
 export interface Command {
   id: string;
@@ -32,6 +33,13 @@ export function runCommand(id: string): boolean {
   return true;
 }
 
+/** shortcutOf returns a command's keys: those the user chose, or its own; undefined when it has none. */
+export function shortcutOf(cmd: Command): string | undefined {
+  const chosen = settings.value?.shortcuts?.[cmd.id];
+  if (chosen !== undefined) return chosen || undefined;
+  return cmd.shortcut;
+}
+
 /** shortcutLabel writes a shortcut for display: "Ctrl K". */
 export function shortcutLabel(shortcut: string): string {
   return shortcut
@@ -55,8 +63,9 @@ export function shortcutLabel(shortcut: string): string {
     .join(" ");
 }
 
-/** eventShortcut writes a key event in the syntax of shortcuts. */
-function eventShortcut(e: KeyboardEvent): string {
+/** eventShortcut writes a key event in the syntax of shortcuts, or "" for a modifier pressed alone. */
+export function eventShortcut(e: KeyboardEvent): string {
+  if (["Control", "Shift", "Alt", "Meta", "OS", "AltGraph", "CapsLock"].includes(e.key)) return "";
   const parts: string[] = [];
   const mod = isMac() ? e.metaKey : e.ctrlKey;
   if (mod) parts.push("Mod");
@@ -84,7 +93,7 @@ export function initShortcuts(): void {
     if (typing(e.target) && !pressed.startsWith("Mod+")) return;
     // Space on a focused button presses the button.
     if (pressed === "Space" && (e.target as HTMLElement | null)?.closest("button, [role=button], a")) return;
-    const cmd = commands.value.find((c) => c.shortcut === pressed);
+    const cmd = commands.value.find((c) => shortcutOf(c) === pressed);
     if (!cmd) return;
     e.preventDefault();
     cmd.run();

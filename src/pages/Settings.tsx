@@ -27,9 +27,9 @@ import { accounts, refreshAccounts } from "../state/accounts";
 import { useAsync } from "../lib/async";
 import { navigate } from "../lib/router";
 import { bytes, errorMessage } from "../lib/format";
-import { commands, shortcutLabel } from "../lib/commands";
+import { commands, eventShortcut, shortcutLabel, shortcutOf } from "../lib/commands";
 import { appInfo } from "../lib/runtime";
-import { activeTheme, inventory, optionValues, systemDark, themes } from "../theme/theme";
+import { activeTheme, inventory, optionValues, themePatch, themes } from "../theme/theme";
 import { BANDS, PRESETS, bandLabel } from "../player/eq";
 import { confirm, toast } from "../state/ui";
 import { failures } from "../plugins/host";
@@ -57,7 +57,7 @@ export function Settings({ tab }: { tab?: string }) {
           {active === "accounts" && <AccountsTab s={s} />}
           {active === "plugins" && <PluginsTab s={s} />}
           {active === "desktop" && <Desktop s={s} />}
-          {active === "shortcuts" && <Shortcuts />}
+          {active === "shortcuts" && <Shortcuts s={s} />}
           {active === "about" && <About />}
         </div>
       )}
@@ -108,7 +108,7 @@ function Appearance({ s }: { s: SettingsData }) {
               key={t.id}
               theme={t}
               active={t.id === theme?.id}
-              onPick={() => save(s.followSystem ? (systemDark.value ? { darkTheme: t.id } : { lightTheme: t.id }) : { theme: t.id })}
+              onPick={() => save(themePatch(s, t.id))}
             />
           ))}
         </div>
@@ -711,29 +711,112 @@ function Desktop({ s }: { s: SettingsData }) {
   );
 }
 
-function Shortcuts() {
-  const list = [...commands.value].filter((c) => c.shortcut).sort((a, b) => (a.group ?? "").localeCompare(b.group ?? ""));
+function Shortcuts({ s }: { s: SettingsData }) {
+  const [recording, setRecording] = useState<string | null>(null);
+  const chosen = s.shortcuts ?? {};
+  const list = [...commands.value].sort((a, b) => (a.group ?? "").localeCompare(b.group ?? "") || a.title.localeCompare(b.title));
+
+  const setKeys = (id: string, keys: string) => {
+    const next = { ...chosen };
+    // The command that had these keys gives them up.
+    if (keys) {
+      for (const c of commands.value) {
+        if (c.id !== id && shortcutOf(c) === keys) {
+          next[c.id] = "";
+          toast(`${c.title} has no shortcut now`);
+        }
+      }
+    }
+    const own = commands.value.find((c) => c.id === id)?.shortcut ?? "";
+    if (keys === own) delete next[id];
+    else next[id] = keys;
+    void save({ shortcuts: next });
+  };
+
+  useEffect(() => {
+    if (!recording) return;
+    const onKey = (e: KeyboardEvent) => {
+      // While recording, keys name the shortcut instead of running commands.
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      if (e.key === "Escape") return setRecording(null);
+      if (e.key === "Backspace" || e.key === "Delete") {
+        setKeys(recording, "");
+        return setRecording(null);
+      }
+      const keys = eventShortcut(e);
+      if (!keys) return; // a modifier, waiting for its key
+      setKeys(recording, keys);
+      setRecording(null);
+    };
+    addEventListener("keydown", onKey, true);
+    return () => removeEventListener("keydown", onKey, true);
+  }, [recording, chosen]);
+
   return (
-    <Group title="keyboard shortcuts">
-      <table class="mm-table">
+    <Group
+      title="keyboard shortcuts"
+      action={
+        Object.keys(chosen).length > 0 ? (
+          <button type="button" class="mm-text-button" onClick={() => void save({ shortcuts: {} })}>
+            reset all
+          </button>
+        ) : undefined
+      }
+    >
+      <table class="mm-table mm-shortcuts">
         <thead>
           <tr>
             <th>command</th>
             <th>keys</th>
+            <th>
+              <span class="mm-visually-hidden">change</span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {list.map((c) => (
-            <tr key={c.id}>
-              <td>{c.title}</td>
-              <td>
-                <kbd class="mm-menu-shortcut">{shortcutLabel(c.shortcut!)}</kbd>
-              </td>
-            </tr>
-          ))}
+          {list.map((c) => {
+            const keys = shortcutOf(c);
+            const isRecording = recording === c.id;
+            return (
+              <tr key={c.id} data-recording={isRecording || undefined}>
+                <td>{c.title}</td>
+                <td>
+                  {isRecording ? (
+                    <span class="mm-shortcut-recording" aria-live="polite">
+                      press the keys · esc cancels · backspace removes
+                    </span>
+                  ) : keys ? (
+                    <kbd class="mm-menu-shortcut">{shortcutLabel(keys)}</kbd>
+                  ) : (
+                    <span class="mm-muted">none</span>
+                  )}
+                </td>
+                <td class="mm-shortcut-actions">
+                  <button type="button" class="mm-text-button" onClick={() => setRecording(isRecording ? null : c.id)}>
+                    {isRecording ? "cancel" : keys ? "change" : "set"}
+                  </button>
+                  {c.id in chosen && !isRecording && (
+                    <button
+                      type="button"
+                      class="mm-text-button"
+                      onClick={() => {
+                        const { [c.id]: _, ...rest } = chosen;
+                        void save({ shortcuts: rest });
+                      }}
+                    >
+                      reset
+                    </button>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
-      <p class="mm-hint">The command palette, {shortcutLabel("Mod+K")}, lists every command, those of plugins too.</p>
+      <p class="mm-hint">
+        Shortcuts with a single key work while you are not typing. The command palette, {shortcutLabel(shortcutOf(commands.value.find((c) => c.id === "view.palette") ?? { id: "", title: "", run: () => {} }) ?? "Mod+K")}, lists every command, those of plugins too.
+      </p>
     </Group>
   );
 }

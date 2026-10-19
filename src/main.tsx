@@ -10,10 +10,10 @@ import "./styles/pages.css";
 import { App } from "./app/App";
 import { Mini } from "./pages/Mini";
 import { loadInfo } from "./lib/runtime";
-import { loadSettings, update } from "./state/settings";
+import { loadSettings, settings, update } from "./state/settings";
 import { loadAccounts } from "./state/accounts";
 import { loadLibrary } from "./state/library";
-import { initTheme, loadInventory, themes } from "./theme/theme";
+import { initTheme, loadInventory, themePatch, themes } from "./theme/theme";
 import { currentTrack, initPlayer } from "./player/player";
 import { initPlugins } from "./plugins/host";
 import { initShortcuts, registerCommand } from "./lib/commands";
@@ -40,7 +40,7 @@ async function boot(): Promise<void> {
     effect(() => {
       // Theme commands follow the themes installed.
       for (const t of themes.value) {
-        registerCommand({ id: `theme.${t.id}`, title: `Theme: ${t.name}`, group: "themes", run: () => void update({ theme: t.id }) });
+        registerCommand({ id: `theme.${t.id}`, title: `Theme: ${t.name}`, group: "themes", run: () => void update(themePatch(settings.value, t.id)) });
       }
     });
     initShortcuts();

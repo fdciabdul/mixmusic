@@ -909,3 +909,23 @@
   cursor: pointer;
   color: var(--mm-text-muted);
 }
+
+/* Settings: changing the keys of a command. */
+
+.mm-shortcuts tr[data-recording] td {
+  background: color-mix(in srgb, var(--mm-accent) 14%, transparent);
+}
+
+.mm-shortcut-recording {
+  font-size: var(--mm-size-small);
+  color: var(--mm-accent);
+}
+
+.mm-shortcut-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mm-shortcut-actions .mm-text-button + .mm-text-button {
+  margin-left: var(--mm-space-3);
+}
