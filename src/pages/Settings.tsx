@@ -472,7 +472,9 @@ function Tools({ s }: { s: SettingsData }) {
       <Row
         title="yt-dlp"
         description={
-          t?.ytdlp.found ? `${t.ytdlp.version} · ${t.ytdlp.path}` : "Finds the audio of YouTube Music tracks. Not installed yet."
+          t?.ytdlp.found
+            ? `${t.ytdlp.version} · ${t.ytdlp.path}${t.ytdlp.managed ? " · MixMusic updates it every day" : ""}`
+            : "Finds the audio of YouTube Music tracks. Not installed yet."
         }
       >
         {t && (!t.ytdlp.found || t.ytdlp.managed) && <InstallYTDLP onDone={tools.reload} update={t.ytdlp.found} />}
@@ -482,7 +484,7 @@ function Tools({ s }: { s: SettingsData }) {
         description={
           t?.jsRuntime.found
             ? `${t.jsRuntime.name} ${t.jsRuntime.version} · yt-dlp uses it to solve YouTube's challenges.`
-            : "yt-dlp needs Deno, Node.js, Bun or QuickJS to read most YouTube streams. Install one and it is found on your PATH."
+            : "yt-dlp needs Deno, Node.js, Bun or QuickJS to read most YouTube streams. Install one, and MixMusic finds it."
         }
       >
         <Select
@@ -612,7 +614,7 @@ function YouTubeAccountGroup() {
         {yt.error && <Problem title="YouTube Music refused the sign-in" message={`${yt.error}. Sign out, then sign in again.`} />}
         <Row
           title={yt.account ? `Signed in as ${yt.account.name}` : "Signed in"}
-          description="Your home feed, your library, likes that reach YouTube Music, and the audio quality of your account."
+          description="Your home feed, your library, and likes that reach YouTube Music."
         >
           <button
             type="button"
@@ -632,8 +634,8 @@ function YouTubeAccountGroup() {
   return (
     <Group title="youtube music">
       <p class="mm-hint">
-        YouTube Music needs no account: search, artists, albums, playlists and radios work signed out. Signed in, MixMusic shows your own home feed and library, saves what
-        you like and follow to YouTube Music, and plays in the quality of your account.
+        YouTube Music needs no account: search, artists, albums, playlists and radios work signed out. Signed in, MixMusic shows your own home feed and library, and saves
+        what you like and follow to YouTube Music. Tracks play as they do signed out: your session never goes to yt-dlp.
       </p>
       <div class="mm-actions">
         <button type="button" class="mm-button mm-button-primary" disabled={busy} onClick={signIn}>

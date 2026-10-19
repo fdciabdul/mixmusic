@@ -83,6 +83,24 @@ func TestYTDLPError(t *testing.T) {
 	}
 }
 
+func TestPlainError(t *testing.T) {
+	for msg, want := range map[string]string{
+		"yt-dlp: pFptt7Cargc: Requested format is not available. Use --list-formats for a list of available formats": "YouTube gave no audio for this track; updating yt-dlp in Settings › Playback often fixes it",
+		"yt-dlp: pFptt7Cargc: Sign in to confirm your age. This video may be inappropriate for some users.":          "YouTube plays this track only to signed-in adults, on its own website",
+		"yt-dlp: pFptt7Cargc: Sign in to confirm you’re not a bot. Use --cookies-from-browser":                       "YouTube asks to confirm this is not a bot; try again in a while",
+		"yt-dlp: pFptt7Cargc: Video unavailable. The uploader has not made this video available in your country":     "this track is not available in your country",
+		"yt-dlp: pFptt7Cargc: Video unavailable. This content isn't available, try again later.":                     "YouTube is turning down requests from this network for now; try again in a while",
+		"yt-dlp: w3XzgjlKFjc: Video unavailable":                                                                     "this track is no longer on YouTube Music",
+		"yt-dlp: pFptt7Cargc: Private video. Sign in if you've been granted access to this video":                    "this track is private",
+		"yt-dlp: pFptt7Cargc: Join this channel to get access to members-only content like this video":               "only the members of its channel can play this track",
+		"yt-dlp: unable to download webpage: HTTP Error 500":                                                         "",
+	} {
+		if got := plainError(msg); got != want {
+			t.Errorf("plainError(%q) = %q, want %q", msg, got, want)
+		}
+	}
+}
+
 func TestExpiry(t *testing.T) {
 	if got := expiry("https://x.googlevideo.com/videoplayback?expire=1792361335&id=1"); got.Unix() != 1792361335 {
 		t.Errorf("expiry = %v", got)

@@ -111,6 +111,10 @@ let retried = "";
 let counted = "";
 let prefetched = "";
 let crossfading = false;
+/** failures counts the tracks that could not play in a row. */
+let failures = 0;
+/** maxFailures stops the queue skipping on when nothing plays, as offline. */
+const maxFailures = 3;
 
 /** playAt plays the queue's entry at i, from startMs. */
 export async function playAt(i: number, startMs = 0, autoplay = true): Promise<void> {
@@ -137,6 +141,7 @@ export async function playAt(i: number, startMs = 0, autoplay = true): Promise<v
         if (token !== loadToken) return;
         source.value = src;
         buffering.value = false;
+        failures = 0;
         if (!autoplay) await connect.pause();
         return;
       } catch (err) {
@@ -158,7 +163,11 @@ export async function playAt(i: number, startMs = 0, autoplay = true): Promise<v
   }
 }
 
-/** fail reports a track that cannot play, and moves on after a moment. */
+/**
+ * fail reports a track that cannot play, and moves on after a moment: to
+ * the next track, or to a radio when it was the last. After maxFailures in
+ * a row it stops, as nothing seems to play.
+ */
 function fail(message: string): void {
   const t = currentTrack.value;
   batch(() => {
@@ -167,11 +176,13 @@ function fail(message: string): void {
     playing.value = false;
   });
   emit("statechange");
-  toast(t ? `Couldn't play ${t.title}: ${message}` : message, { tone: "error" });
+  failures++;
+  const stop = failures >= maxFailures;
+  const why = stop ? `${message.replace(/\.$/, "")}. Stopped, as ${maxFailures} tracks in a row couldn't play` : message;
+  toast(t ? `Couldn't play ${t.title}: ${why}` : why, { tone: "error" });
+  if (stop) return;
   const token = loadToken;
-  if (index.value < queue.value.length - 1) {
-    setTimeout(() => token === loadToken && void advance(false), 2500);
-  }
+  setTimeout(() => token === loadToken && void advance(false), 2500);
 }
 
 /** onStreamError retries a stream once, freshly resolved, before failing. */
@@ -196,6 +207,7 @@ async function onStreamError(message: string): Promise<void> {
 function onProgress(): void {
   const entry = currentItem.value;
   if (!entry) return;
+  failures = 0;
   const pos = position.value;
   const dur = duration.value || entry.track.durationMs;
   if (counted !== entry.uid && pos >= Math.min(30000, dur / 2)) {
@@ -302,13 +314,43 @@ async function advance(ended: boolean): Promise<void> {
   }
 }
 
+/**
+ * songKey names a song across its uploads and versions: its title without
+ * what marks an upload (official video, lyrics, audio…) and its first
+ * artist, in letters and digits.
+ */
+export function songKey(t: Track): string {
+  const plain = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+  const title = t.title.replace(/[([][^)\]]*\b(?:official|video|audio|lyrics?|visuali[sz]er|mv|hd|4k)\b[^)\]]*[)\]]/gi, "");
+  return `${plain(title)}|${plain(t.artists[0]?.name ?? "")}`;
+}
+
+/**
+ * radioTracks keeps, of what a radio suggests, the songs not queued yet:
+ * neither the same upload nor another of the same song. Of a song offered
+ * as both, it keeps the song rather than its music video.
+ */
+export function radioTracks(found: Track[], queued: Track[]): Track[] {
+  const ids = new Set(queued.map((t) => t.id));
+  const songs = new Set(queued.map(songKey));
+  const keep = new Set<Track>();
+  for (const t of [...found.filter((t) => !t.video), ...found.filter((t) => t.video)]) {
+    const key = songKey(t);
+    if (ids.has(t.id) || songs.has(key)) continue;
+    ids.add(t.id);
+    songs.add(key);
+    keep.add(t);
+  }
+  return found.filter((t) => keep.has(t));
+}
+
 /** extendWithRadio adds tracks like the last ones to the queue. */
 async function extendWithRadio(): Promise<boolean> {
   const seed = currentTrack.value;
   if (!seed) return false;
   try {
-    const seen = new Set(queue.value.map((q) => q.track.id));
-    const tracks = (await Catalog.radio(seed)).filter((t) => !seen.has(t.id)).slice(0, 25);
+    const queued = queue.value.map((q) => q.track);
+    const tracks = radioTracks(await Catalog.radio(seed), queued).slice(0, 25);
     if (tracks.length === 0) return false;
     queue.value = [...queue.value, ...tracks.map((t) => item(t, true))];
     emit("queuechange");

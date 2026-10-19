@@ -1,11 +1,13 @@
 package app
 
 import (
+	"context"
 	"log"
 	"net/url"
 	"regexp"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/egoist/mygo"
 )
@@ -36,6 +38,27 @@ func (a *App) Start() {
 	a.setupTray()
 	a.applyMediaKeys(a.settings.Get().MediaKeys)
 	watchUpdates()
+	go a.keepYTDLPCurrent()
+}
+
+// keepYTDLPCurrent updates the yt-dlp MixMusic installed a minute after
+// start, then once a day: YouTube changes often, and an old yt-dlp stops
+// finding its streams.
+func (a *App) keepYTDLPCurrent() {
+	wait := time.Minute
+	for {
+		time.Sleep(wait)
+		wait = 24 * time.Hour
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+		updated, err := a.tools.UpdateYTDLP(ctx)
+		cancel()
+		switch {
+		case err != nil:
+			log.Printf("mixmusic: updating yt-dlp: %v", err)
+		case updated:
+			log.Printf("mixmusic: updated yt-dlp")
+		}
+	}
 }
 
 // background returns the background color of the theme of the settings,

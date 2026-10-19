@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -75,7 +76,6 @@ type Resolver struct {
 
 	mu      sync.Mutex
 	quality Quality
-	cookies string // a cookies file of the user's YouTube session, if any
 	calls   map[string]*resolution
 }
 
@@ -92,14 +92,6 @@ func NewResolver(t *tools.Manager, cacheDir string) *Resolver {
 	r := &Resolver{Tools: t, CacheDir: cacheDir, quality: QualityBest, calls: map[string]*resolution{}}
 	r.Run = r.runYTDLP
 	return r
-}
-
-// SetCookiesFile makes yt-dlp read YouTube as the user of the session in
-// a cookies file, as Premium plays in better quality; "" reads it signed out.
-func (r *Resolver) SetCookiesFile(path string) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	r.cookies = path
 }
 
 // SetQuality changes the quality of the streams resolved from now on.
@@ -167,16 +159,14 @@ func (r *Resolver) Forget(videoID string) {
 	}
 }
 
+// resolve asks yt-dlp for the stream of a video. It asks signed out, also
+// when the user signed in to YouTube Music: with an account's cookies,
+// YouTube answers yt-dlp with fewer streams, often none it can play, and
+// it may flag the account for using yt-dlp.
 func (r *Resolver) resolve(ctx context.Context, videoID string, quality Quality) (Stream, error) {
 	args := []string{"-J", "--no-playlist", "-f", formats[quality]}
 	if r.Tools != nil {
 		args = append(args, r.Tools.YTDLPArgs(r.CacheDir)...)
-	}
-	r.mu.Lock()
-	cookies := r.cookies
-	r.mu.Unlock()
-	if cookies != "" {
-		args = append(args, "--cookies", cookies)
 	}
 	args = append(args, "--", "https://music.youtube.com/watch?v="+videoID)
 	out, err := r.Run(ctx, args...)
@@ -198,6 +188,10 @@ func (r *Resolver) runYTDLP(ctx context.Context, args ...string) ([]byte, error)
 	out, err := cmd.Output()
 	if err != nil {
 		if msg := ytdlpError(stderr.String()); msg != "" {
+			if plain := plainError(msg); plain != "" {
+				log.Printf("mixmusic: %s", msg)
+				return nil, errors.New(plain)
+			}
 			return nil, errors.New(msg)
 		}
 		return nil, fmt.Errorf("yt-dlp: %w", err)
@@ -216,6 +210,37 @@ func ytdlpError(stderr string) string {
 				line = rest
 			}
 			return "yt-dlp: " + line
+		}
+	}
+	return ""
+}
+
+// plainErrors say in plain words why yt-dlp found no stream, for the
+// errors it reports most, by a part of yt-dlp's message: the first that
+// matches applies.
+var plainErrors = []struct{ match, plain string }{
+	{"not a bot", "YouTube asks to confirm this is not a bot; try again in a while"},
+	{"try again later", "YouTube is turning down requests from this network for now; try again in a while"},
+	{"confirm your age", "YouTube plays this track only to signed-in adults, on its own website"},
+	{"age-restricted", "YouTube plays this track only to signed-in adults, on its own website"},
+	{"inappropriate for some users", "YouTube plays this track only to signed-in adults, on its own website"},
+	{"in your country", "this track is not available in your country"},
+	{"private video", "this track is private"},
+	{"members-only", "only the members of its channel can play this track"},
+	{"join this channel", "only the members of its channel can play this track"},
+	{"premium", "only YouTube Music Premium members can play this track"},
+	{"requested format is not available", "YouTube gave no audio for this track; updating yt-dlp in Settings › Playback often fixes it"},
+	{"video unavailable", "this track is no longer on YouTube Music"},
+	{"this video is unavailable", "this track is no longer on YouTube Music"},
+}
+
+// plainError returns msg, an error of yt-dlp, in plain words, or "" when it
+// is not one of plainErrors.
+func plainError(msg string) string {
+	lower := strings.ToLower(msg)
+	for _, e := range plainErrors {
+		if strings.Contains(lower, e.match) {
+			return e.plain
 		}
 	}
 	return ""

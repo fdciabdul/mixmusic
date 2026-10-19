@@ -27,6 +27,10 @@ import (
 // releaseURL is where the latest yt-dlp release's files are downloaded.
 const releaseURL = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/"
 
+// latestURL redirects to the page of the latest yt-dlp release, whose path
+// ends in its version. It is a variable for tests.
+var latestURL = "https://github.com/yt-dlp/yt-dlp/releases/latest"
+
 // ErrNoYTDLP is returned when yt-dlp is not installed.
 var ErrNoYTDLP = errors.New("yt-dlp is not installed: install it from Settings › Playback")
 
@@ -66,8 +70,53 @@ func exe(name string) string {
 // managedPath is where InstallYTDLP puts yt-dlp.
 func (m *Manager) managedPath() string { return filepath.Join(m.Dir, exe("yt-dlp")) }
 
+// toolDirs are the folders where installers put programs that an app
+// opened from the desktop does not find on its PATH: opened from the
+// Finder, the Dock or a desktop menu, it gets a short PATH, without
+// Homebrew's folders or the ones Deno and Bun install into. It is a
+// variable for tests.
+var toolDirs = func() []string {
+	home, _ := os.UserHomeDir()
+	var dirs []string
+	inHome := func(parts ...string) {
+		if home != "" {
+			dirs = append(dirs, filepath.Join(append([]string{home}, parts...)...))
+		}
+	}
+	inHome(".deno", "bin")
+	inHome(".bun", "bin")
+	if runtime.GOOS == "windows" {
+		inHome("scoop", "shims")
+		if d := os.Getenv("LOCALAPPDATA"); d != "" {
+			dirs = append(dirs, filepath.Join(d, "Microsoft", "WinGet", "Links"))
+		}
+		if d := os.Getenv("ProgramFiles"); d != "" {
+			dirs = append(dirs, filepath.Join(d, "nodejs"))
+		}
+		return dirs
+	}
+	inHome(".local", "bin")
+	inHome("bin")
+	inHome(".volta", "bin")
+	return append(dirs, "/opt/homebrew/bin", "/usr/local/bin", "/opt/local/bin", "/home/linuxbrew/.linuxbrew/bin", "/snap/bin")
+}
+
+// lookPath finds a program on the PATH, else in the folders installers
+// put programs in.
+func lookPath(name string) (string, error) {
+	if p, err := exec.LookPath(name); err == nil {
+		return p, nil
+	}
+	for _, dir := range toolDirs() {
+		if p := filepath.Join(dir, exe(name)); isFile(p) {
+			return p, nil
+		}
+	}
+	return "", exec.ErrNotFound
+}
+
 // YTDLP returns the path of yt-dlp: the one the user chose, else the one
-// MixMusic installed, else one on the PATH.
+// MixMusic installed, else one installed on the system.
 func (m *Manager) YTDLP() (string, error) {
 	m.mu.Lock()
 	chosen := m.ytdlpPath
@@ -81,7 +130,7 @@ func (m *Manager) YTDLP() (string, error) {
 	if p := m.managedPath(); isFile(p) {
 		return p, nil
 	}
-	if p, err := exec.LookPath("yt-dlp"); err == nil {
+	if p, err := lookPath("yt-dlp"); err == nil {
 		return p, nil
 	}
 	return "", ErrNoYTDLP
@@ -108,7 +157,7 @@ func (m *Manager) JSRuntime() (name, path string, ok bool) {
 		if p := filepath.Join(m.Dir, exe(rt.command)); isFile(p) {
 			return rt.name, p, true
 		}
-		if p, err := exec.LookPath(rt.command); err == nil {
+		if p, err := lookPath(rt.command); err == nil {
 			return rt.name, p, true
 		}
 	}
@@ -238,6 +287,50 @@ func (m *Manager) InstallYTDLP(ctx context.Context, progress Progress) error {
 		return err
 	}
 	return os.Rename(tmp.Name(), m.managedPath())
+}
+
+// LatestYTDLP returns the version of the latest yt-dlp release, such as
+// 2026.08.19.
+func (m *Manager) LatestYTDLP(ctx context.Context) (string, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodHead, latestURL, nil)
+	if err != nil {
+		return "", err
+	}
+	client := *m.HTTP
+	client.CheckRedirect = func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }
+	res, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	res.Body.Close()
+	_, v, ok := strings.Cut(res.Header.Get("Location"), "/releases/tag/")
+	if !ok || v == "" || strings.Contains(v, "/") {
+		return "", fmt.Errorf("finding the latest yt-dlp: HTTP %d without a release", res.StatusCode)
+	}
+	return v, nil
+}
+
+// UpdateYTDLP replaces the yt-dlp MixMusic installed with the latest
+// release when that is newer, and reports whether it did. It leaves alone
+// a yt-dlp the user installed or chose, which they keep up to date.
+func (m *Manager) UpdateYTDLP(ctx context.Context) (bool, error) {
+	m.mu.Lock()
+	chosen := m.ytdlpPath
+	m.mu.Unlock()
+	if chosen != "" || !isFile(m.managedPath()) {
+		return false, nil
+	}
+	latest, err := m.LatestYTDLP(ctx)
+	if err != nil {
+		return false, err
+	}
+	if version(ctx, m.managedPath(), "--version") == latest {
+		return false, nil
+	}
+	if err := m.InstallYTDLP(ctx, nil); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // checksum finds the SHA-256 of file in a SHA2-256SUMS listing.

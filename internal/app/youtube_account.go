@@ -154,40 +154,6 @@ func open(key, sealed []byte) ([]byte, error) {
 	return gcm.Open(nil, sealed[:gcm.NonceSize()], sealed[gcm.NonceSize():], nil)
 }
 
-// cookiesFile writes the session for yt-dlp, in the cookies.txt format it
-// reads, readable by the user alone.
-func cookiesFile(path string, cookies []*http.Cookie) error {
-	var b strings.Builder
-	b.WriteString("# Netscape HTTP Cookie File\n")
-	for _, c := range cookies {
-		domain := c.Domain
-		if domain == "" {
-			domain = ".youtube.com"
-		}
-		sub := "FALSE"
-		if strings.HasPrefix(domain, ".") {
-			sub = "TRUE"
-		}
-		secure := "FALSE"
-		if c.Secure {
-			secure = "TRUE"
-		}
-		path := c.Path
-		if path == "" {
-			path = "/"
-		}
-		var expires int64
-		if !c.Expires.IsZero() {
-			expires = c.Expires.Unix()
-		}
-		fmt.Fprintf(&b, "%s\t%s\t%s\t%s\t%d\t%s\t%s\n", domain, sub, path, secure, expires, c.Name, c.Value)
-	}
-	if err := store.WriteFile(path, []byte(b.String())); err != nil {
-		return err
-	}
-	return os.Chmod(path, 0o600)
-}
-
 // YouTubeAccount is the state of the YouTube Music sign-in.
 type YouTubeAccount struct {
 	SignedIn bool             `json:"signedIn"`
@@ -198,34 +164,27 @@ type YouTubeAccount struct {
 
 // openYouTube signs the YouTube client in with the session kept, if any.
 func (a *App) openYouTube() {
+	// Version 0.2.0 gave yt-dlp the session in this file. Streams are
+	// found signed out now, so the copy goes.
+	os.Remove(filepath.Join(a.opts.CacheDir, "youtube-cookies.txt"))
 	a.youtube.OnCookies = func(cookies []*http.Cookie) {
 		if err := a.youtubeStore.Save(cookies); err != nil {
 			log.Printf("mixmusic: keeping the YouTube session: %v", err)
 		}
-		a.writeYouTubeCookies(cookies)
+	}
+	// YouTube ended the session: the accounts say so, and ask to sign in
+	// again.
+	a.youtube.OnRejected = func() {
+		a.mu.Lock()
+		a.youtubeMe = nil
+		a.mu.Unlock()
+		AccountsChanged.Broadcast(a.accountsStatus(context.Background()))
 	}
 	cookies, err := a.youtubeStore.Load()
 	if err != nil || len(cookies) == 0 {
 		return
 	}
 	a.youtube.SetCookies(cookies)
-	a.writeYouTubeCookies(cookies)
-}
-
-// writeYouTubeCookies gives yt-dlp the session, or takes it away.
-func (a *App) writeYouTubeCookies(cookies []*http.Cookie) {
-	path := filepath.Join(a.opts.CacheDir, "youtube-cookies.txt")
-	if len(cookies) == 0 {
-		os.Remove(path)
-		a.resolver.SetCookiesFile("")
-		return
-	}
-	if err := cookiesFile(path, cookies); err != nil {
-		log.Printf("mixmusic: writing the cookies of yt-dlp: %v", err)
-		a.resolver.SetCookiesFile("")
-		return
-	}
-	a.resolver.SetCookiesFile(path)
 }
 
 func (a *App) youtubeAccount(ctx context.Context) YouTubeAccount {
@@ -298,7 +257,6 @@ func (s *Accounts) YouTubeLogin(ctx context.Context) (AccountsStatus, error) {
 	if err := s.a.youtubeStore.Save(cookies); err != nil {
 		return AccountsStatus{}, err
 	}
-	s.a.writeYouTubeCookies(cookies)
 	status := s.a.accountsStatus(ctx)
 	AccountsChanged.Broadcast(status)
 	return status, nil
@@ -332,7 +290,6 @@ func (s *Accounts) YouTubeLogout(ctx context.Context) error {
 	s.a.mu.Lock()
 	s.a.youtubeMe = nil
 	s.a.mu.Unlock()
-	s.a.writeYouTubeCookies(nil)
 	err := s.a.youtubeStore.Clear()
 	for _, domain := range []string{"youtube.com", "google.com"} {
 		list, lerr := mygo.Cookies.List(mygo.CookieFilter{Domain: domain})

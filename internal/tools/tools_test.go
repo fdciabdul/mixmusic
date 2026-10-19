@@ -1,7 +1,10 @@
 package tools
 
 import (
+	"context"
 	"errors"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -59,9 +62,18 @@ func TestYTDLPPrefersChosenThenManaged(t *testing.T) {
 	}
 }
 
+// noToolDirs keeps a test to the PATH and the folders it makes.
+func noToolDirs(t *testing.T, dirs ...string) {
+	t.Helper()
+	saved := toolDirs
+	toolDirs = func() []string { return dirs }
+	t.Cleanup(func() { toolDirs = saved })
+}
+
 func TestJSRuntimeFromDir(t *testing.T) {
 	dir := t.TempDir()
 	t.Setenv("PATH", "")
+	noToolDirs(t)
 	m := New(dir)
 	if _, _, ok := m.JSRuntime(); ok {
 		t.Fatal("found a runtime in an empty PATH")
@@ -79,6 +91,53 @@ func TestJSRuntimeFromDir(t *testing.T) {
 	args := m.YTDLPArgs("")
 	if args[len(args)-2] != "--js-runtimes" {
 		t.Errorf("args = %q", args)
+	}
+}
+
+// An app opened from the desktop has a short PATH: tools are found in the
+// folders installers put them in too.
+func TestToolsOutsidePath(t *testing.T) {
+	t.Setenv("PATH", "")
+	brew := t.TempDir()
+	noToolDirs(t, filepath.Join(t.TempDir(), "missing"), brew)
+	m := New(t.TempDir())
+	if _, err := m.YTDLP(); err == nil {
+		t.Fatal("found yt-dlp in empty folders")
+	}
+	for _, name := range []string{"yt-dlp", "node"} {
+		if runtime.GOOS == "windows" {
+			name += ".exe"
+		}
+		if err := os.WriteFile(filepath.Join(brew, name), []byte("x"), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if got, err := m.YTDLP(); err != nil || filepath.Dir(got) != brew {
+		t.Errorf("YTDLP() = %q, %v; want it in %s", got, err, brew)
+	}
+	if name, got, ok := m.JSRuntime(); !ok || name != "node" || filepath.Dir(got) != brew {
+		t.Errorf("JSRuntime() = %q, %q, %v", name, got, ok)
+	}
+}
+
+func TestLatestYTDLP(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodHead {
+			t.Errorf("method = %s", r.Method)
+		}
+		http.Redirect(w, r, "/yt-dlp/yt-dlp/releases/tag/2026.09.01", http.StatusFound)
+	}))
+	defer srv.Close()
+	saved := latestURL
+	latestURL = srv.URL + "/yt-dlp/yt-dlp/releases/latest"
+	defer func() { latestURL = saved }()
+	m := New(t.TempDir())
+	if v, err := m.LatestYTDLP(context.Background()); err != nil || v != "2026.09.01" {
+		t.Errorf("LatestYTDLP() = %q, %v", v, err)
+	}
+	// Nothing MixMusic installed: nothing to update.
+	if updated, err := m.UpdateYTDLP(context.Background()); updated || err != nil {
+		t.Errorf("UpdateYTDLP() = %v, %v without a managed yt-dlp", updated, err)
 	}
 }
 
