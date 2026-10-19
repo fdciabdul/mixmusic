@@ -3,6 +3,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { PageHeader } from "../components/PageHeader";
 import { TrackList } from "../components/TrackList";
+import { TrackTools, useTrackView } from "../components/TrackTools";
 import { AlbumTile, ArtistTile, PlaylistTile, Shelf } from "../components/Shelf";
 import { Loading, Problem, Empty } from "../components/States";
 import { Tile } from "../components/Tile";
@@ -40,8 +41,11 @@ export function Library({ tab }: { tab?: string }) {
   );
 }
 
+const NONE: Track[] = [];
+
 function Liked() {
   const res = useAsync(() => Collection.liked(), [likedIds.value.size]);
+  const tools = useTrackView(res.data ?? NONE);
   if (res.error) return <Problem title="Couldn't load liked songs" message={res.error} action={{ label: "try again", run: res.reload }} />;
   if (!res.data) return <Loading />;
   if (res.data.length === 0)
@@ -51,8 +55,23 @@ function Liked() {
         message="Tap the heart on any track, from Spotify or YouTube Music: they all gather here, in one list."
       />
     );
-  const tracks = res.data;
-  return <TrackList tracks={tracks} play={(i) => void playTracks(tracks, i)} showArt />;
+  const { view } = tools;
+  return (
+    <>
+      {res.data.length > 1 && (
+        <TrackTools
+          noun="list"
+          total={res.data.length}
+          shown={view.tracks.length}
+          sort={tools.sort}
+          query={tools.query}
+          onSort={tools.setSort}
+          onQuery={tools.setQuery}
+        />
+      )}
+      <TrackList tracks={view.tracks} play={(i) => void playTracks(view.tracks, i)} showArt empty={`No liked song matches “${tools.query}”.`} />
+    </>
+  );
 }
 
 function Mixes() {

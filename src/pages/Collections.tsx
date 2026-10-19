@@ -3,6 +3,7 @@ import { useState } from "preact/hooks";
 import { PageHeader } from "../components/PageHeader";
 import { CollectionHead } from "../components/CollectionHead";
 import { TrackList } from "../components/TrackList";
+import { TrackTools, useTrackView } from "../components/TrackTools";
 import { AlbumTile, Shelf } from "../components/Shelf";
 import { Loading, Problem } from "../components/States";
 import { Catalog, Collection, System, type Track } from "../mygo";
@@ -16,6 +17,9 @@ import { refreshMixes } from "../state/library";
 import { errorMessage } from "../lib/format";
 
 const total = (tracks: Track[]) => tracks.reduce((ms, t) => ms + t.durationMs, 0);
+
+/** EMPTY is the list of a page still loading, the same array each time. */
+const EMPTY: Track[] = [];
 
 function shuffled(tracks: Track[]) {
   setShuffle(true);
@@ -131,9 +135,11 @@ export function ArtistPage({ id }: { id: string }) {
 export function PlaylistPage({ id }: { id: string }) {
   const res = useAsync(() => Catalog.playlist(id), [id]);
   const p = res.data;
+  const tools = useTrackView(p?.tracks ?? EMPTY);
   if (res.error) return <PageProblem title="playlist" error={res.error} retry={res.reload} />;
   if (!p) return <PageLoading title="playlist" />;
   const local = p.source === "local";
+  const { view } = tools;
   const menu = (el: HTMLElement) =>
     openMenu(el, [
       ...collectionMenu(p.title, p.tracks, local ? undefined : p.id),
@@ -184,16 +190,33 @@ export function PlaylistPage({ id }: { id: string }) {
           onMenu={menu}
         />
       </PageHeader>
+      {p.tracks.length > 1 && (
+        <TrackTools
+          noun={local ? "mix" : "playlist"}
+          total={p.tracks.length}
+          shown={view.tracks.length}
+          sort={tools.sort}
+          query={tools.query}
+          onSort={tools.setSort}
+          onQuery={tools.setQuery}
+        />
+      )}
       <TrackList
-        tracks={p.tracks}
-        play={(i) => void playTracks(p.tracks, i)}
+        tracks={view.tracks}
+        play={(i) => void playTracks(view.tracks, i)}
         showArt
-        empty={local ? "This mix is empty: add tracks of any service from their menu, under “Add to mix”." : "This playlist is empty."}
+        empty={
+          tools.query
+            ? `Nothing in this ${local ? "mix" : "playlist"} matches “${tools.query}”.`
+            : local
+              ? "This mix is empty: add tracks of any service from their menu, under “Add to mix”."
+              : "This playlist is empty."
+        }
         menuContext={
           local
             ? (i) => ({
                 removeFromMix: () =>
-                  Collection.removeFromPlaylist(p.id, i).then(
+                  Collection.removeFromPlaylist(p.id, view.indices[i]!).then(
                     () => (res.reload(), refreshMixes()),
                     (err) => toast(errorMessage(err), { tone: "error" }),
                   ),

@@ -1359,3 +1359,42 @@
     transform: translateY(12px);
   }
 }
+
+/* Searching and sorting a list of tracks. */
+
+.mm-track-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mm-space-3);
+  margin-bottom: var(--mm-space-4);
+}
+
+.mm-track-search {
+  position: relative;
+  flex: 1 1 240px;
+  max-width: 420px;
+  color: var(--mm-text-muted);
+}
+
+.mm-track-search .mm-icon,
+.mm-track-search > svg {
+  position: absolute;
+  left: var(--mm-space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.mm-track-search .mm-input {
+  padding-left: calc(var(--mm-space-3) * 2 + 16px);
+}
+
+.mm-track-tools .mm-select {
+  width: auto;
+}
+
+.mm-track-count {
+  font-size: var(--mm-size-small);
+  color: var(--mm-text-muted);
+}
