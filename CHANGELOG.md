@@ -6,6 +6,39 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Tracks play signed out also when you signed in to YouTube Music: with your
+  session, yt-dlp found fewer streams, often none it could play. No file
+  keeps a copy of the session for it any more, and the audio quality of
+  your account no longer applies.
+- MixMusic updates the yt-dlp it installed, once a day.
+- Discord's member list shows the artists you listen to, instead of
+  MixMusic.
+- The Debian package installs the libraries of the tray icon and of the
+  keyring.
+
+### Fixed
+
+- Home shows all of its shelves, not only those YouTube sends first.
+- Your saved playlists, albums and artists of YouTube Music show in full,
+  not only their first page.
+- Opened from the Finder, the Dock or a desktop menu, MixMusic finds yt-dlp
+  and Deno, Node.js or Bun installed with Homebrew, or by Deno's and Bun's
+  own installers.
+- When YouTube Music ends your session, MixMusic says so and asks you to
+  sign in again, instead of showing an empty library.
+- A track that cannot play says why in plain words, such as being not
+  available in your country, instead of yt-dlp's message.
+- The radio skips other uploads, and the music videos, of songs already in
+  the queue.
+- After three tracks in a row that cannot play, the queue stops instead of
+  skipping through all of it, and a last track that cannot play still
+  starts the radio.
+- On macOS, a click on the Dock icon shows the window closed to the tray.
+- Discord shows what plays from its Canary build, and from Vesktop,
+  installed with Flatpak.
+
 ## [0.2.0] - 2026-10-19
 
 Your own YouTube Music in MixMusic, an explore page, Last.fm and Discord, and

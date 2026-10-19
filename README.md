@@ -37,8 +37,8 @@ bundled browser to download or keep in memory.
   across both, import of a service's playlist into a mix, search and sort
   inside any of them, history and listening stats day by day.
 - **Your accounts.** Sign in to YouTube Music, on Google's own page, for
-  your home feed, your liked songs, playlists, albums and artists, and the
-  audio quality of your account; sign in to Spotify for your library there.
+  your home feed and your liked songs, playlists, albums and artists; sign
+  in to Spotify for your library there.
   Like a song, save an album or a playlist, or follow an artist, and it
   reaches the service too.
 - **Explore.** New releases, trending songs, the charts, moods and genres,
@@ -103,11 +103,13 @@ Download the latest release for your system from
   ```
 
   The tray icon needs `libayatana-appindicator3`, and keeping your sign-ins
-  in the system's keyring needs `libsecret`; MixMusic works without either.
+  in the system's keyring needs `libsecret`. The `.deb` installs both;
+  MixMusic works without either.
 - **To play YouTube Music:** [yt-dlp](https://github.com/yt-dlp/yt-dlp), which
-  MixMusic installs for you from Settings › Playback, and a JavaScript runtime
-  yt-dlp uses for YouTube: [Deno](https://deno.com), Node.js, Bun or QuickJS,
-  on your `PATH`.
+  MixMusic installs for you from Settings › Playback and keeps up to date,
+  and a JavaScript runtime yt-dlp uses for YouTube: [Deno](https://deno.com),
+  Node.js, Bun or QuickJS. MixMusic finds it on your `PATH`, and in the
+  folders of Homebrew, Deno and Bun.
 
 ### Spotify
 
@@ -124,7 +126,8 @@ YouTube Music plays without an account. To bring your own home feed and
 library, choose Sign in to YouTube Music in Settings › Accounts and sign in
 to Google in the window that opens. What you type goes to Google alone:
 MixMusic keeps the session the window ends with, encrypted with a key in the
-system's keyring where there is one.
+system's keyring where there is one. Tracks still play as they do signed
+out: the session never goes to yt-dlp.
 
 ### Last.fm
 
