@@ -94,6 +94,12 @@ type Settings struct {
 
 	// Scrobbling sends what plays to Last.fm, once the user connected it.
 	Scrobbling bool `json:"scrobbling"`
+	// YouTubeChannel is the brand channel the user uses YouTube Music as,
+	// by its page ID; "" is the account itself.
+	YouTubeChannel string `json:"youtubeChannel"`
+	// YouTubeHistory adds what the user plays to their history on YouTube
+	// Music, once they signed in, for its recommendations.
+	YouTubeHistory bool `json:"youtubeHistory"`
 
 	// The desktop.
 	CloseToTray   bool `json:"closeToTray"`
@@ -139,6 +145,7 @@ func Default() Settings {
 		Volume:          0.8,
 		CacheSizeMB:     1024,
 		Scrobbling:      true,
+		YouTubeHistory:  true,
 		CloseToTray:     false,
 		Notifications:   true,
 		MediaKeys:       true,
@@ -153,6 +160,8 @@ var (
 	idRe    = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{0,63}$`)
 	// discordIDRe matches a Discord application ID, a number.
 	discordIDRe = regexp.MustCompile(`^[0-9]{15,22}$`)
+	// pageIDRe matches the page ID of a YouTube brand channel, a number.
+	pageIDRe = regexp.MustCompile(`^[0-9]{1,32}$`)
 )
 
 // ValidID reports whether id can name a theme or a plugin: lowercase
@@ -219,6 +228,9 @@ func (s Settings) Clean() Settings {
 	s.SpotifyClientID = strings.TrimSpace(s.SpotifyClientID)
 	if s.DiscordAppID = strings.TrimSpace(s.DiscordAppID); !discordIDRe.MatchString(s.DiscordAppID) {
 		s.DiscordAppID = ""
+	}
+	if s.YouTubeChannel = strings.TrimSpace(s.YouTubeChannel); !pageIDRe.MatchString(s.YouTubeChannel) {
+		s.YouTubeChannel = ""
 	}
 	if !slices.Contains([]string{"", "deno", "node", "bun", "quickjs"}, s.JSRuntime) {
 		s.JSRuntime = ""

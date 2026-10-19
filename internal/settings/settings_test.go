@@ -27,6 +27,7 @@ func TestCleanClampsAndRepairs(t *testing.T) {
 		JSRuntime:       "python",
 		EnabledPlugins:  []string{"sleep-timer", "sleep-timer", "Bad ID", "../x"},
 		RegistryURL:     "http://insecure.example",
+		YouTubeChannel:  "1234; x",
 	}.Clean()
 	if s.Theme != "mix" || s.Accent != "" || s.FontScale != 1 || s.SpotifyPlayback != SpotifyPlaybackConnect {
 		t.Errorf("appearance and playback not repaired: %+v", s)
@@ -36,6 +37,15 @@ func TestCleanClampsAndRepairs(t *testing.T) {
 	}
 	if s.JSRuntime != "" || len(s.EnabledPlugins) != 1 || s.RegistryURL != DefaultRegistryURL {
 		t.Errorf("tools and add-ons not repaired: %+v", s)
+	}
+	if s.YouTubeChannel != "" {
+		t.Errorf("a channel that is not a page ID was kept: %q", s.YouTubeChannel)
+	}
+	if c := (Settings{YouTubeChannel: " 112233445566778899 "}).Clean(); c.YouTubeChannel != "112233445566778899" {
+		t.Errorf("a page ID was not kept: %q", c.YouTubeChannel)
+	}
+	if !Default().YouTubeHistory {
+		t.Error("plays do not reach the YouTube history by default")
 	}
 }
 

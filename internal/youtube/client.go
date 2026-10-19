@@ -47,6 +47,7 @@ type Client struct {
 	visitor  string         // the visitor ID YouTube assigned, sent back to it
 	cookies  []*http.Cookie // the signed-in session, if any
 	rejected bool           // YouTube answered the session as a visitor
+	pageID   string         // the brand channel the session acts as, if any
 }
 
 // New returns a client for YouTube Music in English, for the US.
@@ -74,23 +75,43 @@ func (e *APIError) Error() string {
 
 // clientVersion returns a version of the website's client that YouTube
 // accepts: the website's build of a few days ago.
-func clientVersion(now time.Time) string {
-	return "1." + now.UTC().AddDate(0, 0, -3).Format("20060102") + ".01.00"
+func clientVersion(now time.Time) string { return musicClient.version(now) }
+
+// innerClient is a client of InnerTube: its name, its number, and the
+// major version its builds carry.
+type innerClient struct{ name, id, major string }
+
+// musicClient is YouTube Music's website, which MixMusic speaks as.
+var musicClient = innerClient{name: clientName, id: clientNameID, major: "1"}
+
+// version returns a version of the client that YouTube accepts: its build
+// of a few days ago.
+func (ic innerClient) version(now time.Time) string {
+	return ic.major + "." + now.UTC().AddDate(0, 0, -3).Format("20060102") + ".01.00"
 }
 
 // call posts body to an InnerTube endpoint, such as "search" or "browse",
 // adding the client context, and returns the decoded response.
 func (c *Client) call(ctx context.Context, endpoint string, body map[string]any, query url.Values) (node, error) {
-	version := clientVersion(time.Now())
+	return c.callAs(ctx, musicClient, endpoint, body, query)
+}
+
+// callAs is call, speaking as another client of InnerTube.
+func (c *Client) callAs(ctx context.Context, ic innerClient, endpoint string, body map[string]any, query url.Values) (node, error) {
+	version := ic.version(time.Now())
+	user := map[string]any{}
+	if page := c.Channel(); page != "" && c.SignedIn() {
+		user["onBehalfOfUser"] = page
+	}
 	payload := map[string]any{
 		"context": map[string]any{
 			"client": map[string]any{
-				"clientName":    clientName,
+				"clientName":    ic.name,
 				"clientVersion": version,
 				"hl":            c.Language,
 				"gl":            c.Region,
 			},
-			"user": map[string]any{},
+			"user": user,
 		},
 	}
 	for k, v := range body {
@@ -113,7 +134,7 @@ func (c *Client) call(ctx context.Context, endpoint string, body map[string]any,
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Origin", defaultBaseURL)
 	req.Header.Set("Referer", defaultBaseURL+"/")
-	req.Header.Set("X-YouTube-Client-Name", clientNameID)
+	req.Header.Set("X-YouTube-Client-Name", ic.id)
 	req.Header.Set("X-YouTube-Client-Version", version)
 	if v := c.visitorID(); v != "" {
 		req.Header.Set("X-Goog-Visitor-Id", v)

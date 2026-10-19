@@ -235,7 +235,17 @@ export function PlaylistPage({ id }: { id: string }) {
                     (err) => toast(errorMessage(err), { tone: "error" }),
                   ),
               })
-            : undefined
+            : p.source === "youtube" && p.editable && signedInTo("youtube")
+              ? (i) => ({
+                  removeFromPlaylist: () => {
+                    const t = view.tracks[i]!;
+                    Collection.removeFromYouTubePlaylist(p.id, t).then(
+                      () => (toast(`Removed ${t.title} from ${p.title}`), res.reload()),
+                      (err) => toast(errorMessage(err), { tone: "error" }),
+                    );
+                  },
+                })
+              : undefined
         }
       />
     </div>

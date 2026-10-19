@@ -11,6 +11,21 @@ export interface Account {
   photo?: string;
 }
 
+/**
+ * AccountChannel is an identity the account can use YouTube Music as: the
+ * account itself, or a brand channel it manages, each with a library of its
+ * own.
+ */
+export interface AccountChannel {
+  name: string;
+  handle?: string;
+  photo?: string;
+  /** PageID names a brand channel; it is empty for the account itself. */
+  pageId?: string;
+  /** Current is set for the channel the session uses. */
+  current?: boolean;
+}
+
 /** AccountsStatus is the state of the user's accounts. */
 export interface AccountsStatus {
   spotify: SpotifyAccount;
@@ -469,6 +484,16 @@ export interface Settings {
   spotifyClientId: string;
   /** Scrobbling sends what plays to Last.fm, once the user connected it. */
   scrobbling: boolean;
+  /**
+   * YouTubeChannel is the brand channel the user uses YouTube Music as,
+   * by its page ID; "" is the account itself.
+   */
+  youtubeChannel: string;
+  /**
+   * YouTubeHistory adds what the user plays to their history on YouTube
+   * Music, once they signed in, for its recommendations.
+   */
+  youtubeHistory: boolean;
   /** The desktop. */
   closeToTray: boolean;
   notifications: boolean;
@@ -599,6 +624,11 @@ export interface Track {
   video?: boolean;
   /** URL opens the track on the service's website. */
   url?: string;
+  /**
+   * EntryID names the track's place in the playlist it was read from,
+   * which taking it out of the playlist names; only YouTube Music sets it.
+   */
+  entryId?: string;
 }
 
 /** TrackPage is a page of a long list of tracks. */
@@ -809,6 +839,13 @@ export const Collection = {
   addToPlaylist(id: string, tracks: Track[]): Promise<void> {
     return call("Collection.AddToPlaylist", id, tracks);
   },
+  /**
+   * AddToYouTubePlaylist adds a track of any service to a playlist of the
+   * user on YouTube Music.
+   */
+  addToYouTubePlaylist(playlistID: string, track: Track): Promise<void> {
+    return call("Collection.AddToYouTubePlaylist", playlistID, track);
+  },
   /** ClearHistory forgets what the user played. */
   clearHistory(): Promise<void> {
     return call("Collection.ClearHistory");
@@ -820,6 +857,14 @@ export const Collection = {
   /** CreatePlaylist makes a playlist, holding tracks. */
   createPlaylist(title: string, description: string, tracks: Track[]): Promise<Playlist> {
     return call("Collection.CreatePlaylist", title, description, tracks);
+  },
+  /**
+   * CreateYouTubePlaylist makes a playlist on YouTube Music, private to the
+   * account, of tracks of any service: Spotify tracks go in as their
+   * recordings on YouTube Music, and those without one stay out.
+   */
+  createYouTubePlaylist(title: string, tracks: Track[]): Promise<Playlist> {
+    return call("Collection.CreateYouTubePlaylist", title, tracks);
   },
   /** DeletePlaylist deletes a playlist. */
   deletePlaylist(id: string): Promise<void> {
@@ -862,6 +907,13 @@ export const Collection = {
   /** RemoveFromPlaylist removes the track at index from a playlist. */
   removeFromPlaylist(id: string, index: number): Promise<void> {
     return call("Collection.RemoveFromPlaylist", id, index);
+  },
+  /**
+   * RemoveFromYouTubePlaylist takes a track, as read from the playlist, out
+   * of a playlist of the user on YouTube Music.
+   */
+  removeFromYouTubePlaylist(playlistID: string, track: Track): Promise<void> {
+    return call("Collection.RemoveFromYouTubePlaylist", playlistID, track);
   },
   /** Searches returns the recent searches. */
   searches(): Promise<string[]> {
@@ -956,6 +1008,14 @@ export const Accounts = {
     return call("Accounts.LastfmLogout");
   },
   /**
+   * SetYouTubeChannel makes MixMusic use YouTube Music as a brand channel of
+   * the account, by its page ID, or as the account itself with "": its home,
+   * library and likes are the channel's.
+   */
+  setYouTubeChannel(pageID: string): Promise<AccountsStatus> {
+    return call("Accounts.SetYouTubeChannel", pageID);
+  },
+  /**
    * SpotifyLogin signs the user in to Spotify in their browser, with the
    * Client ID of Settings › Accounts.
    */
@@ -969,6 +1029,14 @@ export const Accounts = {
   /** Status returns the state of the user's accounts. */
   status(): Promise<AccountsStatus> {
     return call("Accounts.Status");
+  },
+  /**
+   * YouTubeChannels returns the channels the YouTube account can use YouTube
+   * Music as: the account itself, and the brand channels it manages. Current
+   * marks the one MixMusic uses.
+   */
+  youTubeChannels(): Promise<AccountChannel[]> {
+    return call("Accounts.YouTubeChannels");
   },
   /**
    * YouTubeLogin opens a window where the user signs in to Google, and signs
@@ -1094,6 +1162,13 @@ export const System = {
   clearCache(): Promise<void> {
     return call("System.ClearCache");
   },
+  /**
+   * DismissCrash forgets the crash of the run before; its report stays in
+   * the logs folder.
+   */
+  dismissCrash(): Promise<void> {
+    return call("System.DismissCrash");
+  },
   /** Info describes the app. */
   info(): Promise<Info> {
     return call("System.Info");
@@ -1105,6 +1180,20 @@ export const System = {
   installYTDLP(progress: Channel<InstallProgress>): Promise<Status> {
     return call("System.InstallYTDLP", progress);
   },
+  /**
+   * LastCrash returns the name of the crash report of the run before, when
+   * MixMusic crashed then and the user has not answered yet; "" otherwise.
+   */
+  lastCrash(): Promise<string> {
+    return call("System.LastCrash");
+  },
+  /**
+   * LogsFolder returns the folder of MixMusic's log and of its crash
+   * reports.
+   */
+  logsFolder(): Promise<string> {
+    return call("System.LogsFolder");
+  },
   /** Notify shows a desktop notification, for plugins. */
   notify(title: string, body: string): Promise<void> {
     return call("System.Notify", title, body);
@@ -1113,9 +1202,21 @@ export const System = {
   openExternal(rawURL: string): Promise<void> {
     return call("System.OpenExternal", rawURL);
   },
+  /** OpenLogsFolder opens the folder of the log in the file manager. */
+  openLogsFolder(): Promise<void> {
+    return call("System.OpenLogsFolder");
+  },
   /** Quit quits MixMusic. */
   quit(): Promise<void> {
     return call("System.Quit");
+  },
+  /**
+   * ReportURL returns the address of a new problem report on GitHub, with
+   * the version and the setup filled in: the system, the tools, the theme
+   * and the plugins. Nothing of the user's accounts or library goes in it.
+   */
+  reportURL(): Promise<string> {
+    return call("System.ReportURL");
   },
   /**
    * SetUpdates turns the daily check and the installs without asking on or

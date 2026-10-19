@@ -15,6 +15,7 @@ import { createMix, likedIds, mixes } from "../state/library";
 import { spotifySignedIn, youtubeSignedIn } from "../state/accounts";
 import { prompt, toast, confirm } from "../state/ui";
 import { errorMessage } from "../lib/format";
+import { createYouTubePlaylist } from "../state/youtubePlaylists";
 
 type Tab = "liked" | "mixes" | "history" | "spotify" | "youtube";
 
@@ -196,8 +197,19 @@ function YouTubeLibrary() {
   return (
     <>
       {failed && <Problem title="Couldn't load your YouTube Music library" message={failed} action={{ label: "try again", run: () => (playlists.reload(), albums.reload(), artists.reload()) }} />}
-      {playlists.data && playlists.data.length > 0 && (
-        <Shelf title="playlists">
+      {playlists.data && (
+        <Shelf
+          title="playlists"
+          action={{
+            label: "new playlist",
+            run: async () => {
+              const title = await prompt("New playlist on YouTube Music", "Name", "", "create");
+              if (!title) return;
+              const p = await createYouTubePlaylist(title, []);
+              if (p) navigate(href.playlist(p.id));
+            },
+          }}
+        >
           {playlists.data.map((p) => (
             <PlaylistTile key={p.id} playlist={p} />
           ))}

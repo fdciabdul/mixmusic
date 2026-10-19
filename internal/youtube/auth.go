@@ -23,6 +23,9 @@ var authHashes = []struct{ cookie, scheme string }{
 func (c *Client) SetCookies(cookies []*http.Cookie) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
+	if len(cookies) == 0 {
+		c.pageID = "" // signed out: no channel of the account any more
+	}
 	c.cookies = nil
 	c.rejected = false
 	for _, ck := range cookies {
@@ -133,7 +136,7 @@ func cookieHeader(cookies []*http.Cookie, now time.Time) string {
 // client is signed in, and reports whether it did.
 func (c *Client) signRequest(req *http.Request, now time.Time) bool {
 	c.mu.Lock()
-	cookies := c.cookies
+	cookies, page := c.cookies, c.pageID
 	c.mu.Unlock()
 	if signingCookie(cookies) == "" {
 		return false
@@ -142,6 +145,9 @@ func (c *Client) signRequest(req *http.Request, now time.Time) bool {
 	req.Header.Set("Authorization", authorization(cookies, now, defaultBaseURL))
 	req.Header.Set("X-Goog-AuthUser", "0")
 	req.Header.Set("X-Origin", defaultBaseURL)
+	if page != "" {
+		req.Header.Set("X-Goog-PageId", page)
+	}
 	return true
 }
 

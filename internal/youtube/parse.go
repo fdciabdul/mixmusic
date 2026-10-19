@@ -225,7 +225,9 @@ func parseListItem(item node) (media.Item, bool) {
 	thumbs := artwork(thumbnailList(item))
 
 	if videoID != "" {
-		return media.Item{Kind: media.ItemTrack, Track: newTrack(videoID, title, watch, b, thumbs, isExplicit(item))}, true
+		t := newTrack(videoID, title, watch, b, thumbs, isExplicit(item))
+		t.EntryID = item.get("playlistItemData", "playlistSetVideoId").str()
+		return media.Item{Kind: media.ItemTrack, Track: t}, true
 	}
 	nav := item.get("navigationEndpoint")
 	return browseItem(pageType(nav), nav.get("browseEndpoint", "browseId").str(), title, b, thumbs)

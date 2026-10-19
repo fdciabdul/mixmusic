@@ -145,7 +145,11 @@ func (c *Collection) ImportPlaylist(ctx context.Context, id string) (media.Playl
 
 // RecordPlay adds a track to the history, once it played long enough to
 // count.
-func (c *Collection) RecordPlay(track media.Track) error { return c.a.library.RecordPlay(track) }
+func (c *Collection) RecordPlay(track media.Track) error {
+	err := c.a.library.RecordPlay(track)
+	c.a.reportYouTubePlay(track)
+	return err
+}
 
 // History returns the last plays, the latest first.
 func (c *Collection) History(limit int) []library.Play { return c.a.library.History(limit) }

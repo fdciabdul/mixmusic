@@ -587,13 +587,13 @@ function AccountsTab({ s }: { s: SettingsData }) {
           </>
         )}
       </Group>
-      <YouTubeAccountGroup />
+      <YouTubeAccountGroup s={s} />
       <Lastfm s={s} />
     </>
   );
 }
 
-function YouTubeAccountGroup() {
+function YouTubeAccountGroup({ s }: { s: SettingsData }) {
   const yt = accounts.value?.youtube;
   const [busy, setBusy] = useState(false);
   const signIn = async () => {
@@ -627,6 +627,13 @@ function YouTubeAccountGroup() {
           >
             sign out
           </button>
+        </Row>
+        <YouTubeChannels />
+        <Row
+          title="Add what you play to your history"
+          description="YouTube Music makes its home and its radios of your history. Tracks join it once they played a while, as they do on Last.fm."
+        >
+          <Switch on={s.youtubeHistory} label="Add what you play to your YouTube Music history" onChange={(v) => save({ youtubeHistory: v })} />
         </Row>
       </Group>
     );
@@ -846,6 +853,33 @@ function Desktop({ s }: { s: SettingsData }) {
         </button>
       </Row>
     </Group>
+  );
+}
+
+/** YouTubeChannels chooses the channel of the account YouTube Music is used as, when it has more than one. */
+function YouTubeChannels() {
+  const channels = useAsync(() => Accounts.youTubeChannels(), []);
+  const list = channels.data ?? [];
+  if (list.length < 2) return null;
+  const current = list.find((c) => c.current)?.pageId ?? "";
+  return (
+    <Row title="Channel" description="Brand channels of your account have their own home feed, library and likes.">
+      <Select
+        value={current}
+        label="Channel"
+        options={list.map((c) => ({ value: c.pageId ?? "", label: c.handle ? `${c.name} (${c.handle})` : c.name }))}
+        onChange={async (pageId) => {
+          try {
+            await Accounts.setYouTubeChannel(pageId);
+            await refreshAccounts();
+            channels.reload();
+            toast(`Using YouTube Music as ${list.find((c) => (c.pageId ?? "") === pageId)?.name ?? "that channel"}`, { tone: "success" });
+          } catch (err) {
+            toast(errorMessage(err), { tone: "error" });
+          }
+        }}
+      />
+    </Row>
   );
 }
 

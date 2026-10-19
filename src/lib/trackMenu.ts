@@ -7,10 +7,14 @@ import { trackActions } from "../plugins/contributions";
 import { href, navigate } from "./router";
 import { errorMessage, plural, sourceName } from "./format";
 import { Catalog } from "../mygo";
+import { youtubeSignedIn } from "../state/accounts";
+import { addToYouTubePlaylist, createYouTubePlaylist, ownPlaylists } from "../state/youtubePlaylists";
 
 export interface TrackMenuContext {
   /** removeFromMix is set in a mix, removing the track at its index. */
   removeFromMix?: () => void;
+  /** removeFromPlaylist is set in a playlist of the user on its service. */
+  removeFromPlaylist?: () => void;
   /** queueIndex is set in the queue. */
   queueIndex?: number;
 }
@@ -56,7 +60,27 @@ export function trackMenu(track: Track, ctx: TrackMenuContext = {}): MenuItem[] 
       ...mixes.value.map((m) => ({ label: m.title, run: () => void addToMix(m, [track]) })),
     ],
   });
+  if (youtubeSignedIn.value) {
+    const own = ownPlaylists();
+    items.push({
+      label: "Add to YouTube Music playlist",
+      icon: "plus",
+      submenu: [
+        {
+          label: "New playlist…",
+          icon: "plus",
+          run: async () => {
+            const title = await prompt("New playlist on YouTube Music", "Name", track.title, "create");
+            if (title) await createYouTubePlaylist(title, [track]);
+          },
+        },
+        ...(own.length > 0 ? [{ separator: true, label: "" } as MenuItem] : []),
+        ...own.map((p) => ({ label: p.title, run: () => void addToYouTubePlaylist(p, track) })),
+      ],
+    });
+  }
   if (ctx.removeFromMix) items.push({ label: "Remove from this mix", icon: "trash", run: ctx.removeFromMix, danger: true });
+  if (ctx.removeFromPlaylist) items.push({ label: "Remove from this playlist", icon: "trash", run: ctx.removeFromPlaylist, danger: true });
   items.push({ separator: true, label: "" });
   const artist = track.artists.find((a) => a.id);
   if (artist?.id) items.push({ label: `Go to ${artist.name}`, icon: "user", run: () => navigate(href.artist(artist.id!)) });
@@ -113,6 +137,18 @@ export function collectionMenu(title: string, tracks: Track[], importId?: string
       },
     },
   ];
+  if (youtubeSignedIn.value && tracks.length > 0) {
+    items.push({
+      label: "Save as a YouTube Music playlist",
+      icon: "plus",
+      run: async () => {
+        const name = await prompt("New playlist on YouTube Music", "Name", title, "create");
+        if (!name) return;
+        const p = await createYouTubePlaylist(name, tracks);
+        if (p) navigate(href.playlist(p.id));
+      },
+    });
+  }
   if (importId) {
     items.push({
       label: "Copy into a mix you can extend",

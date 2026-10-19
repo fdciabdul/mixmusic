@@ -147,6 +147,9 @@ func (a *App) apply(s settings.Settings) {
 	if !s.DiscordPresence {
 		a.presence.update(false, "", NowPlaying{})
 	}
+	if a.youtube.SignedIn() && a.youtube.Channel() != s.YouTubeChannel {
+		a.youtube.SetChannel(s.YouTubeChannel)
+	}
 }
 
 // Bind registers the services pages call and the schemes they load from.

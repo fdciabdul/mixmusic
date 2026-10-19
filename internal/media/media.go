@@ -79,6 +79,9 @@ type Track struct {
 	Video bool `json:"video,omitempty"`
 	// URL opens the track on the service's website.
 	URL string `json:"url,omitempty"`
+	// EntryID names the track's place in the playlist it was read from,
+	// which taking it out of the playlist names; only YouTube Music sets it.
+	EntryID string `json:"entryId,omitempty"`
 }
 
 // ArtistNames returns the names of the track's artists, joined by commas.

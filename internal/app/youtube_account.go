@@ -185,6 +185,7 @@ func (a *App) openYouTube() {
 		return
 	}
 	a.youtube.SetCookies(cookies)
+	a.youtube.SetChannel(a.settings.Get().YouTubeChannel)
 }
 
 func (a *App) youtubeAccount(ctx context.Context) YouTubeAccount {
@@ -291,6 +292,12 @@ func (s *Accounts) YouTubeLogout(ctx context.Context) error {
 	s.a.youtubeMe = nil
 	s.a.mu.Unlock()
 	err := s.a.youtubeStore.Clear()
+	if set := s.a.settings.Get(); set.YouTubeChannel != "" {
+		set.YouTubeChannel = ""
+		if serr := s.a.settings.Set(set); serr == nil {
+			SettingsChanged.Broadcast(set)
+		}
+	}
 	for _, domain := range []string{"youtube.com", "google.com"} {
 		list, lerr := mygo.Cookies.List(mygo.CookieFilter{Domain: domain})
 		if lerr != nil {
