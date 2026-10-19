@@ -11,9 +11,21 @@ export const inventory = signal<Inventory>({ themes: [], plugins: [], problems: 
 
 export const themes = computed(() => inventory.value.themes);
 
+// The computer's appearance, for themes that follow it.
+const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+export const systemDark = signal(darkQuery.matches);
+darkQuery.addEventListener("change", (e) => (systemDark.value = e.matches));
+
+/** themeIdOf returns the theme the settings show now: theirs, or the light or dark one of the computer's appearance. */
+export function themeIdOf(s: Settings | null): string {
+  if (!s) return "mix";
+  if (!s.followSystem) return s.theme;
+  return systemDark.value ? s.darkTheme : s.lightTheme;
+}
+
 /** activeTheme is the theme of the settings, or the default. */
 export const activeTheme = computed<Theme | null>(() => {
-  const id = settings.value?.theme ?? "mix";
+  const id = themeIdOf(settings.value);
   const list = themes.value;
   return list.find((t) => t.id === id) ?? list.find((t) => t.id === "mix") ?? list[0] ?? null;
 });

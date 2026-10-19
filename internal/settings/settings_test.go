@@ -45,3 +45,22 @@ func TestValidID(t *testing.T) {
 		}
 	}
 }
+
+func TestActiveTheme(t *testing.T) {
+	s := Default()
+	if got := s.ActiveTheme(true); got != "mix" {
+		t.Errorf("not following the system, dark: %q", got)
+	}
+	s.Theme = "sakura"
+	s.FollowSystem = true
+	if got := s.ActiveTheme(true); got != "mix" {
+		t.Errorf("dark appearance: %q", got)
+	}
+	if got := s.ActiveTheme(false); got != "daylight" {
+		t.Errorf("light appearance: %q", got)
+	}
+	s.LightTheme, s.DarkTheme = "Not An ID", ""
+	if c := s.Clean(); c.LightTheme != "daylight" || c.DarkTheme != "mix" {
+		t.Errorf("cleaned to %q and %q", c.LightTheme, c.DarkTheme)
+	}
+}

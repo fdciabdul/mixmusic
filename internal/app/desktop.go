@@ -40,7 +40,7 @@ func (a *App) Start() {
 // background returns the background color of the theme of the settings,
 // which windows show until their page paints.
 func (a *App) background() string {
-	theme := a.settings.Get().Clean().Theme
+	theme := a.settings.Get().Clean().ActiveTheme(mygo.Theme.IsDark())
 	for _, t := range a.addons.List().Themes {
 		if t.ID == theme {
 			if bg := t.Colors["bg"]; strings.HasPrefix(bg, "#") {

@@ -29,7 +29,7 @@ import { navigate } from "../lib/router";
 import { bytes, errorMessage } from "../lib/format";
 import { commands, shortcutLabel } from "../lib/commands";
 import { appInfo } from "../lib/runtime";
-import { activeTheme, inventory, optionValues, themes } from "../theme/theme";
+import { activeTheme, inventory, optionValues, systemDark, themes } from "../theme/theme";
 import { BANDS, PRESETS, bandLabel } from "../player/eq";
 import { confirm, toast } from "../state/ui";
 import { failures } from "../plugins/host";
@@ -86,9 +86,30 @@ function Appearance({ s }: { s: SettingsData }) {
           </div>
         }
       >
+        <Row
+          title="Follow the computer"
+          description="Show one theme while the computer is in light mode and another in dark mode. The theme you pick below is the one for the mode it is in now."
+        >
+          <Switch on={s.followSystem} label="Follow the computer" onChange={(v) => save({ followSystem: v })} />
+        </Row>
+        {s.followSystem && (
+          <>
+            <Row title="In light mode">
+              <Select value={s.lightTheme} label="Theme in light mode" options={themeOptions()} onChange={(id) => save({ lightTheme: id })} />
+            </Row>
+            <Row title="In dark mode">
+              <Select value={s.darkTheme} label="Theme in dark mode" options={themeOptions()} onChange={(id) => save({ darkTheme: id })} />
+            </Row>
+          </>
+        )}
         <div class="mm-theme-grid" role="radiogroup" aria-label="Theme">
           {themes.value.map((t) => (
-            <ThemeCard key={t.id} theme={t} active={t.id === theme?.id} onPick={() => save({ theme: t.id })} />
+            <ThemeCard
+              key={t.id}
+              theme={t}
+              active={t.id === theme?.id}
+              onPick={() => save(s.followSystem ? (systemDark.value ? { darkTheme: t.id } : { lightTheme: t.id }) : { theme: t.id })}
+            />
           ))}
         </div>
         {inventory.value.problems.filter((p) => p.kind === "theme").map((p) => (
@@ -155,6 +176,13 @@ function Appearance({ s }: { s: SettingsData }) {
       </Group>
     </>
   );
+}
+
+/** themeOptions lists the themes for a select, the light ones and the dark ones each together. */
+function themeOptions(): { value: string; label: string }[] {
+  return [...themes.value]
+    .sort((a, b) => (a.scheme === b.scheme ? a.name.localeCompare(b.name) : a.scheme === "light" ? -1 : 1))
+    .map((t) => ({ value: t.id, label: `${t.name} (${t.scheme})` }));
 }
 
 function ThemeCard({ theme, active, onPick }: { theme: Theme; active: boolean; onPick: () => void }) {

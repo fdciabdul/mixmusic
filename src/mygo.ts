@@ -369,6 +369,13 @@ export interface Settings {
   /** Appearance. */
   theme: string;
   /**
+   * FollowSystem shows LightTheme while the computer is in light mode
+   * and DarkTheme while it is in dark mode, in place of Theme.
+   */
+  followSystem: boolean;
+  lightTheme: string;
+  darkTheme: string;
+  /**
    * ThemeOptions holds the values of each theme's options, by theme ID
    * and option ID.
    */

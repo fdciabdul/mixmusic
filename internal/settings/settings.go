@@ -52,6 +52,11 @@ type Equalizer struct {
 type Settings struct {
 	// Appearance.
 	Theme string `json:"theme"`
+	// FollowSystem shows LightTheme while the computer is in light mode
+	// and DarkTheme while it is in dark mode, in place of Theme.
+	FollowSystem bool   `json:"followSystem"`
+	LightTheme   string `json:"lightTheme"`
+	DarkTheme    string `json:"darkTheme"`
 	// ThemeOptions holds the values of each theme's options, by theme ID
 	// and option ID.
 	ThemeOptions map[string]map[string]string `json:"themeOptions"`
@@ -110,6 +115,8 @@ const DefaultRegistryURL = "https://raw.githubusercontent.com/fzn0x/mixmusic/mai
 func Default() Settings {
 	return Settings{
 		Theme:           "mix",
+		LightTheme:      "daylight",
+		DarkTheme:       "mix",
 		ThemeOptions:    map[string]map[string]string{},
 		DynamicAccent:   true,
 		Density:         DensityComfortable,
@@ -137,12 +144,31 @@ var (
 // letters, digits and dashes.
 func ValidID(id string) bool { return idRe.MatchString(id) }
 
+// ActiveTheme returns the ID of the theme to show: Theme, or the light or
+// dark one of the computer's appearance when the theme follows it.
+func (s Settings) ActiveTheme(dark bool) string {
+	switch {
+	case !s.FollowSystem:
+		return s.Theme
+	case dark:
+		return s.DarkTheme
+	default:
+		return s.LightTheme
+	}
+}
+
 // Clean returns s with every value in its range, and the defaults in place
 // of values that are missing or invalid.
 func (s Settings) Clean() Settings {
 	d := Default()
 	if !ValidID(s.Theme) {
 		s.Theme = d.Theme
+	}
+	if !ValidID(s.LightTheme) {
+		s.LightTheme = d.LightTheme
+	}
+	if !ValidID(s.DarkTheme) {
+		s.DarkTheme = d.DarkTheme
 	}
 	if s.ThemeOptions == nil {
 		s.ThemeOptions = map[string]map[string]string{}
