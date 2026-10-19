@@ -21,6 +21,19 @@ const (
 	Competing ActivityType = 5
 )
 
+// StatusDisplay is the part of an activity the member list shows beside
+// the user's name.
+type StatusDisplay int
+
+const (
+	// ShowName shows the application's name, as Discord does by default.
+	ShowName StatusDisplay = 0
+	// ShowState shows the activity's state: for music, the artists.
+	ShowState StatusDisplay = 1
+	// ShowDetails shows the activity's details: for music, the title.
+	ShowDetails StatusDisplay = 2
+)
+
 // Activity is what the user's Discord profile shows them doing: for
 // MixMusic, the track playing.
 //
@@ -43,6 +56,9 @@ type Activity struct {
 	LargeImage string
 	// LargeText is shown when the picture is hovered: the track's album.
 	LargeText string
+	// StatusDisplay is what the member list shows beside the user's name,
+	// the application's name when what it names is empty.
+	StatusDisplay StatusDisplay
 }
 
 // Discord takes texts of minText to maxText characters, and images of up to
@@ -55,11 +71,12 @@ const (
 
 // activity is an Activity as Discord's SET_ACTIVITY command takes it.
 type activity struct {
-	Type       ActivityType `json:"type"`
-	Details    string       `json:"details,omitempty"`
-	State      string       `json:"state,omitempty"`
-	Timestamps *timestamps  `json:"timestamps,omitempty"`
-	Assets     *assets      `json:"assets,omitempty"`
+	Type          ActivityType  `json:"type"`
+	StatusDisplay StatusDisplay `json:"status_display_type,omitempty"`
+	Details       string        `json:"details,omitempty"`
+	State         string        `json:"state,omitempty"`
+	Timestamps    *timestamps   `json:"timestamps,omitempty"`
+	Assets        *assets       `json:"assets,omitempty"`
 }
 
 // timestamps are an activity's start and end, in Unix milliseconds.
@@ -79,6 +96,9 @@ type assets struct {
 // cut would break.
 func (a Activity) wire() *activity {
 	w := &activity{Type: a.Type, Details: fit(a.Details), State: fit(a.State)}
+	if (a.StatusDisplay == ShowState && w.State != "") || (a.StatusDisplay == ShowDetails && w.Details != "") {
+		w.StatusDisplay = a.StatusDisplay
+	}
 	if !a.Start.IsZero() || !a.End.IsZero() {
 		w.Timestamps = &timestamps{Start: unixMilli(a.Start), End: unixMilli(a.End)}
 	}

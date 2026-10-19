@@ -95,6 +95,8 @@ func activityOf(t media.Track, start time.Time, durationMs int) *discord.Activit
 		Details: t.Title,
 		State:   t.ArtistNames(),
 		Start:   start,
+		// The member list says who plays, not "MixMusic".
+		StatusDisplay: discord.ShowState,
 	}
 	if durationMs == 0 {
 		durationMs = t.DurationMs

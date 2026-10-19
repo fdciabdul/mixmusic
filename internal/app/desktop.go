@@ -278,3 +278,14 @@ func (a *App) HandleURL(raw string) {
 
 // SecondInstance shows the main window when the user starts MixMusic again.
 func (a *App) SecondInstance([]string, string) { a.showMain() }
+
+// Activate shows the main window when the app is activated without it in
+// view, as by a click on its Dock icon after it was closed to the tray.
+func (a *App) Activate(bool) {
+	a.mu.Lock()
+	win := a.main
+	a.mu.Unlock()
+	if win == nil || !win.IsVisible() || win.IsMinimized() {
+		a.showMain()
+	}
+}

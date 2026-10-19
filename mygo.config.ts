@@ -26,7 +26,9 @@ export default defineConfig({
     comment: "Spotify and YouTube Music in one customizable player",
     categories: ["AudioVideo", "Audio", "Player"],
     command: "mixmusic",
-    // WebKitGTK plays audio through GStreamer: Opus in WebM, and AAC.
-    depends: ["gstreamer1.0-plugins-good", "gstreamer1.0-libav"],
+    // WebKitGTK plays audio through GStreamer: Opus in WebM, and AAC. The
+    // tray icon needs AppIndicator, and keeping sign-ins in the keyring
+    // libsecret.
+    depends: ["gstreamer1.0-plugins-good", "gstreamer1.0-libav", "libayatana-appindicator3-1", "libsecret-1-0"],
   },
 });

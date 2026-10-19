@@ -54,6 +54,7 @@ func main() {
 	// Signed updates from the releases on GitHub, checked once a day.
 	mygo.Use(updater.Plugin)
 	mygo.App.OnSecondInstance(a.SecondInstance)
+	mygo.App.OnActivate(a.Activate)
 	mygo.App.OnOpenURL(a.HandleURL)
 	mygo.App.WhenReady(a.Start)
 	if err := mygo.App.Run(); err != nil {

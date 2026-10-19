@@ -53,6 +53,10 @@ func TestWire(t *testing.T) {
 			`{"type":2}`},
 		{"album fitted", Activity{Type: Listening, LargeText: "Z"},
 			`{"type":2,"assets":{"large_text":"Z "}}`},
+		{"artists in the member list", Activity{Type: Listening, State: "Tame Impala", StatusDisplay: ShowState},
+			`{"type":2,"status_display_type":1,"state":"Tame Impala"}`},
+		{"nothing to show in the member list", Activity{Type: Listening, Details: "Song", StatusDisplay: ShowState},
+			`{"type":2,"details":"Song"}`},
 	}
 	for _, c := range cases {
 		b, err := json.Marshal(c.in.wire())

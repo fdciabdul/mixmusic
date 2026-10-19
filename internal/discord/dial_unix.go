@@ -15,12 +15,16 @@ import (
 )
 
 // sandboxes are the folders, under a temporary or runtime folder, where
-// the Discord app packaged as a Flatpak or a Snap puts its socket.
+// the Discord app packaged as a Flatpak or a Snap puts its socket: Discord,
+// its Canary build, and Vesktop.
 var sandboxes = []string{
 	"",
 	"app/com.discordapp.Discord",
+	"app/com.discordapp.DiscordCanary",
+	"app/dev.vencord.Vesktop",
 	"snap.discord",
 	".flatpak/com.discordapp.Discord/xdg-run",
+	".flatpak/com.discordapp.DiscordCanary/xdg-run",
 }
 
 // dial connects to the first socket of the Discord app that answers.
