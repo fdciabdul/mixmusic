@@ -7,6 +7,13 @@
 <p align="center"><strong>Spotify and YouTube Music in one player, shaped the way you like it.</strong></p>
 
 <p align="center">
+  <a href="https://fzn0x.github.io/mixmusic/">Website</a> ·
+  <a href="https://github.com/fzn0x/mixmusic/releases/latest">Download</a> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
+  <a href="community/README.md">Themes and plugins</a>
+</p>
+
+<p align="center">
   <img src="docs/screenshot.png" alt="MixMusic on Windows in the Aurora theme: the home page, with AURORA's Runaway playing and up next beside it" />
 </p>
 
