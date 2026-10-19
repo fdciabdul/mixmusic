@@ -36,26 +36,34 @@ bundled browser to download or keep in memory.
 - **Your mixes.** Playlists that hold tracks of every service, liked songs
   across both, import of a service's playlist into a mix, search and sort
   inside any of them, history and listening stats day by day.
-- **Your accounts.** Sign in to YouTube Music for your own home feed and
-  library, and to Spotify for yours; like, save albums and playlists, and
-  follow artists, and it reaches the service too.
+- **Your accounts.** Sign in to YouTube Music, on Google's own page, for
+  your home feed, your liked songs, playlists, albums and artists, and the
+  audio quality of your account; sign in to Spotify for your library there.
+  Like a song, save an album or a playlist, or follow an artist, and it
+  reaches the service too.
 - **Explore.** New releases, trending songs, the charts, moods and genres,
   and related songs under what plays.
 - **Spotify your way.** Spotify tracks play on Spotify Connect (your own
   Spotify app, at Spotify's quality), or here, from their recording on
   YouTube Music, with no Premium needed.
 - **A real player.** Crossfade, volume levelling, a 10-band equalizer with
-  presets, a visualizer, synced lyrics that follow the song, and an offline
-  cache of tracks you played.
+  presets, a visualizer, synced lyrics that follow the song or read as plain
+  text, and an offline cache of tracks you played.
 - **At home on the desktop.** Media keys and the system's media controls,
   tray controls, notifications of new tracks, a mini player that stays on
-  top, start at login, `mixmusic://` links, what plays on Discord, Last.fm
-  scrobbling, and updates that install themselves.
-- **Keyboard first.** Shortcuts for everything common, keys you can change,
-  and a command palette
+  top, start at login, and `mixmusic://` links.
+- **Scrobbling and Discord.** Connect Last.fm and every track you hear
+  joins your profile there, with scrobbles made offline sent once you are
+  back. Your Discord profile shows what plays, with its artwork and the
+  time left.
+- **Updates.** MixMusic looks for a new release once a day, checks its
+  signature, and installs it when you agree, or by itself if you choose.
+- **Keyboard first.** Shortcuts for everything common, a key of your own for
+  any command, plugins' too, and a command palette
   (<kbd>Ctrl</kbd> <kbd>K</kbd>) for the rest.
-- **Themes.** Six built in, options per theme, an accent taken from the
-  artwork playing, your own CSS, and community themes one click away.
+- **Themes.** Six built in, options per theme, a theme for the computer's
+  light mode and one for its dark mode, an accent taken from the artwork
+  playing, your own CSS, and community themes one click away.
 - **Plugins.** Small ES modules that add pages, commands, track actions and
   widgets through a typed API.
 
@@ -94,9 +102,8 @@ Download the latest release for your system from
   sudo apt install libwebkit2gtk-4.1-0 gstreamer1.0-plugins-good gstreamer1.0-libav libayatana-appindicator3-1 libsecret-1-0
   ```
 
-  The tray icon needs `libayatana-appindicator3`, and keeping your Spotify
-  sign-in in the system's keyring needs `libsecret`; MixMusic works without
-  either.
+  The tray icon needs `libayatana-appindicator3`, and keeping your sign-ins
+  in the system's keyring needs `libsecret`; MixMusic works without either.
 - **To play YouTube Music:** [yt-dlp](https://github.com/yt-dlp/yt-dlp), which
   MixMusic installs for you from Settings › Playback, and a JavaScript runtime
   yt-dlp uses for YouTube: [Deno](https://deno.com), Node.js, Bun or QuickJS,
@@ -110,6 +117,31 @@ in with an app of your own: create one in the
 redirect URI `http://127.0.0.1:47823/callback`, and paste its Client ID in
 Settings › Accounts. [docs/spotify.md](docs/spotify.md) walks through it, and
 through what Spotify allows apps to do.
+
+### YouTube Music
+
+YouTube Music plays without an account. To bring your own home feed and
+library, choose Sign in to YouTube Music in Settings › Accounts and sign in
+to Google in the window that opens. What you type goes to Google alone:
+MixMusic keeps the session the window ends with, encrypted with a key in the
+system's keyring where there is one.
+
+### Last.fm
+
+Last.fm asks each app for an API account. Create one at
+[last.fm/api/account/create](https://www.last.fm/api/account/create), where
+any name will do and the callback URL can stay empty. Paste its API key and
+shared secret in Settings › Accounts, and approve MixMusic on the page that
+opens in your browser. A track counts once half of it played, or four
+minutes.
+
+### Discord
+
+Discord shows the name of an application beside what you listen to. Create
+one called MixMusic in the
+[Discord developer portal](https://discord.com/developers/applications),
+turn on Show what plays on Discord in Settings › Desktop, and paste its
+application ID there. The Discord app has to be running.
 
 ## Make it yours
 
@@ -146,12 +178,14 @@ MyGo needs no C toolchain, so any machine builds MixMusic for every system.
 ```
 main.go              the app: windows, the tray, media keys, deep links
 internal/app         the services the interface calls, and the desktop integration
-internal/youtube     YouTube Music's catalog
+internal/youtube     YouTube Music's catalog, and your account there
 internal/spotify     the Spotify Web API, its sign-in and Spotify Connect
 internal/stream      audio streams, found by yt-dlp and served to the player
 internal/match       Spotify tracks matched to their YouTube Music recordings
 internal/lyrics      synced lyrics
 internal/library     liked songs, mixes, history and stats
+internal/lastfm      scrobbling to Last.fm
+internal/discord     what plays, on your Discord profile
 internal/addons      themes and plugins, and the community registry
 builtin/themes       the themes MixMusic ships with
 src/                 the interface: Preact, TypeScript and CSS
