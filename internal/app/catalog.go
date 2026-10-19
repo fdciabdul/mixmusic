@@ -11,6 +11,7 @@ import (
 	"github.com/fzn0x/mixmusic/internal/lyrics"
 	"github.com/fzn0x/mixmusic/internal/match"
 	"github.com/fzn0x/mixmusic/internal/media"
+	"github.com/fzn0x/mixmusic/internal/spotify"
 	"github.com/fzn0x/mixmusic/internal/youtube"
 )
 
@@ -128,7 +129,11 @@ func (c *Catalog) Album(ctx context.Context, id string) (media.Album, error) {
 	case media.SourceYouTube:
 		return c.a.youtube.Album(ctx, native)
 	case media.SourceSpotify:
-		return c.a.spotify.Album(ctx, native)
+		a, err := c.a.spotify.Album(ctx, native)
+		if err == nil {
+			a.Saved = c.a.spotifyHas(ctx, spotify.URI("album", native))
+		}
+		return a, err
 	}
 	return media.Album{}, fmt.Errorf("no album %s", id)
 }
@@ -143,7 +148,11 @@ func (c *Catalog) Artist(ctx context.Context, id string) (media.Artist, error) {
 	case media.SourceYouTube:
 		return c.a.youtube.Artist(ctx, native)
 	case media.SourceSpotify:
-		return c.a.spotify.Artist(ctx, native)
+		a, err := c.a.spotify.Artist(ctx, native)
+		if err == nil {
+			a.Following = c.a.spotifyHas(ctx, spotify.URI("artist", native))
+		}
+		return a, err
 	}
 	return media.Artist{}, fmt.Errorf("no artist %s", id)
 }
@@ -163,7 +172,11 @@ func (a *App) playlist(ctx context.Context, id string) (media.Playlist, error) {
 	case media.SourceYouTube:
 		return a.youtube.Playlist(ctx, native)
 	case media.SourceSpotify:
-		return a.spotify.Playlist(ctx, native, a.spotifyUserID(ctx))
+		p, err := a.spotify.Playlist(ctx, native, a.spotifyUserID(ctx))
+		if err == nil && !p.Editable {
+			p.Saved = a.spotifyHas(ctx, spotify.URI("playlist", native))
+		}
+		return p, err
 	case media.SourceLocal:
 		return a.library.Playlist(native)
 	}

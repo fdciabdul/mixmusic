@@ -76,6 +76,7 @@ type SpotifyAccount struct {
 // AccountsStatus is the state of the user's accounts.
 type AccountsStatus struct {
 	Spotify SpotifyAccount `json:"spotify"`
+	YouTube YouTubeAccount `json:"youtube"`
 	Lastfm  LastfmAccount  `json:"lastfm"`
 }
 
@@ -101,7 +102,7 @@ func (a *App) accountsStatus(ctx context.Context) AccountsStatus {
 			sp.Profile = &me
 		}
 	}
-	return AccountsStatus{Spotify: sp, Lastfm: a.lastfmAccount()}
+	return AccountsStatus{Spotify: sp, YouTube: a.youtubeAccount(ctx), Lastfm: a.lastfmAccount()}
 }
 
 // spotifyProfile returns the signed-in Spotify user, asking Spotify once.

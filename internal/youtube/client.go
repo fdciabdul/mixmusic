@@ -1,6 +1,8 @@
 // Package youtube reads YouTube Music's catalog through InnerTube, the API
 // the YouTube Music website itself uses: search, the home feed, albums,
-// artists, playlists and radios. It needs no account and no API key.
+// artists, playlists and radios. It needs no account and no API key;
+// signed in with the cookies of the user's browser session, it also reads
+// and changes their library.
 package youtube
 
 import (
@@ -34,8 +36,13 @@ type Client struct {
 	// BaseURL is the API's origin, replaced in tests.
 	BaseURL string
 
+	// OnCookies is called with the session's cookies when YouTube changed
+	// some, so that the app keeps the session fresh.
+	OnCookies func([]*http.Cookie)
+
 	mu      sync.Mutex
-	visitor string // the visitor ID YouTube assigned, sent back to it
+	visitor string         // the visitor ID YouTube assigned, sent back to it
+	cookies []*http.Cookie // the signed-in session, if any
 }
 
 // New returns a client for YouTube Music in English, for the US.
@@ -107,11 +114,14 @@ func (c *Client) call(ctx context.Context, endpoint string, body map[string]any,
 	if v := c.visitorID(); v != "" {
 		req.Header.Set("X-Goog-Visitor-Id", v)
 	}
+	now := time.Now()
+	c.signRequest(req, now)
 	res, err := c.HTTP.Do(req)
 	if err != nil {
 		return node{}, fmt.Errorf("youtube music: %w", err)
 	}
 	defer res.Body.Close()
+	c.keepCookies(res.Cookies(), now)
 	raw, err := io.ReadAll(io.LimitReader(res.Body, 32<<20))
 	if err != nil {
 		return node{}, fmt.Errorf("youtube music: %w", err)

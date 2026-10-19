@@ -75,6 +75,7 @@ type Resolver struct {
 
 	mu      sync.Mutex
 	quality Quality
+	cookies string // a cookies file of the user's YouTube session, if any
 	calls   map[string]*resolution
 }
 
@@ -91,6 +92,14 @@ func NewResolver(t *tools.Manager, cacheDir string) *Resolver {
 	r := &Resolver{Tools: t, CacheDir: cacheDir, quality: QualityBest, calls: map[string]*resolution{}}
 	r.Run = r.runYTDLP
 	return r
+}
+
+// SetCookiesFile makes yt-dlp read YouTube as the user of the session in
+// a cookies file, as Premium plays in better quality; "" reads it signed out.
+func (r *Resolver) SetCookiesFile(path string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.cookies = path
 }
 
 // SetQuality changes the quality of the streams resolved from now on.
@@ -162,6 +171,12 @@ func (r *Resolver) resolve(ctx context.Context, videoID string, quality Quality)
 	args := []string{"-J", "--no-playlist", "-f", formats[quality]}
 	if r.Tools != nil {
 		args = append(args, r.Tools.YTDLPArgs(r.CacheDir)...)
+	}
+	r.mu.Lock()
+	cookies := r.cookies
+	r.mu.Unlock()
+	if cookies != "" {
+		args = append(args, "--cookies", cookies)
 	}
 	args = append(args, "--", "https://music.youtube.com/watch?v="+videoID)
 	out, err := r.Run(ctx, args...)

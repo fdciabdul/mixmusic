@@ -27,6 +27,10 @@ func parseShelves(n node) []media.Shelf {
 func sectionShelves(sections node) []media.Shelf {
 	shelves := []media.Shelf{}
 	for _, s := range sections.list() {
+		if inner := s.get("itemSectionRenderer", "contents"); inner.exists() {
+			shelves = append(shelves, sectionShelves(inner)...)
+			continue
+		}
 		var (
 			title, subtitle string
 			contents        []node
@@ -38,6 +42,9 @@ func sectionShelves(sections node) []media.Shelf {
 		} else if grid := s.get("gridRenderer"); grid.exists() {
 			title = grid.get("header", "gridHeaderRenderer", "title").text()
 			contents = grid.get("items").list()
+		} else if list := s.get("musicShelfRenderer"); list.exists() {
+			title = list.get("title").text()
+			contents = list.get("contents").list()
 		} else {
 			continue
 		}

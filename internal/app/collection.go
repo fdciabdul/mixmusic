@@ -30,11 +30,13 @@ func (c *Collection) LikedIDs() []string {
 }
 
 // SetLiked likes or unlikes a track. Spotify tracks are also saved to, or
-// removed from, the user's Spotify library when they signed in.
+// removed from, the user's Spotify library when they signed in, and YouTube
+// Music tracks liked or unliked on YouTube Music.
 func (c *Collection) SetLiked(ctx context.Context, track media.Track, liked bool) error {
 	if err := c.a.library.SetLiked(track, liked); err != nil {
 		return err
 	}
+	c.a.syncYouTubeLike(ctx, track, liked)
 	if track.Source == media.SourceSpotify && c.a.spotify.SignedIn() {
 		_, id, _ := media.ParseID(track.ID)
 		uri := spotify.URI("track", id)

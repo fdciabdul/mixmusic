@@ -111,6 +111,12 @@ type Album struct {
 	TrackCount int       `json:"trackCount,omitempty"`
 	Tracks     []Track   `json:"tracks"`
 	URL        string    `json:"url,omitempty"`
+	// PlaylistID is the playlist of an album's tracks on YouTube Music,
+	// which saving the album saves.
+	PlaylistID string `json:"playlistId,omitempty"`
+	// Saved is set when the album is in the user's library of its
+	// service; only an album page says so.
+	Saved bool `json:"saved,omitempty"`
 }
 
 // Artist is a performer. Lists of artists leave the sections empty.
@@ -126,6 +132,9 @@ type Artist struct {
 	Singles     []Album `json:"singles"`
 	Related     []Ref   `json:"related"`
 	URL         string  `json:"url,omitempty"`
+	// Following is set when the user follows the artist on its service;
+	// only an artist page says so.
+	Following bool `json:"following,omitempty"`
 }
 
 // Playlist is a list of tracks curated by someone. Lists of playlists
@@ -142,6 +151,9 @@ type Playlist struct {
 	// Editable is set for playlists the user may change.
 	Editable bool   `json:"editable,omitempty"`
 	URL      string `json:"url,omitempty"`
+	// Saved is set when the user saved or follows the playlist on its
+	// service; only a playlist page says so.
+	Saved bool `json:"saved,omitempty"`
 }
 
 // ItemKind is the kind of an Item.

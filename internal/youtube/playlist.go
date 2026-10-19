@@ -63,6 +63,7 @@ func parsePlaylist(n node, playlistID string) (media.Playlist, string, error) {
 			p.TrackCount = count
 		}
 	}
+	p.Saved = savedInLibrary(h)
 	_, shelf := secondaryShelf(n)
 	contents := shelf.get("contents").list()
 	p.Tracks = tracksOf(parseItems(contents))

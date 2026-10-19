@@ -1,5 +1,7 @@
 // The pages of an album, an artist and a playlist.
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
+import { Icon } from "../components/Icon";
+import { signedInTo } from "../state/accounts";
 import { PageHeader } from "../components/PageHeader";
 import { CollectionHead } from "../components/CollectionHead";
 import { TrackList } from "../components/TrackList";
@@ -47,7 +49,11 @@ export function AlbumPage({ id }: { id: string }) {
           onPlay={() => void playTracks(a.tracks)}
           onShuffle={() => shuffled(a.tracks)}
           onMenu={(el) => openMenu(el, [...collectionMenu(a.title, a.tracks), ...(a.url ? [externalItem(a.url, a.source)] : [])])}
-        />
+        >
+          {signedInTo(a.source) && (
+            <KeepButton on={a.saved ?? false} label="save" onLabel="saved" what={a.title} run={(on) => Collection.setSaved("album", a.id, a.playlistId ?? "", on)} />
+          )}
+        </CollectionHead>
       </PageHeader>
       <TrackList tracks={a.tracks} play={(i) => void playTracks(a.tracks, i)} showAlbum={false} />
     </div>
@@ -90,7 +96,11 @@ export function ArtistPage({ id }: { id: string }) {
               ...(a.url ? [externalItem(a.url, a.source)] : []),
             ])
           }
-        />
+        >
+          {signedInTo(a.source) && (
+            <KeepButton on={a.following ?? false} label="follow" onLabel="following" what={a.name} run={(on) => Collection.setFollowing(a.id, on)} />
+          )}
+        </CollectionHead>
       </PageHeader>
       <section class="mm-section" id="mm-artist-songs">
         <h2 class="mm-section-title">top songs</h2>
@@ -188,7 +198,11 @@ export function PlaylistPage({ id }: { id: string }) {
           onPlay={p.tracks.length ? () => void playTracks(p.tracks) : undefined}
           onShuffle={p.tracks.length ? () => shuffled(p.tracks) : undefined}
           onMenu={menu}
-        />
+        >
+          {!local && !p.editable && signedInTo(p.source) && (
+            <KeepButton on={p.saved ?? false} label="save" onLabel="saved" what={p.title} run={(on) => Collection.setSaved("playlist", p.id, "", on)} />
+          )}
+        </CollectionHead>
       </PageHeader>
       {p.tracks.length > 1 && (
         <TrackTools
@@ -273,3 +287,30 @@ function PageProblem({ title, error, retry }: { title: string; error: string; re
   );
 }
 
+
+/** KeepButton keeps an album, a playlist or an artist in the user's library on its service, or lets it go. */
+function KeepButton({ on, label, onLabel, what, run }: { on: boolean; label: string; onLabel: string; what: string; run: (on: boolean) => Promise<void> }) {
+  const [kept, setKept] = useState(on);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => setKept(on), [on]);
+  const toggle = async () => {
+    const next = !kept;
+    setKept(next); // show it at once; undo when the service refuses
+    setBusy(true);
+    try {
+      await run(next);
+      toast(next ? `${what}: ${onLabel}` : `${what}: no longer ${onLabel}`);
+    } catch (err) {
+      setKept(!next);
+      toast(errorMessage(err), { tone: "error" });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <button type="button" class="mm-button mm-button-outline mm-keep" data-on={kept || undefined} aria-pressed={kept} disabled={busy} onClick={toggle}>
+      <Icon name={kept ? "check" : "plus"} size={16} />
+      {kept ? onLabel : label}
+    </button>
+  );
+}

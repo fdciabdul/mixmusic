@@ -35,6 +35,16 @@ func parseAlbum(n node, browseID string) (media.Album, error) {
 	}
 	_, shelf := secondaryShelf(n)
 	album.Tracks = tracksOf(parseItems(shelf.get("contents").list()))
+	for _, item := range shelf.get("contents").list() {
+		watch := flexRuns(item.get("musicResponsiveListItemRenderer"), 0)
+		if len(watch) > 0 {
+			if id := watch[0].get("navigationEndpoint", "watchEndpoint", "playlistId").str(); id != "" {
+				album.PlaylistID = id
+				break
+			}
+		}
+	}
+	album.Saved = savedInLibrary(h)
 	ref := &media.Ref{ID: album.ID, Name: album.Title}
 	for i := range album.Tracks {
 		t := &album.Tracks[i]

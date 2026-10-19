@@ -34,6 +34,18 @@ func secondaryShelf(n node) (string, node) {
 	return n.get("contents", "twoColumnBrowseResultsRenderer", "secondaryContents", "sectionListRenderer", "contents", 0).renderer()
 }
 
+// savedInLibrary reports whether the "save to library" button of an album
+// or playlist header is on, which YouTube Music shows to a signed-in user.
+func savedInLibrary(h node) bool {
+	for _, b := range h.get("buttons").list() {
+		t := b.get("toggleButtonRenderer")
+		if strings.Contains(t.get("defaultIcon", "iconType").str(), "LIBRARY") {
+			return t.get("isToggled").boolean()
+		}
+	}
+	return false
+}
+
 // headerDescription returns the description of a responsive header.
 func headerDescription(h node) string {
 	return strings.TrimSpace(h.get("description", "musicDescriptionShelfRenderer", "description").text())

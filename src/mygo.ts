@@ -4,9 +4,17 @@ import { call, event, type Channel } from "mygo-runtime";
 
 // ---- Types ----
 
+/** Account is the YouTube account the client is signed in as. */
+export interface Account {
+  name: string;
+  handle?: string;
+  photo?: string;
+}
+
 /** AccountsStatus is the state of the user's accounts. */
 export interface AccountsStatus {
   spotify: SpotifyAccount;
+  youtube: YouTubeAccount;
   lastfm: LastfmAccount;
 }
 
@@ -22,6 +30,16 @@ export interface Album {
   trackCount?: number;
   tracks: Track[];
   url?: string;
+  /**
+   * PlaylistID is the playlist of an album's tracks on YouTube Music,
+   * which saving the album saves.
+   */
+  playlistId?: string;
+  /**
+   * Saved is set when the album is in the user's library of its
+   * service; only an album page says so.
+   */
+  saved?: boolean;
 }
 
 /** AlbumKind tells albums apart from singles and EPs. */
@@ -40,6 +58,11 @@ export interface Artist {
   singles: Album[];
   related: Ref[];
   url?: string;
+  /**
+   * Following is set when the user follows the artist on its service;
+   * only an artist page says so.
+   */
+  following?: boolean;
 }
 
 /** ArtistPlays is an artist and how often their tracks were played. */
@@ -316,6 +339,11 @@ export interface Playlist {
   /** Editable is set for playlists the user may change. */
   editable?: boolean;
   url?: string;
+  /**
+   * Saved is set when the user saved or follows the playlist on its
+   * service; only a playlist page says so.
+   */
+  saved?: boolean;
 }
 
 /** Plugin is the manifest of a plugin, plugin.json. */
@@ -603,6 +631,14 @@ export interface UpdateStatus {
   lastCheck: string;
 }
 
+/** YouTubeAccount is the state of the YouTube Music sign-in. */
+export interface YouTubeAccount {
+  signedIn: boolean;
+  account: Account | null;
+  /** Error tells why the account could not be read, if it could not. */
+  error?: string;
+}
+
 // ---- Services ----
 
 /** Catalog searches and browses every service. */
@@ -832,11 +868,27 @@ export const Collection = {
     return call("Collection.Searches");
   },
   /**
+   * SetFollowing follows or unfollows an artist on its service: subscribes
+   * on YouTube Music, follows on Spotify.
+   */
+  setFollowing(artistID: string, on: boolean): Promise<void> {
+    return call("Collection.SetFollowing", artistID, on);
+  },
+  /**
    * SetLiked likes or unlikes a track. Spotify tracks are also saved to, or
-   * removed from, the user's Spotify library when they signed in.
+   * removed from, the user's Spotify library when they signed in, and YouTube
+   * Music tracks liked or unliked on YouTube Music.
    */
   setLiked(track: Track, liked: boolean): Promise<void> {
     return call("Collection.SetLiked", track, liked);
+  },
+  /**
+   * SetSaved saves an album or a playlist to the user's library on its
+   * service, or takes it out. kind is "album" or "playlist"; playlistID is
+   * the playlist of a YouTube Music album's tracks.
+   */
+  setSaved(kind: string, id: string, playlistID: string, on: boolean): Promise<void> {
+    return call("Collection.SetSaved", kind, id, playlistID, on);
   },
   /** SpotifyAlbums returns the albums the user saved on Spotify. */
   spotifyAlbums(): Promise<Album[]> {
@@ -864,6 +916,28 @@ export const Collection = {
   /** UpdatePlaylist changes the title and the description of a playlist. */
   updatePlaylist(id: string, title: string, description: string): Promise<void> {
     return call("Collection.UpdatePlaylist", id, title, description);
+  },
+  /** YouTubeAlbums returns the albums the user saved on YouTube Music. */
+  youTubeAlbums(): Promise<Album[]> {
+    return call("Collection.YouTubeAlbums");
+  },
+  /**
+   * YouTubeArtists returns the artists the user subscribes to on YouTube
+   * Music.
+   */
+  youTubeArtists(): Promise<Artist[]> {
+    return call("Collection.YouTubeArtists");
+  },
+  /** YouTubeLikedTracks returns the user's liked songs on YouTube Music. */
+  youTubeLikedTracks(): Promise<Track[]> {
+    return call("Collection.YouTubeLikedTracks");
+  },
+  /**
+   * YouTubePlaylists returns the playlists the user made or saved on YouTube
+   * Music.
+   */
+  youTubePlaylists(): Promise<Playlist[]> {
+    return call("Collection.YouTubePlaylists");
   },
 } as const;
 
@@ -895,6 +969,22 @@ export const Accounts = {
   /** Status returns the state of the user's accounts. */
   status(): Promise<AccountsStatus> {
     return call("Accounts.Status");
+  },
+  /**
+   * YouTubeLogin opens a window where the user signs in to Google, and signs
+   * MixMusic in to YouTube Music with that session once Google comes back to
+   * YouTube Music. Nothing the user types passes through MixMusic: it reads
+   * the cookies of the session the window ends with.
+   */
+  youTubeLogin(): Promise<AccountsStatus> {
+    return call("Accounts.YouTubeLogin");
+  },
+  /**
+   * YouTubeLogout signs MixMusic out of YouTube Music, and forgets the
+   * Google session of the sign-in window.
+   */
+  youTubeLogout(): Promise<void> {
+    return call("Accounts.YouTubeLogout");
   },
 } as const;
 

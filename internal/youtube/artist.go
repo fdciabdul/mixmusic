@@ -40,6 +40,7 @@ func parseArtist(n node, channelID string) (media.Artist, error) {
 		Related:     []media.Ref{},
 		URL:         "https://music.youtube.com/channel/" + channelID,
 	}
+	a.Following = h.get("subscriptionButton", "subscribeButtonRenderer", "subscribed").boolean()
 	if a.Subtitle != "" {
 		a.Subtitle += " subscribers"
 	}

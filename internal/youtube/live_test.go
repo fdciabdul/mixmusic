@@ -2,6 +2,7 @@ package youtube
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -63,5 +64,51 @@ func TestLive(t *testing.T) {
 	suggestions, err := c.Suggestions(ctx, "daft p")
 	if err != nil || len(suggestions) == 0 {
 		t.Fatalf("suggestions: %v, %v", suggestions, err)
+	}
+}
+
+// TestLiveSignedIn reads the library of a real account. It runs with the
+// Cookie header of a signed-in music.youtube.com tab, from the browser's
+// developer tools:
+//
+//	MIXMUSIC_LIVE=1 MIXMUSIC_YT_COOKIES='SAPISID=…; …' go test ./internal/youtube -run LiveSignedIn -v
+func TestLiveSignedIn(t *testing.T) {
+	header := os.Getenv("MIXMUSIC_YT_COOKIES")
+	if os.Getenv("MIXMUSIC_LIVE") == "" || header == "" {
+		t.Skip("set MIXMUSIC_LIVE=1 and MIXMUSIC_YT_COOKIES to test a signed-in account")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	c := New()
+	cookies, err := http.ParseCookie(header)
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.SetCookies(cookies)
+	a, err := c.Account(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("signed in as %s %s", a.Name, a.Handle)
+	liked, err := c.LikedSongs(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	playlists, err := c.LibraryPlaylists(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	albums, err := c.LibraryAlbums(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	artists, err := c.LibraryArtists(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%d liked songs, %d playlists, %d albums, %d artists", len(liked.Tracks), len(playlists), len(albums), len(artists))
+	home, err := c.Home(ctx)
+	if err != nil || len(home) == 0 {
+		t.Fatalf("home: %d shelves, %v", len(home), err)
 	}
 }

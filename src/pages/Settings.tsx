@@ -585,11 +585,66 @@ function AccountsTab({ s }: { s: SettingsData }) {
           </>
         )}
       </Group>
-      <Group title="youtube music">
-        <p class="mm-hint">YouTube Music needs no account: search, artists, albums, playlists and radios work signed out.</p>
-      </Group>
+      <YouTubeAccountGroup />
       <Lastfm s={s} />
     </>
+  );
+}
+
+function YouTubeAccountGroup() {
+  const yt = accounts.value?.youtube;
+  const [busy, setBusy] = useState(false);
+  const signIn = async () => {
+    setBusy(true);
+    try {
+      await Accounts.youTubeLogin();
+      await refreshAccounts();
+      toast("Signed in to YouTube Music", { tone: "success" });
+    } catch (err) {
+      toast(errorMessage(err), { tone: "error" });
+    } finally {
+      setBusy(false);
+    }
+  };
+  if (yt?.signedIn) {
+    return (
+      <Group title="youtube music">
+        {yt.error && <Problem title="YouTube Music refused the sign-in" message={`${yt.error}. Sign out, then sign in again.`} />}
+        <Row
+          title={yt.account ? `Signed in as ${yt.account.name}` : "Signed in"}
+          description="Your home feed, your library, likes that reach YouTube Music, and the audio quality of your account."
+        >
+          <button
+            type="button"
+            class="mm-button mm-button-outline"
+            onClick={async () => {
+              if (!(await confirm("Sign out of YouTube Music", "MixMusic forgets your YouTube Music session; your library stays on YouTube Music.", "sign out"))) return;
+              await Accounts.youTubeLogout();
+              await refreshAccounts();
+            }}
+          >
+            sign out
+          </button>
+        </Row>
+      </Group>
+    );
+  }
+  return (
+    <Group title="youtube music">
+      <p class="mm-hint">
+        YouTube Music needs no account: search, artists, albums, playlists and radios work signed out. Signed in, MixMusic shows your own home feed and library, saves what
+        you like and follow to YouTube Music, and plays in the quality of your account.
+      </p>
+      <div class="mm-actions">
+        <button type="button" class="mm-button mm-button-primary" disabled={busy} onClick={signIn}>
+          {busy ? "waiting for the sign-in window…" : "sign in to youtube music"}
+        </button>
+      </div>
+      <p class="mm-hint">
+        You sign in on Google's own page, in a window of MixMusic: MixMusic never sees your password, and keeps the session encrypted on this computer. YouTube Music
+        does not offer this to apps officially, so it may stop working when YouTube changes.
+      </p>
+    </Group>
   );
 }
 

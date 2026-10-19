@@ -1398,3 +1398,15 @@
   font-size: var(--mm-size-small);
   color: var(--mm-text-muted);
 }
+
+/* Saving and following: an outline that floods with the accent while kept. */
+
+.mm-keep[data-on] {
+  background: var(--mm-accent);
+  border-color: var(--mm-accent);
+  color: var(--mm-accent-text);
+}
+
+.mm-keep[data-on]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--mm-accent) 86%, var(--mm-text));
+}

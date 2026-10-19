@@ -12,14 +12,14 @@ import { useAsync } from "../lib/async";
 import { navigate, href } from "../lib/router";
 import { playTracks } from "../player/player";
 import { createMix, likedIds, mixes } from "../state/library";
-import { spotifySignedIn } from "../state/accounts";
+import { spotifySignedIn, youtubeSignedIn } from "../state/accounts";
 import { prompt, toast, confirm } from "../state/ui";
 import { errorMessage } from "../lib/format";
 
-type Tab = "liked" | "mixes" | "history" | "spotify";
+type Tab = "liked" | "mixes" | "history" | "spotify" | "youtube";
 
 export function Library({ tab }: { tab?: string }) {
-  const active: Tab = (["liked", "mixes", "history", "spotify"] as const).find((t) => t === tab) ?? "liked";
+  const active: Tab = (["liked", "mixes", "history", "spotify", "youtube"] as const).find((t) => t === tab) ?? "liked";
   return (
     <div class="mm-page">
       <PageHeader
@@ -31,12 +31,14 @@ export function Library({ tab }: { tab?: string }) {
           { id: "mixes", label: "mixes", count: mixes.value.length },
           { id: "history", label: "history" },
           ...(spotifySignedIn.value ? [{ id: "spotify", label: "spotify" }] : []),
+          ...(youtubeSignedIn.value ? [{ id: "youtube", label: "youtube music" }] : []),
         ]}
       />
       {active === "liked" && <Liked />}
       {active === "mixes" && <Mixes />}
       {active === "history" && <History />}
       {active === "spotify" && <SpotifyLibrary />}
+      {active === "youtube" && <YouTubeLibrary />}
     </div>
   );
 }
@@ -179,6 +181,50 @@ function SpotifyLibrary() {
               </button>
             )}
           </>
+        )}
+      </section>
+    </>
+  );
+}
+
+function YouTubeLibrary() {
+  const playlists = useAsync(() => Collection.youTubePlaylists(), []);
+  const albums = useAsync(() => Collection.youTubeAlbums(), []);
+  const artists = useAsync(() => Collection.youTubeArtists(), []);
+  const liked = useAsync(() => Collection.youTubeLikedTracks(), []);
+  const failed = playlists.error ?? albums.error ?? artists.error;
+  return (
+    <>
+      {failed && <Problem title="Couldn't load your YouTube Music library" message={failed} action={{ label: "try again", run: () => (playlists.reload(), albums.reload(), artists.reload()) }} />}
+      {playlists.data && playlists.data.length > 0 && (
+        <Shelf title="playlists">
+          {playlists.data.map((p) => (
+            <PlaylistTile key={p.id} playlist={p} />
+          ))}
+        </Shelf>
+      )}
+      {albums.data && albums.data.length > 0 && (
+        <Shelf title="albums">
+          {albums.data.map((a) => (
+            <AlbumTile key={a.id} album={a} />
+          ))}
+        </Shelf>
+      )}
+      {artists.data && artists.data.length > 0 && (
+        <Shelf title="artists you subscribe to">
+          {artists.data.map((a) => (
+            <ArtistTile key={a.id} artist={a} />
+          ))}
+        </Shelf>
+      )}
+      <section class="mm-section">
+        <h2 class="mm-section-title">liked on youtube music</h2>
+        {liked.error ? (
+          <Problem title="Couldn't load your liked songs" message={liked.error} action={{ label: "try again", run: liked.reload }} />
+        ) : !liked.data ? (
+          <Loading rows={6} />
+        ) : (
+          <TrackList tracks={liked.data} play={(i) => void playTracks(liked.data!, i)} showArt empty="No liked songs on YouTube Music." />
         )}
       </section>
     </>

@@ -51,30 +51,32 @@ type Options struct {
 type App struct {
 	opts Options
 
-	settings    *store.File[settings.Settings]
-	library     *library.Library
-	youtube     *youtube.Client
-	auth        *spotify.Auth
-	spotify     *spotify.Client
-	tokens      tokenStore
-	lastfmStore lastfmStore
-	tools       *tools.Manager
-	resolver    *stream.Resolver
-	proxy       *stream.Proxy
-	cache       *stream.Cache
-	matcher     *match.Matcher
-	lyrics      *lyrics.Client
-	addons      *addons.Manager
-	storage     *addons.Storage
-	lyricsMemo  *memo[lyrics.Lyrics]
-	related     *memo[[]media.Shelf]
-	artwork     *artwork.Client
-	colors      *memo[string]
+	settings     *store.File[settings.Settings]
+	library      *library.Library
+	youtube      *youtube.Client
+	auth         *spotify.Auth
+	spotify      *spotify.Client
+	tokens       tokenStore
+	lastfmStore  lastfmStore
+	youtubeStore youtubeStore
+	tools        *tools.Manager
+	resolver     *stream.Resolver
+	proxy        *stream.Proxy
+	cache        *stream.Cache
+	matcher      *match.Matcher
+	lyrics       *lyrics.Client
+	addons       *addons.Manager
+	storage      *addons.Storage
+	lyricsMemo   *memo[lyrics.Lyrics]
+	related      *memo[[]media.Shelf]
+	artwork      *artwork.Client
+	colors       *memo[string]
 
 	presence presence
 
 	mu         sync.Mutex
 	lastfm     *scrobbles
+	youtubeMe  *youtube.Account
 	spotifyMe  *spotify.Profile
 	nowPlaying NowPlaying
 	main, mini *mygo.Window
@@ -116,6 +118,8 @@ func New(opts Options) (*App, error) {
 	a.resolver = stream.NewResolver(a.tools, filepath.Join(opts.CacheDir, "yt-dlp"))
 	a.cache = stream.NewCache(filepath.Join(opts.CacheDir, "audio"), 0)
 	a.proxy = stream.NewProxy(a.resolver)
+	a.youtubeStore = youtubeStore{dir: opts.DataDir}
+	a.openYouTube()
 	a.proxy.Cache = a.cache
 	a.matcher = match.New(a.youtube, matches)
 	a.lyrics = lyrics.New("MixMusic/" + opts.Version + " (https://github.com/fzn0x/mixmusic)")

@@ -29,3 +29,13 @@ func (c *Client) Contains(ctx context.Context, uris ...string) ([]bool, error) {
 func (c *Client) AddToPlaylist(ctx context.Context, playlistID string, uris ...string) error {
 	return c.do(ctx, http.MethodPost, "/playlists/"+url.PathEscape(playlistID)+"/items", nil, map[string]any{"uris": uris}, nil)
 }
+
+// FollowPlaylist follows a playlist, which saves it to the user's library,
+// or unfollows it.
+func (c *Client) FollowPlaylist(ctx context.Context, playlistID string, on bool) error {
+	method := http.MethodDelete
+	if on {
+		method = http.MethodPut
+	}
+	return c.do(ctx, method, "/playlists/"+url.PathEscape(playlistID)+"/followers", nil, nil, nil)
+}
