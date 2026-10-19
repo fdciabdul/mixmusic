@@ -51,26 +51,30 @@ type Options struct {
 type App struct {
 	opts Options
 
-	settings   *store.File[settings.Settings]
-	library    *library.Library
-	youtube    *youtube.Client
-	auth       *spotify.Auth
-	spotify    *spotify.Client
-	tokens     tokenStore
-	tools      *tools.Manager
-	resolver   *stream.Resolver
-	proxy      *stream.Proxy
-	cache      *stream.Cache
-	matcher    *match.Matcher
-	lyrics     *lyrics.Client
-	addons     *addons.Manager
-	storage    *addons.Storage
-	lyricsMemo *memo[lyrics.Lyrics]
-	related    *memo[[]media.Shelf]
-	artwork    *artwork.Client
-	colors     *memo[string]
+	settings    *store.File[settings.Settings]
+	library     *library.Library
+	youtube     *youtube.Client
+	auth        *spotify.Auth
+	spotify     *spotify.Client
+	tokens      tokenStore
+	lastfmStore lastfmStore
+	tools       *tools.Manager
+	resolver    *stream.Resolver
+	proxy       *stream.Proxy
+	cache       *stream.Cache
+	matcher     *match.Matcher
+	lyrics      *lyrics.Client
+	addons      *addons.Manager
+	storage     *addons.Storage
+	lyricsMemo  *memo[lyrics.Lyrics]
+	related     *memo[[]media.Shelf]
+	artwork     *artwork.Client
+	colors      *memo[string]
+
+	presence presence
 
 	mu         sync.Mutex
+	lastfm     *scrobbles
 	spotifyMe  *spotify.Profile
 	nowPlaying NowPlaying
 	main, mini *mygo.Window
@@ -106,6 +110,8 @@ func New(opts Options) (*App, error) {
 	if t, err := a.tokens.Load(); err == nil {
 		a.spotify.SetToken(t)
 	}
+	a.lastfmStore = lastfmStore{file: filepath.Join(opts.DataDir, "lastfm.json")}
+	a.openLastfm()
 	a.tools = tools.New(filepath.Join(opts.DataDir, "bin"))
 	a.resolver = stream.NewResolver(a.tools, filepath.Join(opts.CacheDir, "yt-dlp"))
 	a.cache = stream.NewCache(filepath.Join(opts.CacheDir, "audio"), 0)
@@ -133,6 +139,9 @@ func (a *App) apply(s settings.Settings) {
 	}
 	if mygo.App.IsReady() {
 		a.applyMediaKeys(s.MediaKeys)
+	}
+	if !s.DiscordPresence {
+		a.presence.update(false, "", NowPlaying{})
 	}
 }
 

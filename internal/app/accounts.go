@@ -76,6 +76,7 @@ type SpotifyAccount struct {
 // AccountsStatus is the state of the user's accounts.
 type AccountsStatus struct {
 	Spotify SpotifyAccount `json:"spotify"`
+	Lastfm  LastfmAccount  `json:"lastfm"`
 }
 
 // Accounts signs the user in and out of their music services.
@@ -100,7 +101,7 @@ func (a *App) accountsStatus(ctx context.Context) AccountsStatus {
 			sp.Profile = &me
 		}
 	}
-	return AccountsStatus{Spotify: sp}
+	return AccountsStatus{Spotify: sp, Lastfm: a.lastfmAccount()}
 }
 
 // spotifyProfile returns the signed-in Spotify user, asking Spotify once.
@@ -171,9 +172,6 @@ func (a *App) signOutSpotify() error {
 	a.spotifyMe = nil
 	a.mu.Unlock()
 	err := a.tokens.Clear()
-	AccountsChanged.Broadcast(AccountsStatus{Spotify: SpotifyAccount{
-		Configured:  a.auth.ClientID() != "",
-		RedirectURI: spotify.RedirectURI,
-	}})
+	AccountsChanged.Broadcast(a.accountsStatus(context.Background()))
 	return err
 }

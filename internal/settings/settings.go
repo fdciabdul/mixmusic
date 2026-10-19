@@ -92,10 +92,17 @@ type Settings struct {
 	// Accounts.
 	SpotifyClientID string `json:"spotifyClientId"`
 
+	// Scrobbling sends what plays to Last.fm, once the user connected it.
+	Scrobbling bool `json:"scrobbling"`
+
 	// The desktop.
 	CloseToTray   bool `json:"closeToTray"`
 	Notifications bool `json:"notifications"`
 	MediaKeys     bool `json:"mediaKeys"`
+	// DiscordPresence shows what plays on the user's Discord profile, as
+	// the Discord application of DiscordAppID.
+	DiscordPresence bool   `json:"discordPresence"`
+	DiscordAppID    string `json:"discordAppId"`
 
 	// Tools.
 	YTDLPPath string `json:"ytdlpPath"`
@@ -131,6 +138,7 @@ func Default() Settings {
 		Equalizer:       Equalizer{Preset: "flat", Gains: make([]float64, len(Bands))},
 		Volume:          0.8,
 		CacheSizeMB:     1024,
+		Scrobbling:      true,
 		CloseToTray:     false,
 		Notifications:   true,
 		MediaKeys:       true,
@@ -143,6 +151,8 @@ func Default() Settings {
 var (
 	colorRe = regexp.MustCompile(`^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$`)
 	idRe    = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{0,63}$`)
+	// discordIDRe matches a Discord application ID, a number.
+	discordIDRe = regexp.MustCompile(`^[0-9]{15,22}$`)
 )
 
 // ValidID reports whether id can name a theme or a plugin: lowercase
@@ -207,6 +217,9 @@ func (s Settings) Clean() Settings {
 	}
 	s.CacheSizeMB = min(max(s.CacheSizeMB, 0), 64*1024)
 	s.SpotifyClientID = strings.TrimSpace(s.SpotifyClientID)
+	if s.DiscordAppID = strings.TrimSpace(s.DiscordAppID); !discordIDRe.MatchString(s.DiscordAppID) {
+		s.DiscordAppID = ""
+	}
 	if !slices.Contains([]string{"", "deno", "node", "bun", "quickjs"}, s.JSRuntime) {
 		s.JSRuntime = ""
 	}

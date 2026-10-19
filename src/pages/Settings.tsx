@@ -588,7 +588,80 @@ function AccountsTab({ s }: { s: SettingsData }) {
       <Group title="youtube music">
         <p class="mm-hint">YouTube Music needs no account: search, artists, albums, playlists and radios work signed out.</p>
       </Group>
+      <Lastfm s={s} />
     </>
+  );
+}
+
+function Lastfm({ s }: { s: SettingsData }) {
+  const lf = accounts.value?.lastfm;
+  const [key, setKey] = useState("");
+  const [secret, setSecret] = useState("");
+  const [busy, setBusy] = useState(false);
+  const open = (url: string) => (e: MouseEvent) => (e.preventDefault(), System.openExternal(url));
+  const connect = async () => {
+    setBusy(true);
+    try {
+      toast("Approve MixMusic on Last.fm, in your browser");
+      await Accounts.lastfmLogin(key, secret);
+      await refreshAccounts();
+      setSecret("");
+      toast("Connected to Last.fm", { tone: "success" });
+    } catch (err) {
+      toast(errorMessage(err), { tone: "error" });
+    } finally {
+      setBusy(false);
+    }
+  };
+  if (lf?.connected) {
+    return (
+      <Group title="last.fm">
+        {lf.expired && <Problem title="Last.fm no longer accepts this connection" message="Disconnect, then connect again to go on scrobbling." />}
+        <Row title={`Scrobbling as ${lf.name}`} description="What you listen to joins your Last.fm profile: a track counts once half of it played, or four minutes.">
+          <Switch on={s.scrobbling} label="Scrobble to Last.fm" onChange={(v) => save({ scrobbling: v })} />
+        </Row>
+        <div class="mm-actions">
+          <button
+            type="button"
+            class="mm-button mm-button-outline"
+            onClick={async () => {
+              if (!(await confirm("Disconnect Last.fm", "MixMusic forgets your Last.fm connection; your scrobbles stay on Last.fm.", "disconnect"))) return;
+              await Accounts.lastfmLogout();
+              await refreshAccounts();
+            }}
+          >
+            disconnect
+          </button>
+        </div>
+      </Group>
+    );
+  }
+  return (
+    <Group title="last.fm">
+      <ol class="mm-steps">
+        <li>
+          Create an API account on{" "}
+          <a href="https://www.last.fm/api/account/create" onClick={open("https://www.last.fm/api/account/create")}>
+            Last.fm
+          </a>
+          ; any name and description will do, and the callback URL can stay empty.
+        </li>
+        <li>Paste its API key and shared secret here, and connect.</li>
+        <li>Approve MixMusic on the page that opens in your browser.</li>
+      </ol>
+      <Row title="API key">
+        <input class="mm-input" spellcheck={false} placeholder="32 letters and digits" value={key} onInput={(e) => setKey((e.target as HTMLInputElement).value)} />
+      </Row>
+      <Row title="Shared secret">
+        <input class="mm-input" type="password" spellcheck={false} placeholder="32 letters and digits" value={secret} onInput={(e) => setSecret((e.target as HTMLInputElement).value)} />
+      </Row>
+      <div class="mm-actions">
+        <button type="button" class="mm-button mm-button-primary" disabled={busy || !key.trim() || !secret.trim()} onClick={connect}>
+          {busy ? "waiting for Last.fm…" : "connect to last.fm"}
+        </button>
+      </div>
+      <p class="mm-hint">MixMusic keeps them in your system's credential store, with the connection.</p>
+    </Group>
   );
 }
 
@@ -685,6 +758,13 @@ function Desktop({ s }: { s: SettingsData }) {
       <Row title="Notifications" description="Tell what starts playing while MixMusic is in the background.">
         <Switch on={s.notifications} label="Notifications" onChange={(v) => save({ notifications: v })} />
       </Row>
+      <Row
+        title="Show what plays on Discord"
+        description="While Discord runs, your profile says what you listen to, with the artwork and the time left; pausing clears it."
+      >
+        <Switch on={s.discordPresence} label="Show what plays on Discord" onChange={(v) => save({ discordPresence: v })} />
+      </Row>
+      {s.discordPresence && <DiscordApp s={s} />}
       <Row title="Start at login">
         <Switch
           on={login.data ?? false}
@@ -709,6 +789,36 @@ function Desktop({ s }: { s: SettingsData }) {
         </button>
       </Row>
     </Group>
+  );
+}
+
+function DiscordApp({ s }: { s: SettingsData }) {
+  const [id, setId] = useState(s.discordAppId);
+  useEffect(() => setId(s.discordAppId), [s.discordAppId]);
+  const url = "https://discord.com/developers/applications";
+  return (
+    <Row
+      title="Discord application ID"
+      description={
+        <>
+          Discord shows the name of an application: create one called MixMusic in the{" "}
+          <a href={url} onClick={(e) => (e.preventDefault(), System.openExternal(url))}>
+            developer portal
+          </a>{" "}
+          and paste its application ID.
+        </>
+      }
+    >
+      <input
+        class="mm-input"
+        inputMode="numeric"
+        spellcheck={false}
+        placeholder="18 digits or so"
+        value={id}
+        onInput={(e) => setId((e.target as HTMLInputElement).value)}
+        onBlur={() => id.trim() !== s.discordAppId && save({ discordAppId: id.trim() })}
+      />
+    </Row>
   );
 }
 

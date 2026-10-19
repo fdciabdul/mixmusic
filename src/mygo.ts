@@ -7,6 +7,7 @@ import { call, event, type Channel } from "mygo-runtime";
 /** AccountsStatus is the state of the user's accounts. */
 export interface AccountsStatus {
   spotify: SpotifyAccount;
+  lastfm: LastfmAccount;
 }
 
 /** Album is a release of an artist. Lists of albums leave Tracks empty. */
@@ -173,6 +174,14 @@ export type ItemKind = "track" | "album" | "artist" | "playlist";
 
 /** Kind is a kind of add-on. */
 export type Kind = "theme" | "plugin";
+
+/** LastfmAccount is the state of the Last.fm connection. */
+export interface LastfmAccount {
+  connected: boolean;
+  name?: string;
+  /** Expired is set when Last.fm no longer accepts the session. */
+  expired?: boolean;
+}
 
 /**
  * Line is a line of lyrics, with the time it is sung at when the lyrics
@@ -430,10 +439,18 @@ export interface Settings {
   cacheSizeMb: number;
   /** Accounts. */
   spotifyClientId: string;
+  /** Scrobbling sends what plays to Last.fm, once the user connected it. */
+  scrobbling: boolean;
   /** The desktop. */
   closeToTray: boolean;
   notifications: boolean;
   mediaKeys: boolean;
+  /**
+   * DiscordPresence shows what plays on the user's Discord profile, as
+   * the Discord application of DiscordAppID.
+   */
+  discordPresence: boolean;
+  discordAppId: string;
   /** Tools. */
   ytdlpPath: string;
   jsRuntime: string;
@@ -852,6 +869,18 @@ export const Collection = {
 
 /** Accounts signs the user in and out of their music services. */
 export const Accounts = {
+  /**
+   * LastfmLogin connects MixMusic to the user's Last.fm account, with the
+   * API account they made on Last.fm: the user approves in their browser,
+   * and MixMusic waits for it.
+   */
+  lastfmLogin(apiKey: string, secret: string): Promise<AccountsStatus> {
+    return call("Accounts.LastfmLogin", apiKey, secret);
+  },
+  /** LastfmLogout disconnects MixMusic from Last.fm. */
+  lastfmLogout(): Promise<void> {
+    return call("Accounts.LastfmLogout");
+  },
   /**
    * SpotifyLogin signs the user in to Spotify in their browser, with the
    * Client ID of Settings › Accounts.
