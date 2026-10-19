@@ -24,16 +24,48 @@ function sync() {
   canGoForward.value = depth < maxDepth;
 }
 
+// Pages remember their scroll: each entry of the history has a key, under
+// which the scroll of its page is kept when the user leaves it, and back
+// and forward put it back.
+let lastKey = Date.now();
+const newKey = () => ++lastKey;
+let key: number = typeof history.state?.key === "number" ? history.state.key : newKey();
+history.replaceState({ depth, key }, "");
+const scrolls = new Map<number, number>();
+let pendingScroll: number | null = null;
+
+/** scroller is the element that scrolls pages. */
+const scroller = () => document.getElementById("mm-main");
+
+function keepScroll() {
+  const el = scroller();
+  if (el) scrolls.set(key, el.scrollTop);
+  if (scrolls.size > 200) scrolls.delete(scrolls.keys().next().value!);
+}
+
+/**
+ * takeScroll returns the scroll to put a page back at after back or
+ * forward, once, or null for a page to start at the top.
+ */
+export function takeScroll(): number | null {
+  const y = pendingScroll;
+  pendingScroll = null;
+  return y;
+}
+
 /** navigate shows the page at to, such as "/search?q=daft%20punk". */
 export function navigate(to: string, opts: { replace?: boolean } = {}): void {
   const target = new URL(to, location.origin);
   const same = target.pathname === location.pathname && target.search === location.search;
+  keepScroll();
+  pendingScroll = null;
   if (opts.replace || same) {
-    history.replaceState({ depth }, "", target.pathname + target.search);
+    history.replaceState({ depth, key }, "", target.pathname + target.search);
   } else {
     depth++;
     maxDepth = depth;
-    history.pushState({ depth }, "", target.pathname + target.search);
+    key = newKey();
+    history.pushState({ depth, key }, "", target.pathname + target.search);
   }
   current.value = read();
   sync();
@@ -43,7 +75,10 @@ export const back = (): void => history.back();
 export const forward = (): void => history.forward();
 
 addEventListener("popstate", (e) => {
+  keepScroll(); // the page left still shows
   depth = typeof e.state?.depth === "number" ? e.state.depth : 0;
+  key = typeof e.state?.key === "number" ? e.state.key : newKey();
+  pendingScroll = scrolls.get(key) ?? null;
   current.value = read();
   sync();
 });

@@ -13,6 +13,7 @@ import (
 
 	"github.com/fzn0x/mixmusic/builtin"
 	"github.com/fzn0x/mixmusic/internal/app"
+	"github.com/fzn0x/mixmusic/internal/diag"
 )
 
 //go:embed resources/tray.png
@@ -28,9 +29,26 @@ func main() {
 	if dir := os.Getenv("MIXMUSIC_DATA_DIR"); dir != "" {
 		mygo.App.SetPath(mygo.PathUserData, filepath.Join(dir, "data"))
 		mygo.App.SetPath(mygo.PathCache, filepath.Join(dir, "cache"))
+		mygo.App.SetPath(mygo.PathLogs, filepath.Join(dir, "logs"))
 	}
 	if !mygo.App.RequestSingleInstanceLock() {
 		return // the running instance takes over
+	}
+	// The log and the crash reports, once this is the instance that runs.
+	logsDir, err := mygo.App.Path(mygo.PathLogs)
+	if err != nil {
+		log.Fatal(err)
+	}
+	running := mygo.App.Version()
+	if running == "" {
+		running = version
+	}
+	logs, lastCrash, err := diag.Start(logsDir, running)
+	if err != nil {
+		log.Printf("mixmusic: writing the log: %v", err)
+		logsDir = ""
+	} else {
+		defer logs.Close()
 	}
 	dataDir, err := mygo.App.Path(mygo.PathUserData)
 	if err != nil {
@@ -41,11 +59,13 @@ func main() {
 		log.Fatal(err)
 	}
 	a, err := app.New(app.Options{
-		DataDir:  dataDir,
-		CacheDir: cacheDir,
-		Builtin:  builtin.FS,
-		TrayIcon: trayIcon,
-		Version:  version,
+		DataDir:   dataDir,
+		CacheDir:  cacheDir,
+		Builtin:   builtin.FS,
+		TrayIcon:  trayIcon,
+		Version:   version,
+		LogsDir:   logsDir,
+		LastCrash: lastCrash,
 	})
 	if err != nil {
 		log.Fatal(err)

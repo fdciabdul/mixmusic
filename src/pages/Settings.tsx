@@ -1057,11 +1057,20 @@ function Updates() {
         </>
       ) : (
         <p class="mm-hint">
-          This copy of MixMusic does not update itself: development builds, and the Debian package, which updates with the system's packages, do not. The installers and the Linux archive do.
+          This copy of MixMusic does not update itself: development builds, the .deb and .rpm packages and the AppImage cannot replace their own files. Download the next version from the releases page; the installers, the portable zip and the Linux archive update themselves.
         </p>
       )}
     </Group>
   );
+}
+
+/** reportProblem opens a new problem report on GitHub, its version and setup filled in. */
+async function reportProblem(): Promise<void> {
+  try {
+    await System.openExternal(await System.reportURL());
+  } catch (err) {
+    toast(errorMessage(err), { tone: "error" });
+  }
 }
 
 function About() {
@@ -1083,14 +1092,17 @@ function About() {
         <a class="mm-button mm-button-outline" href={repo} onClick={open(repo)}>
           source code
         </a>
-        <a class="mm-button mm-button-outline" href={`${repo}/issues`} onClick={open(`${repo}/issues`)}>
+        <button type="button" class="mm-button mm-button-outline" onClick={() => void reportProblem()}>
           report a problem
-        </a>
+        </button>
+        <button type="button" class="mm-button mm-button-outline" onClick={() => System.openLogsFolder().catch((err) => toast(errorMessage(err), { tone: "error" }))}>
+          open logs folder
+        </button>
         <a class="mm-button mm-button-outline" href={`${repo}/blob/main/CONTRIBUTING.md`} onClick={open(`${repo}/blob/main/CONTRIBUTING.md`)}>
           contribute
         </a>
       </div>
-      <p class="mm-hint">Your data lives in {info.dataDir}.</p>
+      <p class="mm-hint">Your data lives in {info.dataDir}. MixMusic writes what goes wrong to a log, without your sign-ins; open logs folder shows it.</p>
     </Group>
     </>
   );

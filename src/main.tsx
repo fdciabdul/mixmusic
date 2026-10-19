@@ -22,6 +22,7 @@ import { navigate } from "./lib/router";
 import { artwork, errorMessage } from "./lib/format";
 import { createAPI } from "./plugins/api";
 import { effect } from "@preact/signals";
+import { offerCrashReport } from "./lib/crash";
 
 async function boot(): Promise<void> {
   const root = document.getElementById("app")!;
@@ -48,6 +49,7 @@ async function boot(): Promise<void> {
     events.navigate.on((path) => navigate(path));
     exposeConsoleAPI();
     render(<App />, root);
+    void offerCrashReport();
   } catch (err) {
     root.innerHTML = "";
     const p = document.createElement("p");

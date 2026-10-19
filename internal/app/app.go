@@ -45,11 +45,18 @@ type Options struct {
 	TrayIcon []byte
 	// Version is the app's version, for LRCLIB's user agent.
 	Version string
+	// LogsDir holds the log and the crash reports.
+	LogsDir string
+	// LastCrash is the crash report of the run before, when it crashed.
+	LastCrash string
 }
 
 // App is MixMusic.
 type App struct {
 	opts Options
+	// lastCrash is the crash report of the run before, until the user
+	// answers about it.
+	lastCrash string
 
 	settings     *store.File[settings.Settings]
 	library      *library.Library
@@ -86,7 +93,7 @@ type App struct {
 
 // New opens what the app keeps in opts.DataDir and opts.CacheDir.
 func New(opts Options) (*App, error) {
-	a := &App{opts: opts}
+	a := &App{opts: opts, lastCrash: opts.LastCrash}
 	var err error
 	if a.settings, err = store.Open(filepath.Join(opts.DataDir, "settings.json"), settings.Default()); err != nil {
 		return nil, fmt.Errorf("opening settings: %w", err)

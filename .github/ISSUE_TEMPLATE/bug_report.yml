@@ -28,6 +28,8 @@ body:
     attributes:
       label: System
       options:
+        - macOS, Apple silicon
+        - macOS, Intel
         - Windows 11
         - Windows 10
         - Linux (tell which distribution below)
@@ -46,4 +48,4 @@ body:
     id: more
     attributes:
       label: Anything else
-      description: Error messages, screenshots, the theme and plugins you use.
+      description: Error messages, screenshots, the theme and plugins you use. Report a problem in Settings › About fills in your setup here.

@@ -5,7 +5,8 @@ import { PlayerBar } from "./PlayerBar";
 import { SidePanel } from "./SidePanel";
 import { ContextMenu, Dialog, Toasts } from "../components/Overlays";
 import { CommandPalette } from "../components/CommandPalette";
-import { current, match } from "../lib/router";
+import { current, match, takeScroll } from "../lib/router";
+import { useEffect } from "preact/hooks";
 import { sidePanel } from "../state/ui";
 import { Home } from "../pages/Home";
 import { Search } from "../pages/Search";
@@ -41,6 +42,32 @@ const routes: Route[] = [
   ["/plugin/*", (p) => <PluginPage path={`/plugin/${p["*"]}`} />],
 ];
 
+/**
+ * restoreScroll puts a page back at the scroll it had, after back or
+ * forward. Its content may still be loading, so it tries again as the page
+ * grows, for a few seconds, until the user scrolls themselves.
+ */
+function restoreScroll(y: number | null): (() => void) | undefined {
+  const main = document.getElementById("mm-main");
+  if (!main || y == null || y <= 0) return;
+  let frame = 0;
+  const until = performance.now() + 4000;
+  const stop = () => cancelAnimationFrame(frame);
+  const moved = ["wheel", "touchstart", "keydown", "pointerdown"];
+  const tick = () => {
+    main.scrollTop = y;
+    if (Math.abs(main.scrollTop - y) > 1 && performance.now() < until) frame = requestAnimationFrame(tick);
+    else done();
+  };
+  const done = () => {
+    stop();
+    for (const ev of moved) main.removeEventListener(ev, done);
+  };
+  for (const ev of moved) main.addEventListener(ev, done, { passive: true });
+  tick();
+  return done;
+}
+
 function Page() {
   const path = current.value.path;
   for (const [pattern, render] of routes) {
@@ -54,6 +81,7 @@ export function App() {
   const path = current.value.path;
   // Pages of the same kind keep their scroll; another page starts at the top.
   const key = path === "/search" ? `${path}?${current.value.query.get("q") ?? ""}` : path;
+  useEffect(() => restoreScroll(takeScroll()), [key]);
   return (
     <div class="mm-app" data-panel={sidePanel.value ?? "none"}>
       <Sidebar />
