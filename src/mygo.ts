@@ -65,6 +65,14 @@ export interface Choice {
  */
 export type Command = "toggle" | "play" | "pause" | "next" | "previous" | "seek" | "volume" | "like" | "shuffle" | "repeat" | "playTrack";
 
+/** DayPlays is what the user played on one day of their own time zone. */
+export interface DayPlays {
+  /** Date is the day, as 2026-10-19. */
+  date: string;
+  plays: number;
+  minutes: number;
+}
+
 /** Density chooses how much room the interface gives each element. */
 export type Density = "comfortable" | "compact";
 
@@ -449,6 +457,12 @@ export interface Stats {
   topArtists: ArtistPlays[];
   /** Days is the number of days counted; 0 counts the whole history. */
   days: number;
+  /**
+   * Daily holds every day of the period, the oldest first, those
+   * without plays too: the last Days days, or the last 90 for the whole
+   * history.
+   */
+  daily: DayPlays[];
 }
 
 /** Status describes the tools MixMusic runs. */

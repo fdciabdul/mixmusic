@@ -811,3 +811,101 @@
   transform-origin: left center;
   transition: transform 500ms linear;
 }
+
+/* Stats: the minutes of each day, as columns in the accent. */
+
+.mm-days {
+  position: relative;
+  margin-top: var(--mm-space-4);
+  padding-top: var(--mm-space-5);
+  outline: none;
+}
+
+.mm-days:focus-visible {
+  outline: 2px solid var(--mm-accent);
+  outline-offset: 4px;
+}
+
+.mm-days-tick {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: var(--mm-size-caption);
+  color: var(--mm-text-muted);
+}
+
+.mm-days-plot,
+.mm-days-axis {
+  display: grid;
+  grid-template-columns: repeat(var(--mm-days), minmax(0, 1fr));
+  gap: 2px;
+}
+
+.mm-days-plot {
+  height: 160px;
+  align-items: end;
+  border-top: 1px solid var(--mm-border);
+  border-bottom: 1px solid var(--mm-border);
+}
+
+.mm-day {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+}
+
+.mm-day-bar {
+  width: min(100%, 24px);
+  background: var(--mm-accent);
+  border-radius: min(4px, var(--mm-radius-sm)) min(4px, var(--mm-radius-sm)) 0 0;
+  transition: background-color var(--mm-fast) var(--mm-ease-out);
+}
+
+.mm-day[data-active] .mm-day-bar {
+  background: color-mix(in srgb, var(--mm-accent) 72%, var(--mm-text));
+}
+
+.mm-day-value {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -4px);
+  font-size: var(--mm-size-caption);
+  color: var(--mm-text);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.mm-days-axis {
+  margin-top: var(--mm-space-2);
+  font-size: var(--mm-size-caption);
+  color: var(--mm-text-muted);
+}
+
+.mm-days-axis span {
+  justify-self: center;
+  white-space: nowrap;
+}
+
+.mm-days-tip {
+  position: absolute;
+  top: 0;
+  transform: translate(-50%, -100%);
+  padding: var(--mm-space-2) var(--mm-space-3);
+  background: var(--mm-text);
+  color: var(--mm-bg);
+  font-size: var(--mm-size-small);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.mm-days-table {
+  margin-top: var(--mm-space-3);
+  font-size: var(--mm-size-small);
+}
+
+.mm-days-table summary {
+  cursor: pointer;
+  color: var(--mm-text-muted);
+}

@@ -27,3 +27,35 @@ func TestStats(t *testing.T) {
 		t.Errorf("plays older than a week counted: %+v", s)
 	}
 }
+
+func TestStatsDaily(t *testing.T) {
+	l := open(t)
+	zone := time.FixedZone("UTC+7", 7*60*60)
+	now := time.Date(2026, 10, 18, 12, 0, 0, 0, zone)
+	l.now = func() time.Time { return now }
+	a := tr("yt:a", media.SourceYouTube, "A")
+	// Two plays on the 16th, local time; one just after midnight of the 18th.
+	now = time.Date(2026, 10, 16, 9, 0, 0, 0, zone)
+	l.RecordPlay(a)
+	l.RecordPlay(a)
+	now = time.Date(2026, 10, 18, 0, 30, 0, 0, zone)
+	l.RecordPlay(a)
+	now = time.Date(2026, 10, 18, 12, 0, 0, 0, zone)
+
+	s := l.Stats(7)
+	if len(s.Daily) != 7 || s.Daily[0].Date != "2026-10-12" || s.Daily[6].Date != "2026-10-18" {
+		t.Fatalf("daily days = %+v", s.Daily)
+	}
+	if d := s.Daily[4]; d.Date != "2026-10-16" || d.Plays != 2 || d.Minutes != 6 {
+		t.Errorf("the 16th = %+v", d)
+	}
+	if d := s.Daily[6]; d.Plays != 1 || d.Minutes != 3 {
+		t.Errorf("the 18th = %+v", d)
+	}
+	if d := s.Daily[5]; d.Plays != 0 || d.Minutes != 0 {
+		t.Errorf("a day without plays = %+v", d)
+	}
+	if all := l.Stats(0); len(all.Daily) != 90 || all.Daily[89].Plays != 1 {
+		t.Errorf("all time covers %d days, last %+v", len(all.Daily), all.Daily[len(all.Daily)-1])
+	}
+}
