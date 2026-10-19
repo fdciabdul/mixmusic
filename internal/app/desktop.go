@@ -35,6 +35,7 @@ func (a *App) Start() {
 	a.captureFromEnv(win)
 	a.setupTray()
 	a.applyMediaKeys(a.settings.Get().MediaKeys)
+	watchUpdates()
 }
 
 // background returns the background color of the theme of the settings,

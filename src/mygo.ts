@@ -568,6 +568,24 @@ export interface TrackPlays {
   plays: number;
 }
 
+/** UpdateStatus is whether MixMusic updates itself, and how. */
+export interface UpdateStatus {
+  /**
+   * Enabled is false for builds that cannot replace themselves: those
+   * of development, and installs of a package manager.
+   */
+  enabled: boolean;
+  /** AutomaticChecks checks for a new version once a day. */
+  automaticChecks: boolean;
+  /**
+   * AutomaticDownloads installs new versions without asking; they run
+   * at the next launch.
+   */
+  automaticDownloads: boolean;
+  /** LastCheck is when MixMusic last checked, as RFC 3339, or "". */
+  lastCheck: string;
+}
+
 // ---- Services ----
 
 /** Catalog searches and browses every service. */
@@ -946,6 +964,13 @@ export const System = {
   cacheUsage(): Promise<CacheUsage> {
     return call("System.CacheUsage");
   },
+  /**
+   * CheckForUpdates checks for a new version now, in the update window,
+   * which says when MixMusic is up to date.
+   */
+  checkForUpdates(): Promise<void> {
+    return call("System.CheckForUpdates");
+  },
   /** ClearCache empties the audio cache. */
   clearCache(): Promise<void> {
     return call("System.ClearCache");
@@ -973,6 +998,13 @@ export const System = {
   quit(): Promise<void> {
     return call("System.Quit");
   },
+  /**
+   * SetUpdates turns the daily check and the installs without asking on or
+   * off.
+   */
+  setUpdates(automaticChecks: boolean, automaticDownloads: boolean): Promise<UpdateStatus> {
+    return call("System.SetUpdates", automaticChecks, automaticDownloads);
+  },
   /** ShowMainWindow shows the main window and closes the mini player. */
   showMainWindow(): Promise<void> {
     return call("System.ShowMainWindow");
@@ -987,6 +1019,10 @@ export const System = {
    */
   tools(): Promise<Status> {
     return call("System.Tools");
+  },
+  /** Updates returns whether MixMusic updates itself, and how. */
+  updates(): Promise<UpdateStatus> {
+    return call("System.Updates");
   },
 } as const;
 
@@ -1009,4 +1045,9 @@ export const events = {
    * "/search?q=daft%20punk".
    */
   navigate: event<string>("navigate"),
+  /**
+   * UpdatesChanged tells every window the update preferences changed, after
+   * a check too.
+   */
+  updatesChanged: event<UpdateStatus>("updatesChanged"),
 } as const;

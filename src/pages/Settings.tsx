@@ -10,6 +10,7 @@ import { Problem } from "../components/States";
 import {
   Accounts,
   Addons,
+  events,
   Player,
   Preferences,
   System,
@@ -821,11 +822,54 @@ function Shortcuts({ s }: { s: SettingsData }) {
   );
 }
 
+function Updates() {
+  const status = useAsync(() => System.updates(), []);
+  useEffect(() => events.updatesChanged.on((u) => status.set(u)), []);
+  const u = status.data;
+  if (!u) return null;
+  const set = (checks: boolean, downloads: boolean) =>
+    System.setUpdates(checks, downloads).then(status.set, (err) => toast(errorMessage(err), { tone: "error" }));
+  const last = u.lastCheck ? new Date(u.lastCheck).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "";
+  return (
+    <Group
+      title="updates"
+      action={
+        u.enabled ? (
+          <button type="button" class="mm-text-button" onClick={() => System.checkForUpdates()}>
+            check now
+          </button>
+        ) : undefined
+      }
+    >
+      {u.enabled ? (
+        <>
+          <Row title="Check for updates" description={last ? `Once a day. Last checked ${last}.` : "Once a day, from the releases on GitHub."}>
+            <Switch on={u.automaticChecks} label="Check for updates" onChange={(v) => void set(v, u.automaticDownloads)} />
+          </Row>
+          <Row title="Install updates without asking" description="New versions download in the background and run at the next launch.">
+            <Switch
+              on={u.automaticChecks && u.automaticDownloads}
+              label="Install updates without asking"
+              onChange={(v) => void set(u.automaticChecks || v, v)}
+            />
+          </Row>
+        </>
+      ) : (
+        <p class="mm-hint">
+          This copy of MixMusic does not update itself: development builds, and the Debian package, which updates with the system's packages, do not. The installers and the Linux archive do.
+        </p>
+      )}
+    </Group>
+  );
+}
+
 function About() {
   const info = appInfo();
   const repo = "https://github.com/fzn0x/mixmusic";
   const open = (url: string) => (e: MouseEvent) => (e.preventDefault(), System.openExternal(url));
   return (
+    <>
+    <Updates />
     <Group title="mixmusic">
       <p class="mm-about-line">
         Version {info.version} · {info.platform} {info.arch}
@@ -847,5 +891,6 @@ function About() {
       </div>
       <p class="mm-hint">Your data lives in {info.dataDir}.</p>
     </Group>
+    </>
   );
 }

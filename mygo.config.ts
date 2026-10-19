@@ -15,6 +15,13 @@ export default defineConfig({
   bindings: "src/mygo.ts",
   out: "build",
   urlSchemes: ["mixmusic"],
+  // Apps update themselves from the releases of the repository, signed with
+  // the key whose public half is here (the secret one is the
+  // MYGO_UPDATER_PRIVATE_KEY secret of the release workflow).
+  updates: {
+    publicKey: "y/g7m+MircfXqdGupUFNygznyyR/Y41D1YAOYw41ISU=",
+    github: "fzn0x/mixmusic",
+  },
   linux: {
     comment: "Spotify and YouTube Music in one customizable player",
     categories: ["AudioVideo", "Audio", "Player"],

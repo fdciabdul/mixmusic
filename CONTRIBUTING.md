@@ -91,6 +91,12 @@ CHANGELOG.md, the downloads of
 [.github/release-notes.md](.github/release-notes.md) and `SHA256SUMS`. To
 build a tag again, run the workflow from the Actions tab with the tag.
 
+Installed apps update themselves from the latest release. Its update files are
+signed with the key whose public half is `updates.publicKey` in
+[mygo.config.ts](mygo.config.ts); the secret half is the repository's
+`MYGO_UPDATER_PRIVATE_KEY` secret, which the workflow signs with. Without it, the
+release has no update files and apps stay on the version they have.
+
 ## Reports
 
 Open an [issue](https://github.com/fzn0x/mixmusic/issues) with what you did,

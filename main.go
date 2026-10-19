@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/egoist/mygo"
+	"github.com/egoist/mygo/plugins/updater"
 
 	"github.com/fzn0x/mixmusic/builtin"
 	"github.com/fzn0x/mixmusic/internal/app"
@@ -50,6 +51,8 @@ func main() {
 		log.Fatal(err)
 	}
 	a.Bind()
+	// Signed updates from the releases on GitHub, checked once a day.
+	mygo.Use(updater.Plugin)
 	mygo.App.OnSecondInstance(a.SecondInstance)
 	mygo.App.OnOpenURL(a.HandleURL)
 	mygo.App.WhenReady(a.Start)

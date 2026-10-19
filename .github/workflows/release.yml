@@ -64,6 +64,9 @@ jobs:
         if: matrix.name == 'Windows'
         run: sudo apt-get update && sudo apt-get install -y nsis
       - name: Build
+        env:
+          # Signs the update files; without it the build skips them.
+          MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
         run: bun run build -- -platform "${{ matrix.platform }}"
       - name: Name the downloads
         shell: bash
@@ -75,6 +78,8 @@ jobs:
           for dir in build/*/; do
             target="$(basename "$dir")" # darwin-universal, windows-arm64, linux-amd64
             arch="${target#*-}"
+            # What installed apps update from, under the names their manifests use.
+            for f in "$dir"update-*.json "$dir"*.delta "$dir"mixmusic-"$v"-"$target".tar.g[z]; do cp "$f" release/; done
             case "$target" in
               darwin-*)
                 for f in "$dir"*.dmg; do cp "$f" "release/mixmusic-$v-macos-$arch.dmg"; done ;;
@@ -88,7 +93,8 @@ jobs:
             esac
           done
           ls -l release
-          count="$(ls release | wc -l | tr -d ' ')"
+          # The downloads, not counting the update files, which only signed builds make.
+          count="$(ls release | { grep -v -E '^update-|\.delta$|-(darwin|windows)-[a-z0-9]+\.tar\.gz$' || true; } | wc -l | tr -d ' ')"
           if [ "$count" -ne "${{ matrix.files }}" ]; then
             echo "Expected ${{ matrix.files }} downloads for ${{ matrix.name }}, made $count" >&2
             exit 1
