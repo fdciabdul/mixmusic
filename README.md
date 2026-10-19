@@ -37,10 +37,12 @@ bundled browser to download or keep in memory.
   across both, import of a service's playlist into a mix, search and sort
   inside any of them, history and listening stats day by day.
 - **Your accounts.** Sign in to YouTube Music, on Google's own page, for
-  your home feed and your liked songs, playlists, albums and artists; sign
-  in to Spotify for your library there.
-  Like a song, save an album or a playlist, or follow an artist, and it
-  reaches the service too.
+  your home feed and your liked songs, playlists, albums and artists, as
+  your account or one of its brand channels; sign in to Spotify for your
+  library there. Like a song, save an album or a playlist, or follow an
+  artist, and it reaches the service too. Make playlists on YouTube Music
+  and add tracks of either service to them, and what you play joins your
+  YouTube Music history, which its recommendations come from.
 - **Explore.** New releases, trending songs, the charts, moods and genres,
   and related songs under what plays.
 - **Spotify your way.** Spotify tracks play on Spotify Connect (your own
@@ -76,11 +78,23 @@ Download the latest release for your system from
 |---|---|
 | macOS 12 and later (Apple silicon and Intel) | `mixmusic-<version>-macos-universal.dmg` |
 | Windows 10 and 11 (x64, Arm) | `mixmusic-<version>-windows-<arch>-setup.exe` |
+| Windows, without installing | `mixmusic-<version>-windows-<arch>-portable.zip` |
 | Debian, Ubuntu and derivatives | `mixmusic-<version>-linux-<arch>.deb` |
-| Any Linux (x64, Arm64) | `mixmusic-<version>-linux-<arch>.tar.gz`, with `install.sh` |
+| Fedora, openSUSE and derivatives | `mixmusic-<version>-linux-<arch>.rpm` |
+| Any Linux, one file | `mixmusic-<version>-linux-<arch>.AppImage` |
+| Any Linux, in your home folder | `mixmusic-<version>-linux-<arch>.tar.gz`, with `install.sh` |
 
 `<arch>` is `amd64` for x64 and `arm64` for Arm. Each release lists
-`SHA256SUMS` to verify the downloads with.
+`SHA256SUMS` to verify the downloads with. The files named `update-…`,
+`….delta` and `mixmusic-<version>-macos-…` or `-windows-<arch>.tar.gz`
+are what installed apps update from: you need none of them.
+
+The installers, the portable zip and the Linux archive update themselves.
+The `.deb`, the `.rpm` and the AppImage cannot replace their own files:
+download the next version when MixMusic tells you of it. Unpack the
+portable zip anywhere and open `MixMusic.exe` in it; your settings and
+library stay in your Windows profile, as with the installer. Make the
+AppImage executable (`chmod +x`) and open it.
 
 ### What it needs
 
@@ -102,9 +116,16 @@ Download the latest release for your system from
   sudo apt install libwebkit2gtk-4.1-0 gstreamer1.0-plugins-good gstreamer1.0-libav libayatana-appindicator3-1 libsecret-1-0
   ```
 
+  On Fedora:
+
+  ```sh
+  sudo dnf install webkit2gtk4.1 gstreamer1-plugins-good gstreamer1-plugin-libav libayatana-appindicator-gtk3 libsecret
+  ```
+
   The tray icon needs `libayatana-appindicator3`, and keeping your sign-ins
-  in the system's keyring needs `libsecret`. The `.deb` installs both;
-  MixMusic works without either.
+  in the system's keyring needs `libsecret`. The `.deb` and the `.rpm`
+  install both; MixMusic works without either. The AppImage holds MixMusic
+  alone, and uses the system's GTK and WebKitGTK like the other downloads.
 - **To play YouTube Music:** [yt-dlp](https://github.com/yt-dlp/yt-dlp), which
   MixMusic installs for you from Settings › Playback and keeps up to date,
   and a JavaScript runtime yt-dlp uses for YouTube: [Deno](https://deno.com),
@@ -155,6 +176,90 @@ application ID there. The Discord app has to be running.
 - [Share them](community/README.md): add yours to the community registry, and
   everyone can install it from the marketplace.
 
+## Troubleshooting
+
+MixMusic writes what goes wrong to `mixmusic.log`, without your sign-ins:
+Settings › About › open logs folder shows it, beside the reports of any
+crash. Settings › About › report a problem opens a new issue on GitHub with
+your version, system, tools, theme and plugins filled in; attach the log
+after reading it. After a crash, MixMusic offers to report it the next
+time it starts.
+
+- **Nothing plays from YouTube Music.** Check Settings › Playback: yt-dlp
+  has to be installed, and a JavaScript runtime found. MixMusic updates the
+  yt-dlp it installed every day, as an old one stops finding streams; one of
+  your own, chosen there, you keep up to date yourself (`yt-dlp -U`, or your
+  package manager). A track that cannot play says why: some are not
+  available in your country, or only to signed-in adults on YouTube's own
+  website.
+- **The JavaScript runtime is not found.** Opened from the Finder, the Dock
+  or a desktop menu, MixMusic does not get the `PATH` of your terminal. It
+  also looks where Homebrew, Deno, Bun, Volta, Scoop and WinGet install;
+  elsewhere, choose the runtime in Settings › Playback.
+- **YouTube Music signed you out.** Settings › Accounts says so when YouTube
+  ends the session, as it does when you sign out of Google everywhere or
+  change your password. Sign out there, then sign in again.
+- **Google refuses the sign-in window** with "This browser or app may not
+  be secure". Google decides this; try again later, or from another
+  network.
+- **Spotify says the app is not allowed.** In development mode a Spotify
+  app serves only the users its owner added in the dashboard, by their
+  Spotify email: see [docs/spotify.md](docs/spotify.md).
+- **No tray icon on Linux.** The tray needs `libayatana-appindicator3` and a
+  desktop that shows AppIndicator icons; GNOME needs its AppIndicator
+  extension. Without it, closing the window quits MixMusic.
+- **Linux does not start it.** Install GTK 3 and WebKitGTK 4.1, as above.
+- **macOS cannot check the app,** as it is not notarized yet: open it from
+  System Settings › Privacy & Security › Open Anyway.
+
+## Known issues
+
+- MixMusic reads YouTube Music through the interfaces of its own website,
+  and plays it through yt-dlp. When YouTube changes them, searching,
+  playing or signing in can stop working until MixMusic or yt-dlp catches
+  up.
+- YouTube Music has no sign-in for other apps: MixMusic signs in with a
+  browser session, which can do with your account what YouTube Music can.
+  Treat it like a password; sign out in Settings › Accounts to delete it.
+- Spotify allows apps in development mode a few users, and lets them read
+  less: search shows ten results of each kind, and the tracks of playlists
+  you do not own stay hidden.
+- Tracks YouTube restricts to some countries, to signed-in adults or to a
+  channel's members do not play, as streams are found signed out.
+- The macOS app is not notarized and the Windows installer is not signed
+  yet, so the first launch asks you to allow it.
+- The portable zip does not register `mixmusic://` links, and Windows on Arm
+  is less tested than the rest.
+
+## Privacy
+
+MixMusic has no account, server, analytics or telemetry of its own. It
+talks to:
+
+- **YouTube and Google:** YouTube Music's catalog, its streams through
+  yt-dlp, and the artwork. Signed in, your library there, and, unless you
+  turn it off in Settings › Accounts, the tracks you play, which join your
+  YouTube Music history.
+- **Spotify,** once you sign in: your library and, with Spotify Connect,
+  your devices.
+- **LRCLIB:** the title, artists, album and length of the track playing,
+  to find its lyrics.
+- **GitHub:** a check for a new version once a day, which you can turn off
+  in Settings › About, the community registry when you open the
+  marketplace, and the downloads of yt-dlp.
+- **Last.fm,** once you connect it: what you play. **Discord**, once you
+  turn it on: what plays, to the Discord app on your computer, which shows
+  it on your profile.
+
+What it keeps on your computer: your settings and library (liked songs,
+mixes, history and recent searches) in the folder Settings › About names;
+the tracks you played in the cache, as much as you allow in Settings ›
+Playback; your sign-ins in the system's keyring, or, where there is none,
+in files only your user can read, the YouTube Music session encrypted;
+and the log, without your sign-ins. The library's history clears what you
+played, Settings › Playback the cache, and signing out of a service deletes
+its sign-in.
+
 ## Develop
 
 You need [Go](https://go.dev/dl/) 1.27 or later and [Bun](https://bun.sh) 1.2 or later.
@@ -189,6 +294,7 @@ internal/lyrics      synced lyrics
 internal/library     liked songs, mixes, history and stats
 internal/lastfm      scrobbling to Last.fm
 internal/discord     what plays, on your Discord profile
+internal/diag        the log, without secrets, and the reports of crashes
 internal/addons      themes and plugins, and the community registry
 builtin/themes       the themes MixMusic ships with
 src/                 the interface: Preact, TypeScript and CSS

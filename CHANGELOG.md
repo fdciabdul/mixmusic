@@ -6,6 +6,22 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Make playlists on YouTube Music, from the library or from a track's or a
+  list's menu, add tracks of either service to them, and take tracks out of
+  your own playlists.
+- Use YouTube Music as a brand channel of your account, with its own home
+  feed, library and likes, chosen in Settings › Accounts.
+- What you play joins your YouTube Music history, which its home and its
+  radios are made from; a switch in Settings › Accounts turns it off.
+- A log of what goes wrong, without your sign-ins, and the report of a
+  crash, which the next start offers to send. Settings › About opens the
+  logs folder, and reports a problem with the version and setup filled in.
+- Going back or forward returns to where the page was scrolled.
+- Downloads for more systems: a portable zip for Windows, an RPM package
+  for Fedora and openSUSE, and an AppImage for any Linux.
+
 ### Changed
 
 - Tracks play signed out also when you signed in to YouTube Music: with your

@@ -51,6 +51,10 @@ page owns the interface and the player.
   scrobbles by Last.fm's rules, keeping what fails offline for later.
 - **`internal/discord`** shows what plays on the user's Discord profile, over
   Discord's local pipe or socket.
+- **`internal/diag`** writes the log, `mixmusic.log` in the logs folder,
+  rotated at a megabyte and without the cookies, hashes and tokens a line
+  may hold, and has Go write a crash to `crash.log` there, which the next
+  start keeps as `crash-<time>.log` and offers to report.
 - **`internal/addons`** validates theme and plugin manifests, lists the
   built-in and installed add-ons, serves their files at `addons://`, and
   installs add-ons from the community registry.
@@ -87,8 +91,9 @@ Windows, `~/.config/MixMusic` on Linux): `settings.json`, `library.json`,
 encrypted with a key of the system's credential store, which also keeps the
 Spotify token and the Last.fm connection), the scrobbles still to send, and
 `updater.json`, the update preferences. The cache folder holds audio, matches and
-yt-dlp's cache. `MIXMUSIC_DATA_DIR` moves both into one folder, for a portable
-copy or a test run.
+yt-dlp's cache, and the logs folder the log and the crash reports.
+`MIXMUSIC_DATA_DIR` moves all three into one folder, for a portable copy or
+a test run.
 
 ## Capture mode
 
@@ -99,4 +104,5 @@ MIXMUSIC_CAPTURE=shots MIXMUSIC_CAPTURE_ROUTES="/|/search?q=jazz|/settings" MIXM
 ```
 
 A route starting with `js:` runs a script in the page instead, as clicking
-a button; `MIXMUSIC_CAPTURE_WAIT` sets how long each step gets (`5s`).
+a button; `MIXMUSIC_CAPTURE_WAIT` sets how long each step gets (`5s`), and
+`MIXMUSIC_CAPTURE_ZOOM` zooms the page (`1.25`) for sharper screenshots.
