@@ -18,9 +18,11 @@ import (
 //
 //	MIXMUSIC_CAPTURE=shots MIXMUSIC_CAPTURE_ROUTES="/|/settings" MIXMUSIC_CAPTURE_SIZE=1440x900 mixmusic
 //
-// Routes are separated by "|". MIXMUSIC_CAPTURE_WAIT is how long each page gets to load, as "5s". A
-// route starting with "js:" runs its script in the page instead of
-// navigating, as clicking a button, before its screenshot.
+// Routes are separated by "|". MIXMUSIC_CAPTURE_WAIT is how long each page gets to load, as "5s".
+// MIXMUSIC_CAPTURE_ZOOM zooms the page, as "1.25", for screenshots sharper
+// than the screen's own scale. A route starting with "js:" runs its script
+// in the page instead of navigating, as clicking a button, before its
+// screenshot.
 func (a *App) captureFromEnv(win *mygo.Window) {
 	dir := os.Getenv("MIXMUSIC_CAPTURE")
 	if dir == "" {
@@ -43,6 +45,9 @@ func (a *App) captureFromEnv(win *mygo.Window) {
 			}
 			win.SetSize(wi, hi)
 		}
+	}
+	if z, err := strconv.ParseFloat(os.Getenv("MIXMUSIC_CAPTURE_ZOOM"), 64); err == nil && z > 0 {
+		win.Page().SetZoomFactor(z)
 	}
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		log.Fatal(err)
