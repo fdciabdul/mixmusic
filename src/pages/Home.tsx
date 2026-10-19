@@ -2,7 +2,7 @@
 import { useMemo, useState } from "preact/hooks";
 import { PageHeader } from "../components/PageHeader";
 import { Tile } from "../components/Tile";
-import { ItemTile, Shelf } from "../components/Shelf";
+import { Shelves } from "../components/Shelf";
 import { LoadingTiles, Problem } from "../components/States";
 import { Catalog, Collection, System, type Shelf as ShelfData, type Source } from "../mygo";
 import { useAsync } from "../lib/async";
@@ -93,16 +93,7 @@ export function Home() {
           </section>
         </>
       )}
-      {shelves.map((s, i) => {
-        const tracks = s.items.flatMap((it) => (it.kind === "track" && it.track ? [it.track] : []));
-        return (
-          <Shelf key={`${s.title}-${i}`} title={s.title}>
-            {s.items.map((it, j) => (
-              <ItemTile key={j} item={it} tracks={tracks} />
-            ))}
-          </Shelf>
-        );
-      })}
+      <Shelves shelves={shelves} />
       {home.data && shelves.length === 0 && (
         <p class="mm-empty-line">
           {filter === "spotify"

@@ -2,66 +2,50 @@ package youtube
 
 import (
 	"context"
-	"errors"
-	"sync"
 
 	"github.com/fzn0x/mixmusic/internal/media"
 )
 
-// Home returns the shelves of YouTube Music's home and explore pages:
-// quick picks, new releases, trending songs and playlists.
+// Home returns the shelves of YouTube Music's home page: quick picks,
+// mixes, albums and playlists. Signed in, they are the user's own.
 func (c *Client) Home(ctx context.Context) ([]media.Shelf, error) {
-	pages := []string{"FEmusic_home", "FEmusic_explore"}
-	shelves := make([][]media.Shelf, len(pages))
-	errs := make([]error, len(pages))
-	var wg sync.WaitGroup
-	for i, id := range pages {
-		wg.Go(func() {
-			n, err := c.browse(ctx, id)
-			if err != nil {
-				errs[i] = err
-				return
-			}
-			shelves[i] = parseShelves(n)
-		})
+	n, err := c.browse(ctx, "FEmusic_home")
+	if err != nil {
+		return nil, err
 	}
-	wg.Wait()
-	var out []media.Shelf
-	for _, s := range shelves {
-		out = append(out, s...)
-	}
-	if len(out) == 0 {
-		if err := errors.Join(errs...); err != nil {
-			return nil, err
-		}
-	}
-	if out == nil {
-		out = []media.Shelf{}
-	}
-	return out, nil
+	return parseShelves(n), nil
 }
 
-// parseShelves reads the carousels of a browse page.
-
+// parseShelves reads the carousels and grids of a browse page.
 func parseShelves(n node) []media.Shelf {
+	return sectionShelves(n.get("contents", "singleColumnBrowseResultsRenderer", "tabs", 0, "tabRenderer", "content", "sectionListRenderer", "contents"))
+}
+
+// sectionShelves reads the shelves among the sections of a page: its
+// carousels, and its grids of cards. Sections of other kinds, and shelves
+// with no item MixMusic can show, are left out.
+func sectionShelves(sections node) []media.Shelf {
 	shelves := []media.Shelf{}
-	sections := n.get("contents", "singleColumnBrowseResultsRenderer", "tabs", 0, "tabRenderer", "content", "sectionListRenderer", "contents")
 	for _, s := range sections.list() {
-		carousel := s.get("musicCarouselShelfRenderer")
-		if !carousel.exists() {
+		var (
+			title, subtitle string
+			contents        []node
+		)
+		if carousel := s.get("musicCarouselShelfRenderer"); carousel.exists() {
+			header := carousel.get("header", "musicCarouselShelfBasicHeaderRenderer")
+			title, subtitle = header.get("title").text(), header.get("strapline").text()
+			contents = carousel.get("contents").list()
+		} else if grid := s.get("gridRenderer"); grid.exists() {
+			title = grid.get("header", "gridHeaderRenderer", "title").text()
+			contents = grid.get("items").list()
+		} else {
 			continue
 		}
-		header := carousel.get("header", "musicCarouselShelfBasicHeaderRenderer")
-		items := parseItems(carousel.get("contents").list())
+		items := parseItems(contents)
 		if len(items) == 0 {
 			continue
 		}
-		shelves = append(shelves, media.Shelf{
-			Title:    header.get("title").text(),
-			Subtitle: header.get("strapline").text(),
-			Source:   media.SourceYouTube,
-			Items:    items,
-		})
+		shelves = append(shelves, media.Shelf{Title: title, Subtitle: subtitle, Source: media.SourceYouTube, Items: items})
 	}
 	return shelves
 }

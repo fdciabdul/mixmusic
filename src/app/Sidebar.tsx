@@ -13,6 +13,7 @@ import { currentTrack, playing, upNext } from "../player/player";
 const nav: { id: string; label: string; icon: IconName; path: string }[] = [
   { id: "home", label: "home", icon: "home", path: "/" },
   { id: "search", label: "search", icon: "search", path: "/search" },
+  { id: "explore", label: "explore", icon: "compass", path: "/explore" },
   { id: "library", label: "library", icon: "library", path: "/library" },
   { id: "stats", label: "stats", icon: "stats", path: "/stats" },
   { id: "marketplace", label: "marketplace", icon: "store", path: "/marketplace" },
@@ -25,7 +26,8 @@ function go(e: MouseEvent, path: string) {
 }
 
 export function Sidebar() {
-  const active = section.value;
+  // A mood's page belongs to explore.
+  const active = section.value === "mood" ? "explore" : section.value;
   const path = current.value.path;
   const collapsed = sidebarCollapsed.value;
   return (

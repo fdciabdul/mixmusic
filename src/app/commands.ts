@@ -53,6 +53,7 @@ export function registerBuiltinCommands(): void {
         input?.select();
       },
     },
+    { id: "go.explore", title: "Explore", shortcut: "Alt+5", group: "go to", run: () => navigate("/explore") },
     { id: "go.library", title: "Library", shortcut: "Alt+2", group: "go to", run: () => navigate("/library") },
     { id: "go.liked", title: "Liked songs", shortcut: "Alt+3", group: "go to", run: () => navigate("/library/liked") },
     { id: "go.nowPlaying", title: "Now playing", shortcut: "Alt+4", group: "go to", run: () => navigate("/now-playing") },

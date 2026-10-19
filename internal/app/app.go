@@ -66,6 +66,7 @@ type App struct {
 	addons     *addons.Manager
 	storage    *addons.Storage
 	lyricsMemo *memo[lyrics.Lyrics]
+	related    *memo[[]media.Shelf]
 	artwork    *artwork.Client
 	colors     *memo[string]
 
@@ -113,6 +114,7 @@ func New(opts Options) (*App, error) {
 	a.matcher = match.New(a.youtube, matches)
 	a.lyrics = lyrics.New("MixMusic/" + opts.Version + " (https://github.com/fzn0x/mixmusic)")
 	a.lyricsMemo = newMemo[lyrics.Lyrics](200)
+	a.related = newMemo[[]media.Shelf](100)
 	a.artwork = artwork.New()
 	a.colors = newMemo[string](500)
 	a.addons = addons.NewManager(filepath.Join(opts.DataDir, "addons"), opts.Builtin, schemeURL(addonsScheme))

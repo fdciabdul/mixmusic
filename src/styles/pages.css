@@ -929,3 +929,18 @@
 .mm-shortcut-actions .mm-text-button + .mm-text-button {
   margin-left: var(--mm-space-3);
 }
+
+/* Explore: moods and genres as flat tiles. */
+
+.mm-mood-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  grid-auto-rows: 112px;
+  gap: var(--mm-space-2);
+}
+
+/* Now playing: what relates to the track, under the player. */
+
+.mm-now-related {
+  margin-top: var(--mm-space-7);
+}

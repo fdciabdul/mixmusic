@@ -3,7 +3,7 @@ import type { ComponentChildren } from "preact";
 import { useRef } from "preact/hooks";
 import { ArtTile } from "./Tile";
 import { Icon } from "./Icon";
-import { Catalog, type Album, type Artist, type Item, type Playlist, type Track } from "../mygo";
+import { Catalog, type Album, type Artist, type Item, type Playlist, type Shelf as ShelfData, type Track } from "../mygo";
 import { artists, artwork, errorMessage, plural } from "../lib/format";
 import { href, navigate } from "../lib/router";
 import { playTracks } from "../player/player";
@@ -138,4 +138,22 @@ export function ItemTile({ item, tracks }: { item: Item; tracks: Track[] }) {
     case "track":
       return item.track ? <TrackTile track={item.track} queue={tracks} /> : null;
   }
+}
+
+/** Shelves shows the shelves of a page, each a row of tiles; a shelf's tracks play as one queue. */
+export function Shelves({ shelves }: { shelves: ShelfData[] }) {
+  return (
+    <>
+      {shelves.map((s, i) => {
+        const tracks = s.items.flatMap((it) => (it.kind === "track" && it.track ? [it.track] : []));
+        return (
+          <Shelf key={`${s.title}-${i}`} title={s.title}>
+            {s.items.map((it, j) => (
+              <ItemTile key={j} item={it} tracks={tracks} />
+            ))}
+          </Shelf>
+        );
+      })}
+    </>
+  );
 }

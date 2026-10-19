@@ -4,6 +4,9 @@ import { useEffect, useRef } from "preact/hooks";
 import { PageHeader } from "../components/PageHeader";
 import { Icon } from "../components/Icon";
 import { Empty } from "../components/States";
+import { Shelves } from "../components/Shelf";
+import { Catalog, type Track } from "../mygo";
+import { useAsync } from "../lib/async";
 import { SourceMark } from "../components/SourceMark";
 import { Lyrics } from "../app/SidePanel";
 import { Progress } from "../app/PlayerBar";
@@ -89,6 +92,19 @@ export function NowPlaying() {
           ))}
         </div>
       </div>
+      <Related track={t} />
+    </div>
+  );
+}
+
+/** Related shows what YouTube Music relates to the track: songs, playlists and artists like it. */
+function Related({ track }: { track: Track }) {
+  const res = useAsync(() => Catalog.related(track), [track.id]);
+  // Related shelves add to the page; when they fail, the page goes without them.
+  if (!res.data || res.data.length === 0) return null;
+  return (
+    <div class="mm-now-related">
+      <Shelves shelves={res.data} />
     </div>
   );
 }

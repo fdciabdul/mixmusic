@@ -15,6 +15,7 @@ import { Stats } from "../pages/Stats";
 import { NowPlaying } from "../pages/NowPlaying";
 import { Settings } from "../pages/Settings";
 import { Marketplace } from "../pages/Marketplace";
+import { Explore, MoodPage } from "../pages/Explore";
 import { NotFound, PluginPage } from "../pages/Other";
 import type { ComponentChildren } from "preact";
 
@@ -23,6 +24,9 @@ type Route = [pattern: string, render: (params: Record<string, string>) => Compo
 const routes: Route[] = [
   ["/", () => <Home />],
   ["/search", () => <Search />],
+  ["/explore", () => <Explore />],
+  ["/explore/:tab", (p) => <Explore tab={p["tab"]} />],
+  ["/mood/:params", (p) => <MoodPage params={p["params"]!} />],
   ["/album/:id", (p) => <AlbumPage id={p["id"]!} />],
   ["/artist/:id", (p) => <ArtistPage id={p["id"]!} />],
   ["/playlist/:id", (p) => <PlaylistPage id={p["id"]!} />],

@@ -193,6 +193,25 @@ export interface Lyrics {
   source: string;
 }
 
+/** Mood is a mood or a genre of YouTube Music, such as Chill or Jazz. */
+export interface Mood {
+  title: string;
+  /** Params opens its page, with Client.Mood. */
+  params: string;
+}
+
+/** MoodGroup is a group of moods, such as "Moods & moments" or "Genres". */
+export interface MoodGroup {
+  title: string;
+  moods: Mood[];
+}
+
+/** MoodPage is a mood or a genre, with its shelves of playlists. */
+export interface MoodPage {
+  title: string;
+  shelves: Shelf[];
+}
+
 /**
  * NowPlaying is what the player plays, as the main window reports it to
  * the mini player, the tray and notifications.
@@ -561,6 +580,17 @@ export const Catalog = {
   artist(id: string): Promise<Artist> {
     return call("Catalog.Artist", id);
   },
+  /** Charts returns YouTube Music's charts: top songs, videos and artists. */
+  charts(): Promise<Shelf[]> {
+    return call("Catalog.Charts");
+  },
+  /**
+   * Explore returns YouTube Music's new albums and singles, trending songs
+   * and new music videos.
+   */
+  explore(): Promise<Shelf[]> {
+    return call("Catalog.Explore");
+  },
   /**
    * Home returns the shelves of the home page: the user's own, then
    * Spotify's when they signed in, then YouTube Music's.
@@ -575,6 +605,14 @@ export const Catalog = {
   lyrics(track: Track): Promise<Lyrics> {
     return call("Catalog.Lyrics", track);
   },
+  /** Mood returns the page of a mood or a genre, by the params of Moods. */
+  mood(params: string): Promise<MoodPage> {
+    return call("Catalog.Mood", params);
+  },
+  /** Moods returns the moods and the genres to browse YouTube Music by. */
+  moods(): Promise<MoodGroup[]> {
+    return call("Catalog.Moods");
+  },
   /**
    * Playlist returns a playlist with its tracks, of any service or made in
    * MixMusic.
@@ -588,6 +626,14 @@ export const Catalog = {
    */
   radio(track: Track): Promise<Track[]> {
     return call("Catalog.Radio", track);
+  },
+  /**
+   * Related returns what YouTube Music relates to a track: songs, playlists,
+   * other performances and similar artists. A Spotify track shows what
+   * relates to its recording on YouTube Music.
+   */
+  related(track: Track): Promise<Shelf[]> {
+    return call("Catalog.Related", track);
   },
   /** Search searches YouTube Music, and Spotify when the user signed in. */
   search(query: string): Promise<SearchResponse> {

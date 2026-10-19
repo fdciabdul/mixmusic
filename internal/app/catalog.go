@@ -11,6 +11,7 @@ import (
 	"github.com/fzn0x/mixmusic/internal/lyrics"
 	"github.com/fzn0x/mixmusic/internal/match"
 	"github.com/fzn0x/mixmusic/internal/media"
+	"github.com/fzn0x/mixmusic/internal/youtube"
 )
 
 // shelfTimeout bounds how long the home page waits for each service.
@@ -238,4 +239,55 @@ func (c *Catalog) youtubeLyrics(ctx context.Context, track media.Track) (lyrics.
 		return lyrics.Lyrics{}, err
 	}
 	return lyrics.Plain(text, strings.TrimPrefix(source, "Source: ")), nil
+}
+
+// Explore returns YouTube Music's new albums and singles, trending songs
+// and new music videos.
+func (c *Catalog) Explore(ctx context.Context) ([]media.Shelf, error) {
+	return c.a.youtube.Explore(ctx)
+}
+
+// Charts returns YouTube Music's charts: top songs, videos and artists.
+func (c *Catalog) Charts(ctx context.Context) ([]media.Shelf, error) {
+	return c.a.youtube.Charts(ctx)
+}
+
+// Moods returns the moods and the genres to browse YouTube Music by.
+func (c *Catalog) Moods(ctx context.Context) ([]youtube.MoodGroup, error) {
+	return c.a.youtube.Moods(ctx)
+}
+
+// MoodPage is a mood or a genre, with its shelves of playlists.
+type MoodPage struct {
+	Title   string        `json:"title"`
+	Shelves []media.Shelf `json:"shelves"`
+}
+
+// Mood returns the page of a mood or a genre, by the params of Moods.
+func (c *Catalog) Mood(ctx context.Context, params string) (MoodPage, error) {
+	title, shelves, err := c.a.youtube.Mood(ctx, params)
+	return MoodPage{Title: title, Shelves: shelves}, err
+}
+
+// Related returns what YouTube Music relates to a track: songs, playlists,
+// other performances and similar artists. A Spotify track shows what
+// relates to its recording on YouTube Music.
+func (c *Catalog) Related(ctx context.Context, track media.Track) ([]media.Shelf, error) {
+	seed, err := c.a.matcher.Match(ctx, track)
+	if err != nil {
+		return nil, err
+	}
+	if shelves, ok := c.a.related.get(seed.ID); ok {
+		return shelves, nil
+	}
+	_, videoID, err := media.ParseID(seed.ID)
+	if err != nil {
+		return nil, err
+	}
+	shelves, err := c.a.youtube.Related(ctx, videoID)
+	if err != nil {
+		return nil, err
+	}
+	c.a.related.put(seed.ID, shelves)
+	return shelves, nil
 }
