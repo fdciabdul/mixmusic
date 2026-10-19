@@ -6,6 +6,12 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-19
+
+Your own YouTube Music in MixMusic, an explore page, Last.fm and Discord, and
+updates that install themselves. MixMusic 0.1.0 cannot update itself, so
+install this version by hand once; the versions after it come to the app.
+
 ### Added
 
 - Sign in to YouTube Music, in a window showing Google's own page: your home
@@ -59,5 +65,6 @@ player, for macOS, Windows and Linux.
 - Apps for macOS 12 and later (Apple silicon and Intel), Windows 10 and 11,
   and Linux, on x64 and Arm64.
 
-[Unreleased]: https://github.com/fzn0x/mixmusic/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/fzn0x/mixmusic/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/fzn0x/mixmusic/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/fzn0x/mixmusic/releases/tag/v0.1.0
