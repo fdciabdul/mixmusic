@@ -6,6 +6,10 @@
 
 <p align="center"><strong>Spotify and YouTube Music in one player, shaped the way you like it.</strong></p>
 
+<p align="center">
+  <img src="docs/screenshot.png" alt="MixMusic on Windows in the Aurora theme: the home page, with AURORA's Runaway playing and up next beside it" />
+</p>
+
 MixMusic is an open-source desktop music player for macOS, Windows and Linux. One
 search looks through YouTube Music and Spotify at once, one queue mixes
 tracks of both, and one library keeps liked songs and playlists that hold
