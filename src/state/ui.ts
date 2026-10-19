@@ -12,6 +12,14 @@ export function togglePanel(panel: Exclude<SidePanel, null>): void {
   local.set("mm.panel", sidePanel.value);
 }
 
+/** lyricsPlain shows synchronized lyrics as plain text, without following the song. */
+export const lyricsPlain = signal<boolean>(local.get("mm.lyricsPlain", false));
+
+export function setLyricsPlain(plain: boolean): void {
+  lyricsPlain.value = plain;
+  local.set("mm.lyricsPlain", plain);
+}
+
 // Toasts.
 
 export interface Toast {

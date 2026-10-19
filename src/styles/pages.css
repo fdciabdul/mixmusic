@@ -241,6 +241,16 @@
   transform: scale(1.04);
 }
 
+.mm-lyrics-mode {
+  align-self: flex-start;
+  margin: 0 var(--mm-space-3) var(--mm-space-3);
+}
+
+/* In the panel the lines sit inside the panel body's own padding. */
+.mm-panel .mm-lyrics-mode {
+  margin-left: calc(var(--mm-space-3) * 2);
+}
+
 .mm-lyrics-source {
   margin-top: var(--mm-space-5);
   font-family: var(--mm-font-body);

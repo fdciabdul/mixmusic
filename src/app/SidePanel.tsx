@@ -5,7 +5,7 @@ import { SourceMark } from "../components/SourceMark";
 import { Bars } from "../components/TrackList";
 import * as player from "../player/player";
 import { artwork, artists, duration, errorMessage } from "../lib/format";
-import { openMenu, sidePanel, togglePanel } from "../state/ui";
+import { lyricsPlain, openMenu, setLyricsPlain, sidePanel, togglePanel } from "../state/ui";
 import { trackMenu } from "../lib/trackMenu";
 import { Catalog, type Lyrics as LyricsData, type Track } from "../mygo";
 
@@ -160,8 +160,10 @@ export function Lyrics({ compact }: { compact?: boolean }) {
   const lastUserScroll = useRef(0);
   const lyrics = state.lyrics;
   const pos = player.position.value;
+  // Synchronized lyrics follow the song unless the user asked for plain text.
+  const synced = !!lyrics?.synced && !lyricsPlain.value;
   let activeLine = -1;
-  if (lyrics?.synced) {
+  if (lyrics && synced) {
     for (let i = 0; i < lyrics.lines.length; i++) {
       if (lyrics.lines[i]!.timeMs <= pos + 250) activeLine = i;
       else break;
@@ -185,14 +187,14 @@ export function Lyrics({ compact }: { compact?: boolean }) {
   else if (lyrics.instrumental) body = <p class="mm-empty-line">This track is instrumental.</p>;
   else
     body = (
-      <div class="mm-lyrics" data-synced={lyrics.synced || undefined}>
+      <div class="mm-lyrics" data-synced={synced || undefined}>
         {lyrics.lines.map((l, i) => (
           <p
             key={i}
             data-line={i}
             class="mm-lyric"
             data-state={i === activeLine ? "now" : i < activeLine ? "past" : undefined}
-            onClick={() => lyrics.synced && void player.seek(l.timeMs)}
+            onClick={() => synced && void player.seek(l.timeMs)}
           >
             {l.text || "♪"}
           </p>
@@ -201,13 +203,25 @@ export function Lyrics({ compact }: { compact?: boolean }) {
       </div>
     );
   return (
-    <div
-      class={`mm-scroll ${compact ? "mm-panel-body" : "mm-lyrics-page"}`}
-      ref={scroller}
-      onWheel={() => (lastUserScroll.current = Date.now())}
-    >
-      {body}
-    </div>
+    <>
+      {lyrics?.synced && !lyrics.instrumental && (
+        <div class="mm-segmented mm-lyrics-mode" role="radiogroup" aria-label="Show lyrics as">
+          <button type="button" role="radio" aria-checked={!lyricsPlain.value} onClick={() => setLyricsPlain(false)}>
+            synced
+          </button>
+          <button type="button" role="radio" aria-checked={lyricsPlain.value} onClick={() => setLyricsPlain(true)}>
+            plain text
+          </button>
+        </div>
+      )}
+      <div
+        class={`mm-scroll ${compact ? "mm-panel-body" : "mm-lyrics-page"}`}
+        ref={scroller}
+        onWheel={() => (lastUserScroll.current = Date.now())}
+      >
+        {body}
+      </div>
+    </>
   );
 }
 
