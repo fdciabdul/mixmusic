@@ -39,10 +39,14 @@ type Client struct {
 	// OnCookies is called with the session's cookies when YouTube changed
 	// some, so that the app keeps the session fresh.
 	OnCookies func([]*http.Cookie)
+	// OnRejected is called, once, when YouTube stops accepting the
+	// session, so that the app asks the user to sign in again.
+	OnRejected func()
 
-	mu      sync.Mutex
-	visitor string         // the visitor ID YouTube assigned, sent back to it
-	cookies []*http.Cookie // the signed-in session, if any
+	mu       sync.Mutex
+	visitor  string         // the visitor ID YouTube assigned, sent back to it
+	cookies  []*http.Cookie // the signed-in session, if any
+	rejected bool           // YouTube answered the session as a visitor
 }
 
 // New returns a client for YouTube Music in English, for the US.
@@ -115,13 +119,16 @@ func (c *Client) call(ctx context.Context, endpoint string, body map[string]any,
 		req.Header.Set("X-Goog-Visitor-Id", v)
 	}
 	now := time.Now()
-	c.signRequest(req, now)
+	signed := c.signRequest(req, now)
 	res, err := c.HTTP.Do(req)
 	if err != nil {
 		return node{}, fmt.Errorf("youtube music: %w", err)
 	}
 	defer res.Body.Close()
 	c.keepCookies(res.Cookies(), now)
+	if signed && (res.StatusCode == http.StatusUnauthorized || res.StatusCode == http.StatusForbidden) {
+		c.reject()
+	}
 	raw, err := io.ReadAll(io.LimitReader(res.Body, 32<<20))
 	if err != nil {
 		return node{}, fmt.Errorf("youtube music: %w", err)
@@ -140,7 +147,26 @@ func (c *Client) call(ctx context.Context, endpoint string, body map[string]any,
 	if v := n.get("responseContext", "visitorData").str(); v != "" {
 		c.setVisitorID(v)
 	}
+	if signed && accountEndpoints[endpoint] && loggedOut(n) {
+		c.reject()
+	}
 	return n, nil
+}
+
+// accountEndpoints are those whose answer says whether YouTube took the
+// session: the account's menu and the pages of its library.
+var accountEndpoints = map[string]bool{"browse": true, "account/account_menu": true}
+
+// loggedOut reports whether YouTube answered as to a visitor, signed out.
+func loggedOut(n node) bool {
+	for _, s := range n.get("responseContext", "serviceTrackingParams").list() {
+		for _, p := range s.get("params").list() {
+			if p.get("key").str() == "logged_in" {
+				return p.get("value").str() == "0"
+			}
+		}
+	}
+	return false
 }
 
 func (c *Client) visitorID() string {

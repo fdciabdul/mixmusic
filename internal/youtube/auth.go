@@ -24,6 +24,7 @@ func (c *Client) SetCookies(cookies []*http.Cookie) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.cookies = nil
+	c.rejected = false
 	for _, ck := range cookies {
 		if ck != nil && ck.Name != "" {
 			copy := *ck
@@ -51,6 +52,38 @@ func (c *Client) SignedIn() bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return signingCookie(c.cookies) != ""
+}
+
+// Rejected reports whether YouTube stopped accepting the session: it ended
+// it, as when the user signed out of Google everywhere.
+func (c *Client) Rejected() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.rejected
+}
+
+// reject records that YouTube stopped accepting the session, and tells
+// OnRejected the first time.
+func (c *Client) reject() {
+	c.mu.Lock()
+	first := !c.rejected && signingCookie(c.cookies) != ""
+	c.rejected = true
+	fn := c.OnRejected
+	c.mu.Unlock()
+	if first && fn != nil {
+		go fn()
+	}
+}
+
+// session returns why what needs the account cannot be done, or nil.
+func (c *Client) session() error {
+	if !c.SignedIn() {
+		return ErrSignedOut
+	}
+	if c.Rejected() {
+		return ErrSessionRejected
+	}
+	return nil
 }
 
 // signingCookie returns the value of the cookie that signs requests.
@@ -97,18 +130,19 @@ func cookieHeader(cookies []*http.Cookie, now time.Time) string {
 }
 
 // signRequest adds the user's cookies and signature to a request, when the
-// client is signed in.
-func (c *Client) signRequest(req *http.Request, now time.Time) {
+// client is signed in, and reports whether it did.
+func (c *Client) signRequest(req *http.Request, now time.Time) bool {
 	c.mu.Lock()
 	cookies := c.cookies
 	c.mu.Unlock()
 	if signingCookie(cookies) == "" {
-		return
+		return false
 	}
 	req.Header.Set("Cookie", cookieHeader(cookies, now))
 	req.Header.Set("Authorization", authorization(cookies, now, defaultBaseURL))
 	req.Header.Set("X-Goog-AuthUser", "0")
 	req.Header.Set("X-Origin", defaultBaseURL)
+	return true
 }
 
 // keepCookies merges the cookies a response set into the session, and

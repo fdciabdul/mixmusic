@@ -11,6 +11,14 @@ import (
 // ErrSignedOut is returned for what needs the user signed in.
 var ErrSignedOut = errors.New("youtube music: sign in to YouTube Music first")
 
+// ErrSessionRejected is returned for what needs the account once YouTube
+// stopped accepting the session.
+var ErrSessionRejected = errors.New("YouTube Music no longer accepts this sign-in")
+
+// maxLibraryPages bounds how many pages of a library list are read, of
+// about two dozen playlists, albums or artists each.
+const maxLibraryPages = 40
+
 // likedSongs is the playlist ID of the user's liked songs.
 const likedSongs = "LM"
 
@@ -23,10 +31,13 @@ type Account struct {
 
 // Account returns the account the client is signed in as.
 func (c *Client) Account(ctx context.Context) (Account, error) {
-	if !c.SignedIn() {
-		return Account{}, ErrSignedOut
+	if err := c.session(); err != nil {
+		return Account{}, err
 	}
 	n, err := c.call(ctx, "account/account_menu", map[string]any{}, nil)
+	if err == nil {
+		err = c.session()
+	}
 	if err != nil {
 		return Account{}, err
 	}
@@ -48,10 +59,14 @@ func parseAccount(n node) Account {
 
 // LikedSongs returns the user's liked songs on YouTube Music.
 func (c *Client) LikedSongs(ctx context.Context) (media.Playlist, error) {
-	if !c.SignedIn() {
-		return media.Playlist{}, ErrSignedOut
+	if err := c.session(); err != nil {
+		return media.Playlist{}, err
 	}
-	return c.Playlist(ctx, likedSongs)
+	p, err := c.Playlist(ctx, likedSongs)
+	if err == nil {
+		err = c.session()
+	}
+	return p, err
 }
 
 // LibraryPlaylists returns the playlists the user made or saved.
@@ -91,12 +106,16 @@ func (c *Client) LibraryArtists(ctx context.Context) ([]media.Artist, error) {
 	return artists, err
 }
 
-// libraryItems returns the items of a page of the user's library.
+// libraryItems returns the items of a list of the user's library, page
+// after page.
 func (c *Client) libraryItems(ctx context.Context, browseID string) ([]media.Item, error) {
-	if !c.SignedIn() {
-		return nil, ErrSignedOut
+	if err := c.session(); err != nil {
+		return nil, err
 	}
 	n, err := c.browse(ctx, browseID)
+	if err == nil {
+		err = c.session()
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +123,68 @@ func (c *Client) libraryItems(ctx context.Context, browseID string) ([]media.Ite
 	for _, s := range parseShelves(n) {
 		items = append(items, s.Items...)
 	}
+	token := listToken(n)
+	for page := 1; token != "" && page < maxLibraryPages; page++ {
+		more, err := c.call(ctx, "browse", map[string]any{"continuation": token}, nil)
+		if err != nil {
+			break // keep the items read so far
+		}
+		var contents []node
+		contents, token = listContinuation(more)
+		items = append(items, parseItems(contents)...)
+	}
 	return items, nil
+}
+
+// listToken returns the token of the next page of the grid or the list of
+// a browse page, if it has more.
+func listToken(n node) string {
+	var find func(sections node) string
+	find = func(sections node) string {
+		for _, s := range sections.list() {
+			if inner := s.get("itemSectionRenderer", "contents"); inner.exists() {
+				if token := find(inner); token != "" {
+					return token
+				}
+				continue
+			}
+			if grid := s.get("gridRenderer"); grid.exists() {
+				return shelfToken(grid, grid.get("items").list())
+			}
+			if list := s.get("musicShelfRenderer"); list.exists() {
+				return shelfToken(list, list.get("contents").list())
+			}
+		}
+		return ""
+	}
+	return find(n.get("contents", "singleColumnBrowseResultsRenderer", "tabs", 0, "tabRenderer", "content", "sectionListRenderer", "contents"))
+}
+
+// listContinuation returns the items of the next page of a grid or a list,
+// and the token of the page after it.
+func listContinuation(n node) ([]node, string) {
+	if items := n.get("onResponseReceivedActions", 0, "appendContinuationItemsAction", "continuationItems").list(); len(items) > 0 {
+		return items, continuationToken(items[len(items)-1])
+	}
+	if grid := n.get("continuationContents", "gridContinuation"); grid.exists() {
+		items := grid.get("items").list()
+		return items, shelfToken(grid, items)
+	}
+	list := n.get("continuationContents", "musicShelfContinuation")
+	contents := list.get("contents").list()
+	return contents, shelfToken(list, contents)
+}
+
+// shelfToken returns the token of a grid's or a list's next page: in its
+// continuations, or in the continuation item that closes its items.
+func shelfToken(shelf node, items []node) string {
+	if token := shelf.get("continuations", 0, "nextContinuationData", "continuation").str(); token != "" {
+		return token
+	}
+	if len(items) > 0 {
+		return continuationToken(items[len(items)-1])
+	}
+	return ""
 }
 
 // SetLiked likes a track on YouTube Music, by its video ID, or takes the
@@ -120,8 +200,8 @@ func (c *Client) SetSaved(ctx context.Context, playlistID string, saved bool) er
 }
 
 func (c *Client) rate(ctx context.Context, target map[string]any, on bool) error {
-	if !c.SignedIn() {
-		return ErrSignedOut
+	if err := c.session(); err != nil {
+		return err
 	}
 	endpoint := "like/removelike"
 	if on {
@@ -134,8 +214,8 @@ func (c *Client) rate(ctx context.Context, target map[string]any, on bool) error
 // SetSubscribed subscribes the user to an artist, by its channel ID, or
 // unsubscribes them.
 func (c *Client) SetSubscribed(ctx context.Context, channelID string, on bool) error {
-	if !c.SignedIn() {
-		return ErrSignedOut
+	if err := c.session(); err != nil {
+		return err
 	}
 	endpoint := "subscription/unsubscribe"
 	if on {

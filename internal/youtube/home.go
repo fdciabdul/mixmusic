@@ -6,6 +6,10 @@ import (
 	"github.com/fzn0x/mixmusic/internal/media"
 )
 
+// maxHomePages bounds how many pages of shelves of home are read: YouTube
+// sends its home a few shelves at a time.
+const maxHomePages = 6
+
 // Home returns the shelves of YouTube Music's home page: quick picks,
 // mixes, albums and playlists. Signed in, they are the user's own.
 func (c *Client) Home(ctx context.Context) ([]media.Shelf, error) {
@@ -13,7 +17,19 @@ func (c *Client) Home(ctx context.Context) ([]media.Shelf, error) {
 	if err != nil {
 		return nil, err
 	}
-	return parseShelves(n), nil
+	shelves := parseShelves(n)
+	list := n.get("contents", "singleColumnBrowseResultsRenderer", "tabs", 0, "tabRenderer", "content", "sectionListRenderer")
+	token := list.get("continuations", 0, "nextContinuationData", "continuation").str()
+	for page := 1; token != "" && page < maxHomePages; page++ {
+		more, err := c.call(ctx, "browse", map[string]any{"continuation": token}, nil)
+		if err != nil {
+			break // keep the shelves read so far
+		}
+		next := more.get("continuationContents", "sectionListContinuation")
+		shelves = append(shelves, sectionShelves(next.get("contents"))...)
+		token = next.get("continuations", 0, "nextContinuationData", "continuation").str()
+	}
+	return shelves, nil
 }
 
 // parseShelves reads the carousels and grids of a browse page.
