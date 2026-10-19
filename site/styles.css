@@ -274,6 +274,24 @@ a.pivot:hover { color: color-mix(in srgb, var(--ink) 70%, transparent); }
 .note { margin-top: 28px; max-width: 70ch; color: var(--muted); font-size: 0.9375rem; }
 .copy .note { margin-top: 4px; }
 
+/* What the next release brings, in the registry chip's outline, so the
+   accent stays with what is current; app.js takes the marks away once that
+   release is out. */
+.soon {
+  display: inline-block;
+  padding: 1px 8px 2px;
+  color: var(--ink);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  white-space: nowrap;
+  vertical-align: 0.08em;
+  box-shadow: inset 0 0 0 1px var(--outline);
+}
+.copy > .soon-line { margin-top: -6px; }
+.soon-line .soon { font-size: 0.8125rem; white-space: normal; }
+
+.shot-wide { margin-top: clamp(28px, 3vw, 44px); }
+
 .sub {
   font-size: clamp(1.75rem, 2.2vw, 2.125rem);
   line-height: 1.1;
@@ -591,6 +609,14 @@ kbd {
   .upnext-list .tile-thumb svg { width: 18px; height: 18px; }
   .upnext-list strong { font-size: 0.9375rem; }
   .upnext-list small { font-size: 0.75rem; }
+}
+/* Shorter still: the rows drop their captions, so every one stays in view. */
+@media (max-height: 780px) {
+  .upnext { padding-top: 14px; }
+  .upnext-list a { grid-template-columns: 28px minmax(0, 1fr); align-items: center; }
+  .upnext-list .tile-thumb { width: 28px; height: 28px; }
+  .upnext-list .tile-thumb svg { width: 16px; height: 16px; }
+  .upnext-list small { display: none; }
 }
 
 .tile-thumb { display: grid; place-items: center; flex: none; }

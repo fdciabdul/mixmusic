@@ -292,6 +292,9 @@
       const rel = await res.json();
       const version = String(rel.tag_name || "").replace(/^v/, "");
       if (!version) return;
+      // The page was built with the release in data-version; a newer one
+      // carries what the page marks as the next release.
+      if (version !== $("[data-version]").textContent.trim()) $$("[data-soon]").forEach((el) => el.remove());
       for (const file of $$(".dl-file[data-asset]")) {
         const suffix = file.dataset.asset;
         const found = (rel.assets || []).find((x) => x.name === suffix || x.name.endsWith(`-${suffix}`));

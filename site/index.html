@@ -42,6 +42,14 @@
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5 9.5 17.5 19.5 6.5" /></symbol>
     <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5 19.5 6.5v5.5c0 4.4-3.2 7.7-7.5 9-4.3-1.3-7.5-4.6-7.5-9V6.5zM8.8 12.2l2.3 2.3 4.3-4.6" /></symbol>
     <symbol id="i-terminal" viewBox="0 0 24 24"><path d="M3.5 5h17v14h-17zM7 9.5l3 2.5-3 2.5M12 15h5" /></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><path d="M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17ZM15.5 8.5l-2 5-5 2 2-5z" /></symbol>
+    <symbol id="i-account" viewBox="0 0 24 24"><path d="M12 11.5a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5ZM4.5 20.5c.9-3.6 3.9-5.8 7.5-5.8s6.6 2.2 7.5 5.8" /></symbol>
+    <symbol id="i-disc" viewBox="0 0 24 24"><path d="M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17ZM12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3.5 20.5h17M6.5 17v-5M10.5 17V6.5M14.5 17v-8M18.5 17v-3.5" /></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" /></symbol>
+    <symbol id="i-related" viewBox="0 0 24 24"><path d="M6.5 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM17.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM17.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM8.7 10.8l6.6-3.6M8.7 13.2l6.6 3.6" /></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M2.5 12h4l2.5-6.5 4 13 3-8.5 1.5 2h4" /></symbol>
+    <symbol id="i-status" viewBox="0 0 24 24"><path d="M3.5 5h17v14h-17zM8 11.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM5.5 16c.5-1.5 1.5-2.2 2.5-2.2s2 .7 2.5 2.2M13 9.5h4.5M13 13h3" /></symbol>
   </svg>
 
   <header class="top">
@@ -154,11 +162,61 @@
             <figcaption>A mix you named, ordered your way.</figcaption>
           </figure>
           <figure class="shot mosaic-c">
-            <img src="assets/shots/stats.webp" width="1920" height="1125" loading="lazy" alt="The stats page for this week: tracks played and time listened, a circle for each service, and top artists drawn as circles sized by plays." />
-            <figcaption>What you listened to, by service and artist.</figcaption>
+            <img src="assets/shots/stats.webp" width="1920" height="1125" loading="lazy" alt="The stats page for this week: 60 tracks for 4 hours 16 minutes, all from YouTube Music, and a day by day chart of cyan bars for the minutes listened from Tuesday to today, 47 minutes today." />
+            <figcaption>Your week in minutes, day by day, with a table view too. <span class="soon" data-soon>next release</span></figcaption>
           </figure>
         </div>
-        <p class="note">Import a Spotify or YouTube Music playlist into a mix and keep adding to it from either service. The screenshots show a demo library.</p>
+        <p class="note">Import a Spotify or YouTube Music playlist into a mix and keep adding to it from either service. Search inside a playlist, a mix or your liked songs, and sort them by title, artist or length. <span class="soon" data-soon>next release</span> The screenshots show a demo library.</p>
+      </section>
+
+      <!-- explore -->
+      <section class="track" id="explore" data-track="explore" data-caption="new, charts, moods" data-tone="4" data-icon="compass">
+        <div class="word-frame"><h2 class="word">explore</h2></div>
+        <p class="pivots pivots-section" aria-label="In this section: new, charts, moods and genres, related"><span class="pivot is-current">new</span><span class="pivot">charts</span><span class="pivot">moods &amp; genres</span><span class="pivot">related</span></p>
+        <div class="split">
+          <div class="copy">
+            <p class="lead">Somewhere to find what you have not heard yet.</p>
+            <p class="soon-line" data-soon><span class="soon">new in the next release</span></p>
+            <ul class="rows">
+              <li><span class="box" aria-hidden="true"><svg width="20" height="20"><use href="#i-disc" /></svg></span><div><strong>New albums and singles</strong><span>What came out lately, and the songs trending now.</span></div></li>
+              <li><span class="box" aria-hidden="true"><svg width="20" height="20"><use href="#i-chart" /></svg></span><div><strong>The charts</strong><span>The top videos and artists of your country.</span></div></li>
+              <li><span class="box" aria-hidden="true"><svg width="20" height="20"><use href="#i-grid" /></svg></span><div><strong>Moods and genres</strong><span>Chill, focus, workout and dozens more, each a tile that opens its playlists.</span></div></li>
+              <li><span class="box" aria-hidden="true"><svg width="20" height="20"><use href="#i-related" /></svg></span><div><strong>Related</strong><span>Under now playing: songs, playlists and artists like what you hear.</span></div></li>
+            </ul>
+            <p class="note">Explore comes from YouTube Music, so it needs no account.</p>
+          </div>
+          <figure class="shot">
+            <img src="assets/shots/explore.webp" width="1920" height="1125" loading="lazy" alt="The explore page on moods and genres: the pivots new, charts and moods and genres, and flat cyan, magenta, lime and amber tiles for chill, commute, energize, feel good, focus, gaming, party, romance, sad, sleep and workout." />
+            <figcaption>Moods and genres, each tile a door to its playlists.</figcaption>
+          </figure>
+        </div>
+        <figure class="shot shot-wide">
+          <img src="assets/shots/related.webp" width="1920" height="1125" loading="lazy" alt="The foot of the now playing page for Let It Happen by Tame Impala: a shelf of similar artists, MGMT, Foster The People, Midnight Juggernauts, Men I Trust and The Strokes, and a shelf of Tame Impala albums from Deadbeat to InnerSpeaker." />
+          <figcaption>Related, at the foot of now playing: artists like this one, and the rest of its albums.</figcaption>
+        </figure>
+      </section>
+
+      <!-- accounts -->
+      <section class="track" id="accounts" data-track="your accounts" data-caption="your feed and library, in sync" data-tone="2" data-icon="account">
+        <div class="word-frame"><h2 class="word">accounts</h2></div>
+        <p class="pivots pivots-section" aria-label="In this section: youtube music, spotify, last.fm, discord"><span class="pivot is-current">youtube music</span><span class="pivot">spotify</span><span class="pivot">last.fm</span><span class="pivot">discord</span></p>
+        <div class="split split-flip">
+          <figure class="shot">
+            <img src="assets/shots/accounts.webp" width="1920" height="1125" loading="lazy" alt="Settings, accounts: the youtube music group with its sign in to youtube music button and a note that MixMusic never sees your password, and the last.fm group with three steps and fields for the API key and the shared secret." />
+            <figcaption>Settings › Accounts, where you sign in to YouTube Music and connect Last.fm.</figcaption>
+          </figure>
+          <div class="copy">
+            <p class="lead">Sign in, and your own music comes along.</p>
+            <p class="soon-line" data-soon><span class="soon">YouTube Music, Last.fm and Discord: new in the next release</span></p>
+            <ul class="rows">
+              <li><span class="box" aria-hidden="true"><span class="mark mark-youtube mark-big"></span></span><div><strong>YouTube Music</strong><span>Your home feed, your liked songs, playlists, albums and artists, and the audio quality of your account. You sign in on Google's own page, so MixMusic never sees your password.</span></div></li>
+              <li><span class="box" aria-hidden="true"><span class="mark mark-spotify mark-big"></span></span><div><strong>Spotify</strong><span>Your library there, once you sign in with an app of your own from Spotify's developer dashboard.</span></div></li>
+              <li><span class="box" aria-hidden="true"><svg width="20" height="20"><use href="#i-pulse" /></svg></span><div><strong>Last.fm</strong><span>Every track you hear joins your profile, and plays made offline go out once you are back. It takes an API account of your own from Last.fm.</span></div></li>
+              <li><span class="box" aria-hidden="true"><svg width="20" height="20"><use href="#i-status" /></svg></span><div><strong>Discord</strong><span>Your profile shows what plays, with its artwork and the time left, under an application you make in Discord's developer portal.</span></div></li>
+            </ul>
+            <p class="note">Like a song, save an album or a playlist, or follow an artist, and it reaches YouTube Music or Spotify too. <span class="soon" data-soon>next release</span></p>
+          </div>
+        </div>
       </section>
 
       <!-- lyrics & sound -->
@@ -168,7 +226,7 @@
         <div class="split">
           <div class="copy">
             <p class="lead">Lyrics that follow the song, and a sound you tune.</p>
-            <p>Synced lyrics from LRCLIB and YouTube Music light up line by line on the now playing page, or beside whatever page you are on.</p>
+            <p>Synced lyrics from LRCLIB and YouTube Music light up line by line on the now playing page, or beside whatever page you are on. To read them whole, show them as plain text. <span class="soon" data-soon>next release</span></p>
           </div>
           <figure class="shot">
             <img src="assets/shots/nowplaying.webp" width="1920" height="1125" loading="lazy" alt="The now playing page for Instant Crush by Daft Punk and Julian Casablancas: the album sleeve with a visualizer, the current lyric lines, and the lyrics panel on the right." />
@@ -202,7 +260,8 @@
               <div><dt><kbd data-mod>Ctrl</kbd><kbd>J</kbd></dt><dd>show the queue</dd></div>
               <div><dt><kbd data-mod>Ctrl</kbd><kbd>M</kbd></dt><dd>mini player</dd></div>
             </dl>
-            <p>The tray, media keys, desktop notifications, a mini player, start at login and <code>mixmusic://</code> links do the everyday work while the window stays closed.</p>
+            <p>Every key is yours to change in Settings › Shortcuts, plugins' commands too. <span class="soon" data-soon>next release</span></p>
+            <p>The tray, media keys, desktop notifications, a mini player, start at login and <code>mixmusic://</code> links do the everyday work while the window stays closed. MixMusic looks for a new version once a day, checks its signature, and installs it when you agree, or by itself if you choose. <span class="soon" data-soon>next release</span></p>
           </div>
         </div>
       </section>
@@ -252,6 +311,8 @@
             </button>
           </div>
         </div>
+
+        <p class="note">Follow the computer: choose a theme for its light mode and one for its dark mode, and MixMusic switches with it. <span class="soon" data-soon>next release</span></p>
 
         <div class="split split-code">
           <div class="copy">
@@ -430,7 +491,7 @@
           </a>
         </div>
         <div class="fine">
-          <p>MixMusic is free software under the <a href="https://github.com/fzn0x/mixmusic/blob/main/LICENSE">MIT license</a>, made by MixMusic contributors. The screenshots show MixMusic 0.1.0 on Windows with a demo library.</p>
+          <p>MixMusic is free software under the <a href="https://github.com/fzn0x/mixmusic/blob/main/LICENSE">MIT license</a>, made by MixMusic contributors. The screenshots show MixMusic on Windows with a demo library<span data-soon>: version 0.1.0, and the next release where marked</span>.</p>
           <p>Spotify is a trademark of Spotify AB, and YouTube Music a trademark of Google LLC. MixMusic is not affiliated with, endorsed by or sponsored by either.</p>
         </div>
       </footer>
