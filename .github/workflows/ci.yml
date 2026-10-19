@@ -65,3 +65,9 @@ jobs:
         if: startsWith(matrix.platform, 'windows/')
         run: sudo apt-get update && sudo apt-get install -y nsis
       - run: bun run build -- -platform "${{ matrix.platform }}"
+      # The release makes these from the builds too: try it on every change.
+      - name: Package the portable zip, the RPM and the AppImage
+        if: ${{ !startsWith(matrix.platform, 'darwin/') }}
+        run: |
+          bash .github/scripts/package.sh "$(jq -r .version package.json)" packages
+          ls -l packages

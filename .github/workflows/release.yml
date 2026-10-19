@@ -49,8 +49,11 @@ jobs:
         include:
           # The disk image needs macOS. Ubuntu cross-compiles the others.
           - { name: macOS, os: macos-latest, platform: "darwin/universal", files: 1 }
-          - { name: Windows, os: ubuntu-latest, platform: "windows/amd64,windows/arm64", files: 2 }
-          - { name: Linux, os: ubuntu-latest, platform: "linux/amd64,linux/arm64", files: 5 }
+          # Two installers and two portable zips.
+          - { name: Windows, os: ubuntu-latest, platform: "windows/amd64,windows/arm64", files: 4 }
+          # For each of two architectures a .deb, an .rpm, an AppImage and an
+          # archive, and install.sh.
+          - { name: Linux, os: ubuntu-latest, platform: "linux/amd64,linux/arm64", files: 9 }
     steps:
       - uses: actions/checkout@v7
         with:
@@ -68,6 +71,9 @@ jobs:
           # Signs the update files; without it the build skips them.
           MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
         run: bun run build -- -platform "${{ matrix.platform }}"
+      - name: Package the portable zips, the RPMs and the AppImages
+        if: matrix.name != 'macOS'
+        run: bash .github/scripts/package.sh "${TAG#v}" release
       - name: Name the downloads
         shell: bash
         run: |
