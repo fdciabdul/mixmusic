@@ -34,18 +34,25 @@ bundled browser to download or keep in memory.
 - **One queue.** Play a Spotify track after a YouTube Music one, shuffle and
   repeat across both, and let a radio carry on when the queue runs out.
 - **Your mixes.** Playlists that hold tracks of every service, liked songs
-  across both, import of a service's playlist into a mix, history and
-  listening stats.
+  across both, import of a service's playlist into a mix, search and sort
+  inside any of them, history and listening stats day by day.
+- **Your accounts.** Sign in to YouTube Music for your own home feed and
+  library, and to Spotify for yours; like, save albums and playlists, and
+  follow artists, and it reaches the service too.
+- **Explore.** New releases, trending songs, the charts, moods and genres,
+  and related songs under what plays.
 - **Spotify your way.** Spotify tracks play on Spotify Connect (your own
   Spotify app, at Spotify's quality), or here, from their recording on
   YouTube Music, with no Premium needed.
 - **A real player.** Crossfade, volume levelling, a 10-band equalizer with
   presets, a visualizer, synced lyrics that follow the song, and an offline
   cache of tracks you played.
-- **At home on the desktop.** Media keys, tray controls, notifications of new
-  tracks, a mini player that stays on top, start at login, `mixmusic://`
-  links.
-- **Keyboard first.** Shortcuts for everything common, and a command palette
+- **At home on the desktop.** Media keys and the system's media controls,
+  tray controls, notifications of new tracks, a mini player that stays on
+  top, start at login, `mixmusic://` links, what plays on Discord, Last.fm
+  scrobbling, and updates that install themselves.
+- **Keyboard first.** Shortcuts for everything common, keys you can change,
+  and a command palette
   (<kbd>Ctrl</kbd> <kbd>K</kbd>) for the rest.
 - **Themes.** Six built in, options per theme, an accent taken from the
   artwork playing, your own CSS, and community themes one click away.

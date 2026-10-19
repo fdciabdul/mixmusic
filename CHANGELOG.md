@@ -6,6 +6,33 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Sign in to YouTube Music, in a window showing Google's own page: your home
+  feed and library (liked songs, playlists, albums, artists), likes that reach
+  YouTube Music, and the audio quality of your account.
+- Save albums and playlists, and follow artists, on their service, YouTube
+  Music or Spotify, from their pages.
+- Explore: new albums and singles, trending songs, the charts, and moods and
+  genres, each with its playlists.
+- Related songs, playlists and artists at the foot of the now playing page.
+- Scrobbling to Last.fm, with your own API account; plays sent later when
+  offline, and a switch to pause it.
+- What plays on your Discord profile, with the artwork and the time left.
+- Updates: MixMusic checks the latest release once a day and installs it when
+  you agree, or by itself if you choose.
+- Change the keys of every command, plugins' too, in Settings › Shortcuts.
+- Follow the computer's light or dark mode with a theme for each.
+- The minutes listened day by day on the stats page, also as a table.
+- Search inside a playlist, a mix or the liked songs, and sort them by title,
+  artist or length.
+- Show synced lyrics as plain text.
+
+### Changed
+
+- Home shows YouTube Music's home feed; what was its explore page moved to
+  Explore.
+
 ## [0.1.0] - 2026-10-19
 
 The first release of **MixMusic**: Spotify and YouTube Music in one desktop

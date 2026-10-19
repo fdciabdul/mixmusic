@@ -25,10 +25,14 @@ page owns the interface and the player.
   artists, playlists, shelves. IDs carry their service: `yt:<video id>`,
   `sp:<track id>`, `mx:<mix id>`.
 - **`internal/youtube`** reads YouTube Music through the API its website uses:
-  search, suggestions, the home and explore pages, albums, artists,
-  playlists, radios and plain lyrics. Its parsers are tested against
-  recorded responses in `testdata/`, and against the live service with
-  `MIXMUSIC_LIVE=1 go test ./internal/youtube -run Live`.
+  search, suggestions, the home and explore pages, charts, moods and genres,
+  albums, artists, playlists, related tracks, radios and plain lyrics.
+  Signed in with the cookies of the user's session, which it signs its
+  requests with as the website does, it reads and changes their library:
+  liked songs, playlists, albums, subscriptions, likes and saves. Its
+  parsers are tested against recorded responses in `testdata/`, and against
+  the live service with `MIXMUSIC_LIVE=1 go test ./internal/youtube -run
+  Live` (`MIXMUSIC_YT_COOKIES` adds a signed-in account).
 - **`internal/spotify`** signs in with PKCE on a loopback callback, refreshes
   tokens, reads the Web API (search, albums, artists, playlists, the
   library) and controls Spotify Connect devices.
@@ -43,6 +47,10 @@ page owns the interface and the player.
 - **`internal/lyrics`** finds synced lyrics on LRCLIB and reads LRC.
 - **`internal/library`** keeps liked songs, mixes, the history and stats in
   `library.json`.
+- **`internal/lastfm`** signs in to Last.fm with the user's API account and
+  scrobbles by Last.fm's rules, keeping what fails offline for later.
+- **`internal/discord`** shows what plays on the user's Discord profile, over
+  Discord's local pipe or socket.
 - **`internal/addons`** validates theme and plugin manifests, lists the
   built-in and installed add-ons, serves their files at `addons://`, and
   installs add-ons from the community registry.
@@ -75,7 +83,10 @@ from the Go code; `bun run dev` and `bun run build` keep it current.
 
 Everything lives in the user's data folder (`%AppData%\MixMusic` on
 Windows, `~/.config/MixMusic` on Linux): `settings.json`, `library.json`,
-`addons/`, `bin/` (yt-dlp). The cache folder holds audio, matches and
+`addons/`, `bin/` (yt-dlp), the YouTube session (`youtube-session.bin`,
+encrypted with a key of the system's credential store, which also keeps the
+Spotify token and the Last.fm connection), the scrobbles still to send, and
+`updater.json`, the update preferences. The cache folder holds audio, matches and
 yt-dlp's cache. `MIXMUSIC_DATA_DIR` moves both into one folder, for a portable
 copy or a test run.
 
