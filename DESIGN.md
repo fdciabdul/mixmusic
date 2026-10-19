@@ -76,6 +76,50 @@ typography:
     fontSize: "0.8125rem"
     fontWeight: 400
     lineHeight: 1.5
+  site-hero-word:
+    fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
+    fontSize: "clamp(7rem, 21vw, 21rem)"
+    fontWeight: 300
+    lineHeight: 0.8
+    letterSpacing: "-0.045em"
+  site-section-word:
+    fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
+    fontSize: "clamp(5.5rem, 13vw, 13rem)"
+    fontWeight: 300
+    lineHeight: 0.86
+    letterSpacing: "-0.045em"
+  site-hook:
+    fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
+    fontSize: "clamp(1.625rem, 2.3vw, 2.375rem)"
+    fontWeight: 300
+    lineHeight: 1.12
+    letterSpacing: "-0.025em"
+  site-lead:
+    fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
+    fontSize: "clamp(1.5rem, 2.3vw, 2.125rem)"
+    fontWeight: 300
+    lineHeight: 1.18
+    letterSpacing: "-0.02em"
+  site-body:
+    fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
+    fontSize: "1.0625rem"
+    fontWeight: 400
+    lineHeight: 1.5
+  site-row-title:
+    fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 400
+    lineHeight: 1.5
+  site-row-line:
+    fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 400
+    lineHeight: 1.5
+  site-small:
+    fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.4
 rounded:
   square: "0px"
   round: "50%"
@@ -90,6 +134,8 @@ spacing:
   "8": "64px"
   row: "52px"
   page-gutter: "40px"
+  site-gutter: "clamp(20px, 3.4vw, 56px)"
+  site-section-gap: "clamp(112px, 12vw, 200px)"
 components:
   button-primary:
     backgroundColor: "{colors.accent-cyan}"
@@ -173,6 +219,39 @@ components:
     typography: "{typography.label}"
     rounded: "{rounded.square}"
     padding: "12px 12px 12px 16px"
+  site-button-large:
+    backgroundColor: "{colors.accent-cyan}"
+    textColor: "{colors.accent-ink}"
+    typography: "{typography.site-body}"
+    rounded: "{rounded.square}"
+    padding: "0 28px"
+    height: "52px"
+  site-upnext-row:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink-white}"
+    typography: "{typography.body}"
+    rounded: "{rounded.square}"
+    padding: "6px 10px"
+  site-upnext-row-playing:
+    backgroundColor: "{colors.accent-cyan}"
+    textColor: "{colors.accent-ink}"
+  site-player-bar:
+    backgroundColor: "{colors.surface-panel}"
+    textColor: "{colors.ink-white}"
+    height: "92px"
+  site-download-tile:
+    backgroundColor: "{colors.tile-cyan}"
+    textColor: "{colors.tile-ink}"
+    typography: "{typography.tile-title}"
+    rounded: "{rounded.square}"
+    padding: "18px 20px 20px"
+    height: "300px"
+  site-theme-card:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink-white}"
+    rounded: "{rounded.square}"
+    padding: "16px"
+    height: "132px"
 ---
 
 # Design System: MixMusic
@@ -254,6 +333,20 @@ The scale is multiplied by `--mm-font-scale`, the user's text size. Numbers that
 
 **The Light At Size Rule.** Everything at subtitle size and above is weight 300 with negative tracking (from -0.02em at pivots to -0.045em at the page word). Weight 600 appears only on the action inside a toast.
 
+### Marketing Site Ramp
+The landing page in `site/` reads at a larger size than the app, because it is read once rather than used for hours. Same family, same weights, same rules:
+- **Hero word** (300, clamp(7rem, 21vw, 21rem), 0.8): the single "mixmusic" that opens the page, cropped by the main column.
+- **Section word** (300, clamp(5.5rem, 13vw, 13rem), 0.86): one lowercase word per section, cropped by the column and sliding left as it scrolls, like the app's page word; it swings in 44px from the right the first time it arrives. Under a 720px viewport the hero and section words become clamp(6rem, 30vw, 9rem) and clamp(4.5rem, 24vw, 7rem).
+- **Hook** (300, clamp(1.625rem, 2.3vw, 2.375rem), 1.12): the one line under the hero that says what the player is.
+- **Lead** (300, clamp(1.5rem, 2.3vw, 2.125rem), 1.18): the opening sentence of each section, capped at 26ch (34ch when wide) and balanced.
+- **Body** (400, 1.0625rem, 1.5): marketing prose, capped at 60ch and set in ink at 80%; 1rem under a 720px viewport.
+- **Row title over row line** (400, 1.125rem over 0.9375rem in muted ink): feature rows, registry entries; the player bar's title is the row title.
+- **Small** (400, 0.875rem): meta lines, notes, download captions and labels; screenshot captions, file sizes and the fine print use the app's label size (0.8125rem).
+
+Pivots under the hero word follow the app's pivot at up to 3.25rem; under section words they step down to clamp(1.75rem, 2.6vw, 2.5rem). Subsections (such as "what it needs") use the title size, clamp(1.75rem, 2.2vw, 2.125rem), on the app's 1px accent rule.
+
+**The Reading Size Rule.** On the site, reading copy steps up one size from the app (body 1.0625rem, leads at weight 300 from 1.5 to 2.125rem with 1.12 to 1.18 leading); everything at lead size and above stays weight 300 with negative tracking, as the Light At Size Rule says.
+
 ## Layout
 
 A fixed shell grid: rail (248px, 224px compact, 76px collapsed) and a top bar of 48px across the top; the main pane, then the side panel (340px, 300px under 1100px wide) when the queue or lyrics are open; the player bar (92px, 80px compact) across the bottom. The shell clips; only the pane, the rail's library list and the panel scroll.
@@ -265,6 +358,9 @@ Spacing steps are 4, 8, 12, 16, 24, 32, 48 and 64px. Sections and shelves are 48
 Tiles live on a four-column grid capped at 1040px with an 8px gap and rows of at least 150px; tiles span 1x1, 2x1 (wide), 1x2 (tall) or 2x2 (large), packed densely. Under a 640px pane the grid becomes two columns. Shelves are rows of 172px artwork tiles with 16px gaps, snapping at the start; grids fill 164px columns. Collection heads pair a 208px cover (128px under a 720px pane) with facts aligned to its foot. Now playing pairs a 260 to 420px sleeve with the info column and stacks under 1100px.
 
 Density is a root attribute (`data-density`), the rail's state is another (`data-sidebar`); both change measures through the same variables.
+
+### Marketing Site
+The site keeps the app's shell as its layout: a top bar, a main column, a 340px "up next" column in panel black (300px under 1180px) and a fixed 92px player bar (72px under 720px). The main column sits in a fluid gutter (site-gutter); sections are separated by one generous gap (site-section-gap), never by bands or alternating backgrounds. Inside a section, copy and screenshot share an asymmetric split (5 to 7, flipped to 7 to 5 on alternate sections, 6 to 6 beside code). Tiles, download tiles and theme cards use the app's four-column grid with an 8px gap (10px between theme cards). Under 1040px the up next column goes away, splits stack and four-column grids become two; under 720px the downloads stack to one column.
 
 ## Elevation & Depth
 
@@ -345,6 +441,15 @@ A 10px shape before every track's artists: a filled disc for Spotify, a filled s
 ### Overlays
 Menus are raised grey with a hairline and the menu float shadow; items are 36px and flood with the accent on hover or focus. Toasts are inverted (an ink block with ground-coloured text) above the player bar; error toasts are coral, success toasts take the accent.
 
+### Marketing Site
+The landing page in `site/` is the player playing its own story. These patterns belong to it and are built from the app's parts.
+- **Up next column:** panel black, sticky beside the main column, titled "up next" at the 1.75rem pivot size with an accent "now playing" label, as in the app's queue column. One queue row per section: a 48px square thumb (a tile in the section's tone with its stroked icon, unprinted; 40px and 34px on short windows), a body-size title and a small muted line led by the two-rings mark. The section in view floods with the accent; sections above it drop to 74% opacity as played. The column ends on a muted line saying where the queue ends.
+- **Player bar (signature):** the app's player bar, panel black over a hairline, and it plays the page. Its thumb and title turn (a 28px turnstile, 520ms) to the section in view, its sub line names what is next, its 2px accent progress line is the scroll position (click or arrow keys to seek), the round transport steps through sections and plays them in turn, and its right end always holds the primary action: the cyan "download for <your system>" block beside an "other systems" outline.
+- **Buttons:** the app's primary and outline buttons at 44px (52px large in the hero and the close, 36px small in the top bar), the outline drawn as a 2px inset rule in outline ink.
+- **Download tiles:** flat tiles in the four tones, 300px tall: the lowercase system name as the tile title, a small caption, then one row per file (download icon, name, size) on 30% tile-ink rules. They carry no printed texture, so the file rows stay legible. The visitor's own system gets a small "for your system" tag in tile ink on the tile's tone.
+- **Theme gallery:** a large screenshot that crossfades (260ms) to the chosen theme, over a four-column row of theme cards. Each card is filled with its theme's own ground and ink, with a 1px hairline, four 22px swatches and the theme name at 1.5rem, weight 300; the current card wears the 3px accent outline offset 2px. A theme that sets its own face shows its name in that face, as a specimen of the theme, not as a face of the site.
+- **Screenshots:** real captures, full width of their column on panel black with a 1px hairline, captioned in small muted type.
+
 ### Motion
 Ease-out `cubic-bezier(0.16, 1, 0.3, 1)` with 120, 260 and 520ms steps; ease-in-out for loops. Pages enter as a turnstile: each child slides 44px in from the right, the title first and the rest 50 to 120ms behind. All durations become 0 under reduced motion, and the live tile and the equaliser bars stop.
 
@@ -358,6 +463,7 @@ Ease-out `cubic-bezier(0.16, 1, 0.3, 1)` with 120, 260 and 520ms steps; ease-in-
 - **Do** tag every track with its source mark, a shape first and a colour second.
 - **Do** take every colour, face, radius, size and measure from a `--mm-*` variable, and style through the hooks and attributes in `docs/themes.md` without renaming them.
 - **Do** keep the next track in view: the queue column, the player bar's "next" line and the live tile's back face.
+- **Do** let the site's player bar play the page: its progress is the scroll position, its title the section in view, and its primary action is always the download.
 
 ### Don't:
 - **Don't** fill a tile with a gradient, or give tiles, artwork, rows or panels a shadow or bevel; shadows are for menus and toasts only.
