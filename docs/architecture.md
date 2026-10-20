@@ -41,6 +41,14 @@ page owns the interface and the player.
   it until its URL expires, and serves it at `stream://localhost/yt/<id>`:
   range requests, chunked fetches from YouTube, a new URL when YouTube
   refuses the old one, and an on-disk cache of tracks played to their end.
+- **`internal/webm`** reads the audio of WebM files, as YouTube serves it:
+  the packets of the first audio track with their times, and seeking by the
+  Cues, reading a file played from its start straight through.
+- **`internal/opus`** decodes Opus: a pure Go port of libopus 1.6.1's decoder
+  (`celt`, `silk` and the range decoder `rangedec`), which decodes the test
+  vectors of RFC 8251 as libopus does, bit for bit. With `internal/webm`, it
+  is the base of a player that decodes YouTube's audio itself, outside the
+  webview.
 - **`internal/tools`** finds yt-dlp and a JavaScript runtime, and installs
   yt-dlp from its releases, checked against their published checksums.
 - **`internal/match`** finds a Spotify track's recording on YouTube Music, by
