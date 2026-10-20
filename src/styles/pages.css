@@ -944,6 +944,26 @@
   color: var(--mm-text-muted);
 }
 
+/* Settings: the licenses of the code MixMusic includes. */
+
+.mm-notice {
+  margin-top: var(--mm-space-2);
+  font-size: var(--mm-size-small);
+}
+
+.mm-notice summary {
+  cursor: pointer;
+  color: var(--mm-text-muted);
+}
+
+.mm-notice pre {
+  font-family: var(--mm-font-mono);
+  white-space: pre-wrap;
+  max-height: 20rem;
+  overflow: auto;
+  color: var(--mm-text-muted);
+}
+
 /* Settings: changing the keys of a command. */
 
 .mm-shortcuts tr[data-recording] td {

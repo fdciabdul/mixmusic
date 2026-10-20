@@ -8,6 +8,8 @@ import (
 
 	"github.com/egoist/mygo"
 
+	"github.com/fzn0x/mixmusic/internal/audio"
+	"github.com/fzn0x/mixmusic/internal/opus"
 	"github.com/fzn0x/mixmusic/internal/spotify"
 	"github.com/fzn0x/mixmusic/internal/tools"
 )
@@ -96,6 +98,21 @@ func (s *System) OpenExternal(rawURL string) error {
 		return errors.New("only web pages open in the browser")
 	}
 	return mygo.Shell.OpenExternal(u.String())
+}
+
+// Notice is the license of code MixMusic includes from another project.
+type Notice struct {
+	Name string `json:"name"`
+	Text string `json:"text"`
+}
+
+// Notices returns the licenses of the code MixMusic includes from other
+// projects, which its copies must reproduce.
+func (s *System) Notices() []Notice {
+	return []Notice{
+		{Name: "libopus, which decodes the audio", Text: opus.License},
+		{Name: "Chromium's Web Audio, which shapes the sound", Text: audio.License},
+	}
 }
 
 // CacheUsage is what the audio cache holds.

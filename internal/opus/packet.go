@@ -5,7 +5,15 @@ package opus
 
 // Port of the packet functions of src/opus.c and src/opus_decoder.c.
 
-import "errors"
+import (
+	_ "embed"
+	"errors"
+)
+
+// License is the license of libopus, whose binary copies must reproduce it.
+//
+//go:embed LICENSE.libopus
+var License string
 
 // ErrInvalidPacket is OPUS_INVALID_PACKET.
 var ErrInvalidPacket = errors.New("opus: invalid packet")

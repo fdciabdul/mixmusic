@@ -41,14 +41,20 @@ page owns the interface and the player.
   it until its URL expires, and serves it at `stream://localhost/yt/<id>`:
   range requests, chunked fetches from YouTube, a new URL when YouTube
   refuses the old one, and an on-disk cache of tracks played to their end.
+  `Proxy.Open` reads the same audio for the native engine, in the background.
 - **`internal/webm`** reads the audio of WebM files, as YouTube serves it:
   the packets of the first audio track with their times, and seeking by the
   Cues, reading a file played from its start straight through.
 - **`internal/opus`** decodes Opus: a pure Go port of libopus 1.6.1's decoder
   (`celt`, `silk` and the range decoder `rangedec`), which decodes the test
-  vectors of RFC 8251 as libopus does, bit for bit. With `internal/webm`, it
-  is the base of a player that decodes YouTube's audio itself, outside the
-  webview.
+  vectors of RFC 8251 as libopus does, bit for bit.
+- **`internal/audio`** is the native engine, MixMusic's own player outside
+  the webview: two decks, each a goroutine that reads a track with
+  `internal/webm` and decodes it with `internal/opus` into a ring the audio
+  thread plays from, and the web player's preamp, equalizer, levelling
+  compressor, volume and analyser, ported from Chromium's Web Audio, which
+  they match sample for sample. `internal/audio/wasapi` plays it on Windows,
+  without cgo.
 - **`internal/tools`** finds yt-dlp and a JavaScript runtime, and installs
   yt-dlp from its releases, checked against their published checksums.
 - **`internal/match`** finds a Spotify track's recording on YouTube Music, by
@@ -71,23 +77,27 @@ page owns the interface and the player.
   defines the settings and keeps them in range.
 - **`internal/app`** binds the services the page calls, emits events to the
   page (`nowPlaying`, `playerCommand`, `settingsChanged`, `addonsChanged`,
-  `accountsChanged`, `navigate`), and puts MixMusic on the desktop.
+  `accountsChanged`, `navigate`, `nativeAudio`), and puts MixMusic on the
+  desktop.
 
 `mygo generate` writes `src/mygo.ts`, the typed client of the services,
 from the Go code; `bun run dev` and `bun run build` keep it current.
 
 ## The page
 
-- **`src/player`** plays the queue. Tracks of YouTube Music, and Spotify tracks
-  matched to their recording, play in `AudioEngine`: two `<audio>` elements
-  routed through Web Audio (preamp, ten bands, an optional compressor that
-  levels loudness, an analyser), the idle one preloading the next track and
-  fading it in for crossfades. Spotify tracks play on a Spotify device through
-  `ConnectEngine`, which sends it commands and polls what it plays: a Spotify
-  Connect device, through the Web API, or MixMusic itself, whose page Spotify's
-  Web Playback SDK makes a device of its own (`spotify.ts`). The player
-  reports what plays to the Go side, which feeds the tray, notifications and
-  the mini player.
+- **`src/player`** plays the queue. Tracks of YouTube Music, and Spotify
+  tracks matched to their recording, play in `AudioEngine`: two `<audio>`
+  elements routed through Web Audio (preamp, ten bands, an optional compressor
+  that levels loudness, an analyser), the idle one preloading the next track
+  and fading it in for crossfades. With MixMusic's own audio engine on, on
+  Windows, `NativeEngine` (`native.ts`) plays them instead, through the native
+  engine of the Go side, and gives, for the AnalyserNode, an object with its
+  reading methods; tracks without Opus fall back to `AudioEngine`. Spotify
+  tracks play on a Spotify device through `ConnectEngine`, which sends it
+  commands and polls what it plays: a Spotify Connect device, through the Web
+  API, or MixMusic itself, whose page Spotify's Web Playback SDK makes a
+  device of its own (`spotify.ts`). The player reports what plays to the Go
+  side, which feeds the tray, notifications and the mini player.
 - **`src/theme`** applies the theme's manifest as `--mm-*` variables, its options
   as `data-opt-*` attributes, its stylesheet, and the accent of the artwork.
 - **`src/plugins`** starts the plugins the user enabled, with the API of

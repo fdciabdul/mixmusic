@@ -49,7 +49,11 @@ export interface API {
     playNext(tracks: Track[]): void;
     enqueue(tracks: Track[]): void;
     on(event: player.PlayerEvent, listener: () => void): () => void;
-    /** analyser is the Web Audio analyser of MixMusic's own player, for visualizers. */
+    /**
+     * analyser is the Web Audio analyser of MixMusic's own player, for
+     * visualizers: with the native engine, an object with its reading
+     * methods and properties.
+     */
     analyser(): AnalyserNode | null;
   };
   catalog: {

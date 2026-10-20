@@ -7,8 +7,10 @@ All notable changes to MixMusic are documented here. The format follows
 ## [Unreleased]
 
 Spotify plays in MixMusic itself, with no Spotify app open, and a new
-version asks to install in a pop-up. Spotify Connect no longer shows a
-track paused while your device plays it, and goes on to the next track.
+version asks to install in a pop-up. On Windows, MixMusic can play YouTube
+Music with an audio engine of its own, outside the webview. Spotify Connect
+no longer shows a track paused while your device plays it, and goes on to
+the next track.
 
 ### Added
 
@@ -18,6 +20,14 @@ track paused while your device plays it, and goes on to the next track.
   Spotify Premium, and a webview that plays Spotify's protected audio, as
   that of Windows does; new installs on Windows play Spotify tracks this
   way. Sign in to Spotify again once, for Spotify to let MixMusic play.
+- MixMusic's own audio engine, a beta on Windows: turn it on in Settings ›
+  Playback. MixMusic decodes the audio of YouTube Music itself and plays it
+  on your audio device, outside the webview, with the sound of the webview:
+  the equalizer, crossfades, volume levelling and visualizer work as before,
+  computed as the webview computes them. A track YouTube serves without Opus
+  plays in the webview. It is the first step toward a native interface (#4).
+- Settings › About shows the licenses of the code MixMusic includes, from
+  libopus and Chromium.
 - A new version asks to install in a pop-up, unless MixMusic installs
   updates without asking. Later asks again at the next start, skip this
   version at the next version. Copies that cannot replace themselves, the

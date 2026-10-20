@@ -49,6 +49,22 @@ func TestCleanClampsAndRepairs(t *testing.T) {
 	}
 }
 
+func TestAudioEngine(t *testing.T) {
+	if Default().AudioEngine != AudioEngineWeb {
+		t.Errorf("the default engine is %q", Default().AudioEngine)
+	}
+	if s := (Settings{AudioEngine: "nonsense"}).Clean(); s.AudioEngine != AudioEngineWeb {
+		t.Errorf("an unknown engine was kept: %q", s.AudioEngine)
+	}
+	want := AudioEngineWeb
+	if NativeAudio {
+		want = AudioEngineNative
+	}
+	if s := (Settings{AudioEngine: AudioEngineNative}).Clean(); s.AudioEngine != want {
+		t.Errorf("the native engine became %q here, want %q", s.AudioEngine, want)
+	}
+}
+
 func TestValidID(t *testing.T) {
 	for id, want := range map[string]bool{"mix": true, "sleep-timer": true, "a1": true, "": false, "-x": false, "Mix": false, "a/b": false, "a.b": false} {
 		if got := ValidID(id); got != want {

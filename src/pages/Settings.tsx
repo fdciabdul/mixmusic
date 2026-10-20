@@ -31,7 +31,7 @@ import { useAsync } from "../lib/async";
 import { navigate } from "../lib/router";
 import { bytes, errorMessage } from "../lib/format";
 import { commands, eventShortcut, shortcutLabel, shortcutOf } from "../lib/commands";
-import { appInfo } from "../lib/runtime";
+import { appInfo, platform } from "../lib/runtime";
 import { activeTheme, inventory, optionValues, themePatch, themes } from "../theme/theme";
 import { BANDS, PRESETS, bandLabel } from "../player/eq";
 import { canPlaySpotify } from "../player/spotify";
@@ -339,6 +339,14 @@ function Playback({ s }: { s: SettingsData }) {
         <Row title="Volume levelling" description="Evens out loud and quiet tracks.">
           <Switch on={s.normalize} label="Volume levelling" onChange={(v) => save({ normalize: v })} />
         </Row>
+        {platform() === "win32" && (
+          <Row
+            title="MixMusic's own audio engine"
+            description="Beta. MixMusic plays YouTube Music itself, outside the webview, with the same equalizer, crossfade, levelling and visualizer. Off, the webview plays it."
+          >
+            <Switch on={s.audioEngine === "native"} label="MixMusic's own audio engine" onChange={(v) => save({ audioEngine: v ? "native" : "web" })} />
+          </Row>
+        )}
         <Row title="Autoplay" description="When the queue runs out, a radio of what you played carries on.">
           <Switch on={s.autoplay} label="Autoplay" onChange={(v) => save({ autoplay: v })} />
         </Row>
@@ -1306,7 +1314,26 @@ function About() {
       </div>
       <p class="mm-hint">Your data lives in {info.dataDir}. MixMusic writes what goes wrong to a log, without your sign-ins; open logs folder shows it.</p>
     </Group>
+    <Group title="licenses">
+      <p class="mm-hint">MixMusic includes code of these projects, under their licenses.</p>
+      <Notices />
+    </Group>
     <Updates />
+    </>
+  );
+}
+
+/** Notices shows the licenses of the code MixMusic includes from other projects. */
+function Notices() {
+  const notices = useAsync(() => System.notices(), []).data ?? [];
+  return (
+    <>
+      {notices.map((n) => (
+        <details key={n.name} class="mm-notice">
+          <summary>{n.name}</summary>
+          <pre>{n.text}</pre>
+        </details>
+      ))}
     </>
   );
 }

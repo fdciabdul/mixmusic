@@ -86,6 +86,9 @@ export interface ArtistPlays {
   plays: number;
 }
 
+/** AudioEngine chooses what plays the audio of MixMusic's own player. */
+export type AudioEngine = "web" | "native";
+
 /** CacheUsage is what the audio cache holds. */
 export interface CacheUsage {
   bytes: number;
@@ -257,6 +260,35 @@ export interface MoodGroup {
 export interface MoodPage {
   title: string;
   shelves: Shelf[];
+}
+
+/**
+ * NativeAnalysis is what the native engine's analyser gives, as an
+ * AnalyserNode of fftSize 256: Bytes as getByteFrequencyData; Decibels, when
+ * asked, as getFloatFrequencyData, with -1000 for -Infinity; Waveform, when
+ * asked, as getFloatTimeDomainData.
+ */
+export interface NativeAnalysis {
+  bytes: number[];
+  decibels: number[];
+  waveform: number[];
+}
+
+/** NativeAudio is an event of the native engine: those of the web engine. */
+export interface NativeAudio {
+  /** Kind is "time", "ended", "error", "playing" or "buffering". */
+  kind: string;
+  positionMs: number;
+  durationMs: number;
+  playing: boolean;
+  buffering: boolean;
+  message: string;
+}
+
+/** Notice is the license of code MixMusic includes from another project. */
+export interface Notice {
+  name: string;
+  text: string;
 }
 
 /**
@@ -494,6 +526,8 @@ export interface Settings {
    */
   spotifyDevice: string;
   quality: Quality;
+  /** AudioEngine is what plays MixMusic's own player. */
+  audioEngine: AudioEngine;
   /** Crossfade overlaps tracks by this many seconds, from 0 to 12. */
   crossfade: number;
   /** Normalize evens out the loudness of tracks. */
@@ -850,6 +884,60 @@ export const Player = {
    */
   forgetMatch(trackID: string): Promise<void> {
     return call("Player.ForgetMatch", trackID);
+  },
+  /** NativeAnalyser returns what the native engine's analyser gives now. */
+  nativeAnalyser(decibels: boolean, waveform: boolean): Promise<NativeAnalysis> {
+    return call("Player.NativeAnalyser", decibels, waveform);
+  },
+  /**
+   * NativeCrossfade plays url in the native engine while what plays fades
+   * out, over seconds.
+   */
+  nativeCrossfade(url: string, seconds: number): Promise<void> {
+    return call("Player.NativeCrossfade", url, seconds);
+  },
+  /**
+   * NativeLoad plays url, a stream URL PrepareStream gave, in the native
+   * engine from startMs, or holds it there until NativePlay when autoplay is
+   * false.
+   */
+  nativeLoad(url: string, startMs: number, autoplay: boolean): Promise<void> {
+    return call("Player.NativeLoad", url, startMs, autoplay);
+  },
+  /** NativePause pauses the native engine. */
+  nativePause(): Promise<void> {
+    return call("Player.NativePause");
+  },
+  /** NativePlay plays the native engine's track. */
+  nativePlay(): Promise<void> {
+    return call("Player.NativePlay");
+  },
+  /** NativePreload starts loading url in the native engine, for the next track. */
+  nativePreload(url: string): Promise<void> {
+    return call("Player.NativePreload", url);
+  },
+  /** NativeSeek moves the native engine's track to ms. */
+  nativeSeek(ms: number): Promise<void> {
+    return call("Player.NativeSeek", ms);
+  },
+  /**
+   * NativeSetEqualizer sets the native engine's equalizer: the gains of the
+   * bands and the preamp, in dB.
+   */
+  nativeSetEqualizer(enabled: boolean, gains: number[], preamp: number): Promise<void> {
+    return call("Player.NativeSetEqualizer", enabled, gains, preamp);
+  },
+  /** NativeSetNormalize turns the native engine's levelling on or off. */
+  nativeSetNormalize(on: boolean): Promise<void> {
+    return call("Player.NativeSetNormalize", on);
+  },
+  /** NativeSetVolume sets the native engine's volume, from 0 to 1. */
+  nativeSetVolume(v: number): Promise<void> {
+    return call("Player.NativeSetVolume", v);
+  },
+  /** NativeStop stops the native engine, which releases the audio device. */
+  nativeStop(): Promise<void> {
+    return call("Player.NativeStop");
   },
   /** NowPlaying returns what the player plays, for windows that open later. */
   nowPlaying(): Promise<NowPlaying> {
@@ -1290,6 +1378,13 @@ export const System = {
   logsFolder(): Promise<string> {
     return call("System.LogsFolder");
   },
+  /**
+   * Notices returns the licenses of the code MixMusic includes from other
+   * projects, which its copies must reproduce.
+   */
+  notices(): Promise<Notice[]> {
+    return call("System.Notices");
+  },
   /** Notify shows a desktop notification, for plugins. */
   notify(title: string, body: string): Promise<void> {
     return call("System.Notify", title, body);
@@ -1372,6 +1467,8 @@ export const events = {
    * "/search?q=daft%20punk".
    */
   navigate: event<string>("navigate"),
+  /** NativeAudioChanged tells the page what the native engine does. */
+  nativeAudio: event<NativeAudio>("nativeAudio"),
   /**
    * UpdatesChanged tells every window the update preferences changed,
    * after a check too.

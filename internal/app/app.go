@@ -17,6 +17,7 @@ import (
 
 	"github.com/fzn0x/mixmusic/internal/addons"
 	"github.com/fzn0x/mixmusic/internal/artwork"
+	"github.com/fzn0x/mixmusic/internal/audio"
 	"github.com/fzn0x/mixmusic/internal/library"
 	"github.com/fzn0x/mixmusic/internal/lyrics"
 	"github.com/fzn0x/mixmusic/internal/match"
@@ -82,6 +83,9 @@ type App struct {
 	colors       *memo[string]
 
 	presence presence
+	// native is MixMusic's own audio engine, made at its first use.
+	native     *audio.Engine
+	nativeOnce sync.Once
 	// updates keeps the user's choices of updates.
 	updates *store.File[updatePrefs]
 	// checkUpdates has MixMusic look for a new version at once.

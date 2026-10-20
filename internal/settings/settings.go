@@ -24,6 +24,20 @@ const (
 	SpotifyPlaybackHere SpotifyPlayback = "here"
 )
 
+// AudioEngine chooses what plays the audio of MixMusic's own player.
+type AudioEngine string
+
+const (
+	// AudioEngineWeb plays it in the page, with Web Audio.
+	AudioEngineWeb AudioEngine = "web"
+	// AudioEngineNative plays it outside the webview: MixMusic decodes the
+	// audio itself and plays it on the device. Only on Windows, 64-bit.
+	AudioEngineNative AudioEngine = "native"
+)
+
+// NativeAudio reports whether this system can play with AudioEngineNative.
+const NativeAudio = runtime.GOOS == "windows" && (runtime.GOARCH == "amd64" || runtime.GOARCH == "arm64")
+
 // Density chooses how much room the interface gives each element.
 type Density string
 
@@ -82,6 +96,8 @@ type Settings struct {
 	// one when empty.
 	SpotifyDevice string  `json:"spotifyDevice"`
 	Quality       Quality `json:"quality"`
+	// AudioEngine is what plays MixMusic's own player.
+	AudioEngine AudioEngine `json:"audioEngine"`
 	// Crossfade overlaps tracks by this many seconds, from 0 to 12.
 	Crossfade int `json:"crossfade"`
 	// Normalize evens out the loudness of tracks.
@@ -145,6 +161,7 @@ func Default() Settings {
 		FontScale:       1,
 		SpotifyPlayback: defaultSpotifyPlayback(runtime.GOOS),
 		Quality:         QualityBest,
+		AudioEngine:     AudioEngineWeb,
 		Autoplay:        true,
 		Equalizer:       Equalizer{Preset: "flat", Gains: make([]float64, len(Bands))},
 		Volume:          0.8,
@@ -228,6 +245,9 @@ func (s Settings) Clean() Settings {
 	}
 	if s.Quality != QualitySaver {
 		s.Quality = QualityBest
+	}
+	if s.AudioEngine != AudioEngineNative || !NativeAudio {
+		s.AudioEngine = AudioEngineWeb
 	}
 	s.Crossfade = min(max(s.Crossfade, 0), 12)
 	s.Volume = min(max(s.Volume, 0), 1)

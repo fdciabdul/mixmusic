@@ -70,7 +70,7 @@ it with a JSDoc `@param` as above, or copy it next to your plugin.
 
 | | |
 |---|---|
-| `api.player` | the state of the player (`state()`), the transport, the queue (`playTracks`, `playNext`, `enqueue`), events (`on("trackchange" \| "statechange" \| "progress" \| "queuechange")`) and the Web Audio `analyser()` of MixMusic's own player |
+| `api.player` | the state of the player (`state()`), the transport, the queue (`playTracks`, `playNext`, `enqueue`), events (`on("trackchange" \| "statechange" \| "progress" \| "queuechange")`) and the Web Audio `analyser()` of MixMusic's own player (with MixMusic's own audio engine, an object with the analyser's reading methods and properties, and no Web Audio connections) |
 | `api.catalog` | search both services, and read albums, artists, playlists, radios and lyrics |
 | `api.library` | liked songs and the user's mixes |
 | `api.ui` | `toast`, `navigate`, `addSidebarItem`, `addPage`, `addTrackAction`, `addWidget`, `addStyle` |

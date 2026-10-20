@@ -9,6 +9,28 @@ interface Deck {
   gain: GainNode | null;
 }
 
+/**
+ * Engine is what plays the player's streams: AudioEngine, in the page, or
+ * NativeEngine, outside the webview.
+ */
+export interface Engine {
+  readonly analyser: AnalyserNode | null;
+  load(url: string, startMs?: number, autoplay?: boolean): Promise<void>;
+  preload(url: string): void;
+  crossfade(url: string, seconds: number): Promise<void>;
+  play(): Promise<void>;
+  pause(): void;
+  stop(): void;
+  seek(ms: number): void;
+  readonly loaded: boolean;
+  readonly paused: boolean;
+  readonly position: number;
+  readonly duration: number;
+  setVolume(v: number): void;
+  setEqualizer(enabled: boolean, gains: number[], preamp: number): void;
+  setNormalize(on: boolean): void;
+}
+
 export interface EngineEvents {
   time(positionMs: number, durationMs: number): void;
   ended(): void;

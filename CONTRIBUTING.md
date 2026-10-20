@@ -49,7 +49,10 @@ rules keep the project healthy:
   The Opus decoder's conformance test runs when `OPUS_TESTVECTORS` names
   the folder of the
   [RFC 8251 test vectors](https://opus-codec.org/static/testvectors/opus_testvectors-rfc8251.tar.gz),
-  which CI downloads.
+  which CI downloads. The tests that open the audio device, silently, run
+  only with `MIXMUSIC_AUDIO=1`, and those that compare the native engine's
+  sound with Chromium's Web Audio when `MIXMUSIC_BROWSER` names a Chromium
+  browser, as `msedge.exe`.
 - **Honest errors.** When a service refuses something, say what and how to
   get past it, in the words of the interface.
 

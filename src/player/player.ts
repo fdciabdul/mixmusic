@@ -12,7 +12,8 @@ import {
   type Repeat,
   type Track,
 } from "../mygo";
-import { AudioEngine, type EngineEvents } from "./audio";
+import { AudioEngine, type Engine, type EngineEvents } from "./audio";
+import { NativeEngine } from "./native";
 import { ConnectEngine, connectDevice } from "./connect";
 import { spotifyDevice } from "./spotify";
 import { settings, update as updateSettings } from "../state/settings";
@@ -100,7 +101,11 @@ const engineEvents: EngineEvents = {
   buffering: (b) => (buffering.value = b),
 };
 
-const audio = new AudioEngine(engineEvents);
+const web = new AudioEngine(engineEvents);
+/** native is MixMusic's own audio engine, outside the webview, on Windows. */
+const native = new NativeEngine(engineEvents, web);
+/** audio is the engine that plays streams, as the settings choose. */
+let audio: Engine = web;
 const connect = new ConnectEngine(engineEvents, connectDevice);
 /** spotify plays Spotify tracks in MixMusic, its own Spotify device. */
 const spotify = new ConnectEngine(engineEvents, spotifyDevice);
@@ -687,11 +692,33 @@ export function initPlayer(): void {
   const s = settings.value;
   if (s) volume.value = s.volume;
   apply();
+  // The native engine lives on in the app when the page reloads: it starts
+  // silent.
+  void Player.nativeStop().catch(() => {});
   effect(() => {
     const st = settings.value;
     if (!st) return;
     audio.setEqualizer(st.equalizer.enabled, st.equalizer.gains, st.equalizer.preamp);
     audio.setNormalize(st.normalize);
+  });
+  // The engine the settings choose plays streams; a change carries the
+  // track on in it from where it was.
+  effect(() => {
+    const next: Engine = settings.value?.audioEngine === "native" ? native : web;
+    if (next === audio) return;
+    const carry = source.peek()?.mode === "stream" && audio.loaded && !!currentItem.peek();
+    const at = position.peek();
+    const wasPlaying = playing.peek();
+    audio.stop();
+    native.active = next === native;
+    audio = next;
+    apply();
+    const st = settings.peek();
+    if (st) {
+      audio.setEqualizer(st.equalizer.enabled, st.equalizer.gains, st.equalizer.preamp);
+      audio.setNormalize(st.normalize);
+    }
+    if (carry) void playAt(index.peek(), at, wasPlaying);
   });
   effect(() => {
     likedIds.value; // the heart of what plays follows likes made anywhere
@@ -718,6 +745,7 @@ export function initPlayer(): void {
   addEventListener("beforeunload", () => {
     connect.stop(false);
     spotify.stop(false);
+    if (audio === native) native.stop();
   });
   report();
 }
