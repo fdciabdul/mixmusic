@@ -422,6 +422,11 @@ export interface Release {
   newer: boolean;
   /** Date is when it was published, as RFC 3339. */
   date: string;
+  /**
+   * Notes tells what the release brings: the first paragraph of its
+   * notes, in plain text, or "".
+   */
+  notes: string;
   /** Page is the release's page: its notes and all of its downloads. */
   page: string;
   /**
@@ -686,7 +691,10 @@ export interface UpdateStatus {
    * "archive", "deb", "rpm", "appimage" or "development".
    */
   kind: string;
-  /** AutomaticChecks checks for a new version once a day. */
+  /**
+   * AutomaticChecks looks for a new version at start and every few
+   * hours.
+   */
   automaticChecks: boolean;
   /**
    * AutomaticDownloads installs new versions without asking; they run
@@ -1211,6 +1219,14 @@ export const System = {
   dismissCrash(): Promise<void> {
     return call("System.DismissCrash");
   },
+  /**
+   * DismissUpdate answers the offer of a new version with later, which
+   * offers it again at the next start or in a day, or with skip, which
+   * never offers that version again.
+   */
+  dismissUpdate(skip: boolean): Promise<void> {
+    return call("System.DismissUpdate", skip);
+  },
   /** Info describes the app. */
   info(): Promise<Info> {
     return call("System.Info");
@@ -1277,8 +1293,8 @@ export const System = {
     return call("System.Restart");
   },
   /**
-   * SetUpdates turns the daily check and the installs without asking on or
-   * off.
+   * SetUpdates turns the checks for new versions and the installs without
+   * asking on or off. Turned on, MixMusic looks for a new version at once.
    */
   setUpdates(automaticChecks: boolean, automaticDownloads: boolean): Promise<UpdateStatus> {
     return call("System.SetUpdates", automaticChecks, automaticDownloads);
@@ -1297,6 +1313,13 @@ export const System = {
    */
   tools(): Promise<Status> {
     return call("System.Tools");
+  },
+  /**
+   * UpdateOffer returns the new version the main window offers, until the
+   * user answers, or nil.
+   */
+  updateOffer(): Promise<Release | null> {
+    return call("System.UpdateOffer");
   },
   /** Updates returns whether MixMusic updates itself, and how. */
   updates(): Promise<UpdateStatus> {
@@ -1324,8 +1347,13 @@ export const events = {
    */
   navigate: event<string>("navigate"),
   /**
-   * UpdatesChanged tells every window the update preferences changed, after
-   * a check too.
+   * UpdatesChanged tells every window the update preferences changed,
+   * after a check too.
    */
   updatesChanged: event<UpdateStatus>("updatesChanged"),
+  /**
+   * UpdateOffered tells the main window to offer a new version, which
+   * MixMusic found and does not install by itself.
+   */
+  updateOffered: event<Release>("updateOffered"),
 } as const;

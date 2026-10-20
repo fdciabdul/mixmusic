@@ -32,13 +32,9 @@ type System struct{ a *App }
 
 // Info describes the app.
 func (s *System) Info() Info {
-	version := mygo.App.Version()
-	if version == "" {
-		version = s.a.opts.Version
-	}
 	return Info{
 		Name:        mygo.App.Name(),
-		Version:     version,
+		Version:     s.a.version(),
 		Platform:    runtime.GOOS,
 		Arch:        runtime.GOARCH,
 		Dev:         mygo.IsDev(),
@@ -47,6 +43,14 @@ func (s *System) Info() Info {
 		DataDir:     s.a.opts.DataDir,
 		RedirectURI: spotify.RedirectURI,
 	}
+}
+
+// version is the version of MixMusic that runs.
+func (a *App) version() string {
+	if v := mygo.App.Version(); v != "" {
+		return v
+	}
+	return a.opts.Version
 }
 
 // Tools describes the tools MixMusic runs: yt-dlp and a JavaScript

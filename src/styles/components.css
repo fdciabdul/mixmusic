@@ -1259,6 +1259,16 @@
   max-width: none;
 }
 
+/* The offer of a new version: its buttons wrap, skipping it last. */
+.mm-update-offer .mm-dialog-actions {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.mm-update-offer .mm-hint {
+  margin: 0;
+}
+
 /* The command palette. */
 
 .mm-palette {

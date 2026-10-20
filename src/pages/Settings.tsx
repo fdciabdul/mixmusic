@@ -1079,7 +1079,7 @@ const builds: Record<string, string> = {
 };
 
 /** downloads names the file of a release that replaces each kind of copy. */
-const downloads: Record<string, string> = {
+export const downloads: Record<string, string> = {
   installer: "download the installer",
   portable: "download the portable zip",
   app: "download the disk image",
@@ -1090,7 +1090,7 @@ const downloads: Record<string, string> = {
 };
 
 /** replacing tells how a downloaded file takes the place of this copy. */
-function replacing(kind: string, file: string): ComponentChildren {
+export function replacing(kind: string, file: string): ComponentChildren {
   const name = <code class="mm-code">{file}</code>;
   switch (kind) {
     case "deb":
@@ -1198,27 +1198,37 @@ function Version() {
   );
 }
 
-/** Updates turns the daily check and the installs without asking on or off. */
+/**
+ * Updates turns the checks for a new version and the installs without
+ * asking on or off. Copies that cannot replace themselves check too, and
+ * offer the new version's download.
+ */
 function Updates() {
   const status = useAsync(() => System.updates(), []);
   useEffect(() => events.updatesChanged.on((u) => status.set(u)), []);
   const u = status.data;
-  if (!u?.enabled) return null;
+  if (!u || u.kind === "development") return null;
   const set = (checks: boolean, downloads: boolean) =>
     System.setUpdates(checks, downloads).then(status.set, (err) => toast(errorMessage(err), { tone: "error" }));
   const last = u.lastCheck ? new Date(u.lastCheck).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "";
+  const asks = u.enabled && !u.automaticDownloads ? " A new version asks to install." : u.enabled ? "" : " A new version offers its download.";
   return (
     <Group title="updates">
-      <Row title="Check for updates" description={last ? `Once a day. Last checked ${last}.` : "Once a day, from the releases on GitHub."}>
+      <Row
+        title="Check for updates"
+        description={`At start and every few hours, from the releases on GitHub.${asks}${last ? ` Last checked ${last}.` : ""}`}
+      >
         <Switch on={u.automaticChecks} label="Check for updates" onChange={(v) => void set(v, u.automaticDownloads)} />
       </Row>
-      <Row title="Install updates without asking" description="New versions download in the background and run at the next launch.">
-        <Switch
-          on={u.automaticChecks && u.automaticDownloads}
-          label="Install updates without asking"
-          onChange={(v) => void set(u.automaticChecks || v, v)}
-        />
-      </Row>
+      {u.enabled && (
+        <Row title="Install updates without asking" description="New versions download in the background and run at the next launch.">
+          <Switch
+            on={u.automaticChecks && u.automaticDownloads}
+            label="Install updates without asking"
+            onChange={(v) => void set(u.automaticChecks || v, v)}
+          />
+        </Row>
+      )}
     </Group>
   );
 }

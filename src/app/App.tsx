@@ -2,6 +2,7 @@
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { PlayerBar } from "./PlayerBar";
+import { UpdateOffer } from "./UpdateOffer";
 import { SidePanel } from "./SidePanel";
 import { ContextMenu, Dialog, Toasts } from "../components/Overlays";
 import { CommandPalette } from "../components/CommandPalette";
@@ -93,6 +94,7 @@ export function App() {
       <PlayerBar />
       <ContextMenu />
       <Dialog />
+      <UpdateOffer />
       <CommandPalette />
       <Toasts />
     </div>

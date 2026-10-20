@@ -6,20 +6,49 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/egoist/mygo"
-	"github.com/egoist/mygo/plugins/updater"
 )
 
 // releasesAPI answers with the newest release of MixMusic.
 const releasesAPI = "https://api.github.com/repos/fzn0x/mixmusic/releases/latest"
+
+const (
+	// firstUpdateCheck is how long after start MixMusic looks for a new
+	// version.
+	firstUpdateCheck = 10 * time.Second
+	// updateEvery is how often it looks again while it runs.
+	updateEvery = 6 * time.Hour
+	// updateRetry is how soon it looks again after a check failed.
+	updateRetry = time.Hour
+	// putOff is how long "later" puts off the version offered while
+	// MixMusic runs; the next start offers it again.
+	putOff = 24 * time.Hour
+)
+
+// updatePrefs are the user's choices of updates. They are kept in
+// updater.json, where MyGo's update window kept them until MixMusic 0.4.0,
+// so that the choices made there carry over.
+type updatePrefs struct {
+	// AutomaticChecks is nil until the user chose, which checks.
+	AutomaticChecks    *bool `json:"automaticChecks,omitempty"`
+	AutomaticDownloads bool  `json:"automaticDownloads,omitempty"`
+	// SkippedVersion is the version the user chose not to be offered.
+	SkippedVersion string    `json:"skippedVersion,omitempty"`
+	LastCheck      time.Time `json:"lastCheck,omitzero"`
+}
+
+// checks reports whether MixMusic looks for new versions.
+func (p updatePrefs) checks() bool { return p.AutomaticChecks == nil || *p.AutomaticChecks }
 
 // UpdateStatus is whether MixMusic updates itself, and how.
 type UpdateStatus struct {
@@ -30,7 +59,8 @@ type UpdateStatus struct {
 	// a release that replaces it: "installer", "portable", "app",
 	// "archive", "deb", "rpm", "appimage" or "development".
 	Kind string `json:"kind"`
-	// AutomaticChecks checks for a new version once a day.
+	// AutomaticChecks looks for a new version at start and every few
+	// hours.
 	AutomaticChecks bool `json:"automaticChecks"`
 	// AutomaticDownloads installs new versions without asking; they run
 	// at the next launch.
@@ -42,19 +72,25 @@ type UpdateStatus struct {
 	Installed string `json:"installed"`
 }
 
-// UpdatesChanged tells every window the update preferences changed, after
-// a check too.
-var UpdatesChanged = mygo.NewEvent[UpdateStatus]("updatesChanged")
+var (
+	// UpdatesChanged tells every window the update preferences changed,
+	// after a check too.
+	UpdatesChanged = mygo.NewEvent[UpdateStatus]("updatesChanged")
+	// UpdateOffered tells the main window to offer a new version, which
+	// MixMusic found and does not install by itself.
+	UpdateOffered = mygo.NewEvent[Release]("updateOffered")
+)
 
 func (a *App) updateStatus() UpdateStatus {
+	p := a.updates.Get()
 	s := UpdateStatus{
 		Enabled:            mygo.Updater.Enabled(),
 		Kind:               installKind(),
-		AutomaticChecks:    updater.AutomaticChecks(),
-		AutomaticDownloads: updater.AutomaticDownloads(),
+		AutomaticChecks:    p.checks(),
+		AutomaticDownloads: p.AutomaticDownloads,
 	}
-	if t := updater.LastCheck(); !t.IsZero() {
-		s.LastCheck = t.Format(time.RFC3339)
+	if !p.LastCheck.IsZero() {
+		s.LastCheck = p.LastCheck.Format(time.RFC3339)
 	}
 	a.mu.Lock()
 	s.Installed = a.installed
@@ -62,20 +98,164 @@ func (a *App) updateStatus() UpdateStatus {
 	return s
 }
 
-// watchUpdates tells the windows when the update preferences change.
+// watchUpdates looks for a new version a few seconds after start, then
+// every few hours, when the computer wakes up after a check is due, and
+// when the user turns checks on. Development builds never look.
 func (a *App) watchUpdates() {
-	updater.OnChange(func() { UpdatesChanged.Broadcast(a.updateStatus()) })
+	if installKind() == "development" {
+		return
+	}
+	mygo.Power.OnResume(func() {
+		if time.Since(a.updates.Get().LastCheck) >= updateEvery {
+			a.checkUpdatesNow()
+		}
+	})
+	go func() {
+		timer := time.NewTimer(firstUpdateCheck)
+		for {
+			select {
+			case <-timer.C:
+			case <-a.checkUpdates:
+				timer.Stop()
+			}
+			timer.Reset(a.lookForUpdate())
+		}
+	}()
+}
+
+// checkUpdatesNow has MixMusic look for a new version at once.
+func (a *App) checkUpdatesNow() {
+	select {
+	case a.checkUpdates <- struct{}{}:
+	default: // a check is coming already
+	}
+}
+
+// updateAction is what MixMusic does of the newest release.
+type updateAction int
+
+const (
+	updateNothing updateAction = iota
+	updateInstall
+	updateOffer
+)
+
+// decideUpdate tells what to do of release r, under the user's choices p,
+// when installed is the version installed to run at the next start and
+// canInstall tells whether this copy can replace itself: install it when
+// the user chose so, else offer it, unless they skipped it.
+func decideUpdate(r Release, p updatePrefs, installed string, canInstall bool) updateAction {
+	switch {
+	case !r.Newer || r.Version == installed:
+		return updateNothing
+	case p.AutomaticDownloads && canInstall:
+		return updateInstall
+	case r.Version == p.SkippedVersion:
+		return updateNothing
+	}
+	return updateOffer
+}
+
+// lookForUpdate looks for a new version once, installs it or offers it,
+// and returns when to look again.
+func (a *App) lookForUpdate() time.Duration {
+	p := a.updates.Get()
+	if !p.checks() {
+		return updateEvery
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	r, err := latestRelease(ctx, http.DefaultClient, releasesAPI, installKind(), runtime.GOARCH, a.version())
+	cancel()
+	if err != nil {
+		log.Printf("mixmusic: looking for a new version: %v", err)
+		return updateRetry
+	}
+	if err := a.updates.Update(func(p *updatePrefs) error { p.LastCheck = time.Now(); return nil }); err != nil {
+		log.Printf("mixmusic: keeping the update preferences: %v", err)
+	}
+	UpdatesChanged.Broadcast(a.updateStatus())
+	a.mu.Lock()
+	installed := a.installed
+	a.mu.Unlock()
+	switch decideUpdate(r, p, installed, mygo.Updater.Enabled()) {
+	case updateInstall:
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
+		defer cancel()
+		if _, err := a.installUpdate(ctx, nil); err != nil {
+			// As when GitHub lists the release before its update files.
+			log.Printf("mixmusic: installing MixMusic %s: %v", r.Version, err)
+			return updateRetry
+		}
+	case updateOffer:
+		a.offerUpdate(r)
+	}
+	return updateEvery
+}
+
+// offerUpdate has the main window offer release r, unless the user put it
+// off.
+func (a *App) offerUpdate(r Release) {
+	a.mu.Lock()
+	if a.putOff == r.Version && time.Now().Before(a.putOffUntil) {
+		a.mu.Unlock()
+		return
+	}
+	a.offer = &r
+	a.mu.Unlock()
+	UpdateOffered.Broadcast(r)
 }
 
 // Updates returns whether MixMusic updates itself, and how.
 func (s *System) Updates() UpdateStatus { return s.a.updateStatus() }
 
-// SetUpdates turns the daily check and the installs without asking on or
-// off.
-func (s *System) SetUpdates(automaticChecks, automaticDownloads bool) UpdateStatus {
-	updater.SetAutomaticChecks(automaticChecks)
-	updater.SetAutomaticDownloads(automaticDownloads && automaticChecks)
-	return s.a.updateStatus()
+// SetUpdates turns the checks for new versions and the installs without
+// asking on or off. Turned on, MixMusic looks for a new version at once.
+func (s *System) SetUpdates(automaticChecks, automaticDownloads bool) (UpdateStatus, error) {
+	before := s.a.updates.Get()
+	err := s.a.updates.Update(func(p *updatePrefs) error {
+		p.AutomaticChecks = &automaticChecks
+		p.AutomaticDownloads = automaticDownloads && automaticChecks
+		return nil
+	})
+	if err != nil {
+		return UpdateStatus{}, err
+	}
+	if automaticChecks && (!before.checks() || automaticDownloads && !before.AutomaticDownloads) {
+		s.a.checkUpdatesNow()
+	}
+	status := s.a.updateStatus()
+	UpdatesChanged.Broadcast(status)
+	return status, nil
+}
+
+// UpdateOffer returns the new version the main window offers, until the
+// user answers, or nil.
+func (s *System) UpdateOffer() *Release {
+	s.a.mu.Lock()
+	defer s.a.mu.Unlock()
+	if s.a.offer == nil {
+		return nil
+	}
+	r := *s.a.offer
+	return &r
+}
+
+// DismissUpdate answers the offer of a new version with later, which
+// offers it again at the next start or in a day, or with skip, which
+// never offers that version again.
+func (s *System) DismissUpdate(skip bool) error {
+	a := s.a
+	a.mu.Lock()
+	offer := a.offer
+	a.offer = nil
+	if offer != nil {
+		a.putOff, a.putOffUntil = offer.Version, time.Now().Add(putOff)
+	}
+	a.mu.Unlock()
+	if offer == nil || !skip {
+		return nil
+	}
+	return a.updates.Update(func(p *updatePrefs) error { p.SkippedVersion = offer.Version; return nil })
 }
 
 // Release is the newest release of MixMusic, as this copy gets it.
@@ -86,6 +266,9 @@ type Release struct {
 	Newer bool `json:"newer"`
 	// Date is when it was published, as RFC 3339.
 	Date string `json:"date"`
+	// Notes tells what the release brings: the first paragraph of its
+	// notes, in plain text, or "".
+	Notes string `json:"notes"`
 	// Page is the release's page: its notes and all of its downloads.
 	Page string `json:"page"`
 	// Download is the address of the release's file made for this copy,
@@ -100,17 +283,25 @@ type Release struct {
 func (s *System) LatestRelease(ctx context.Context) (Release, error) {
 	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
 	defer cancel()
-	return latestRelease(ctx, http.DefaultClient, releasesAPI, installKind(), runtime.GOARCH, s.Info().Version)
+	return latestRelease(ctx, http.DefaultClient, releasesAPI, installKind(), runtime.GOARCH, s.a.version())
 }
 
 // InstallUpdate downloads the newest version, checks its signature and
 // puts it in place of this one, reporting the download's progress. It
 // runs once MixMusic restarts. It returns the version installed.
 func (s *System) InstallUpdate(ctx context.Context, progress *mygo.Channel[InstallProgress]) (string, error) {
-	if !s.a.updating.TryLock() {
+	return s.a.installUpdate(ctx, func(done, total int64) {
+		progress.Send(InstallProgress{Done: done, Total: total})
+	})
+}
+
+// installUpdate installs the newest version, telling progress, when not
+// nil, how far its download went.
+func (a *App) installUpdate(ctx context.Context, progress func(done, total int64)) (string, error) {
+	if !a.updating.TryLock() {
 		return "", errors.New("the update is downloading already")
 	}
-	defer s.a.updating.Unlock()
+	defer a.updating.Unlock()
 	up, err := mygo.Updater.Check(ctx)
 	switch {
 	case errors.Is(err, mygo.ErrUpdatesDisabled):
@@ -121,16 +312,16 @@ func (s *System) InstallUpdate(ctx context.Context, progress *mygo.Channel[Insta
 		// GitHub lists a release before its update files are uploaded.
 		return "", errors.New("no update is ready to install yet; try again in a few minutes")
 	}
-	err = up.Install(ctx, func(done, total int64) {
-		progress.Send(InstallProgress{Done: done, Total: total})
-	})
-	if err != nil {
+	if err := up.Install(ctx, progress); err != nil {
 		return "", err
 	}
-	s.a.mu.Lock()
-	s.a.installed = up.Version
-	s.a.mu.Unlock()
-	UpdatesChanged.Broadcast(s.a.updateStatus())
+	a.mu.Lock()
+	a.installed = up.Version
+	if a.offer != nil && !newerVersion(a.offer.Version, up.Version) {
+		a.offer = nil
+	}
+	a.mu.Unlock()
+	UpdatesChanged.Broadcast(a.updateStatus())
 	return up.Version, nil
 }
 
@@ -142,6 +333,7 @@ type githubRelease struct {
 	TagName     string `json:"tag_name"`
 	HTMLURL     string `json:"html_url"`
 	PublishedAt string `json:"published_at"`
+	Body        string `json:"body"`
 	Assets      []struct {
 		Name string `json:"name"`
 		URL  string `json:"browser_download_url"`
@@ -176,7 +368,7 @@ func latestRelease(ctx context.Context, client *http.Client, api, kind, arch, ru
 	if version == "" {
 		return Release{}, errors.New("reading the newest version: the release has no version")
 	}
-	r := Release{Version: version, Newer: newerVersion(version, running), Date: gh.PublishedAt, Page: gh.HTMLURL}
+	r := Release{Version: version, Newer: newerVersion(version, running), Date: gh.PublishedAt, Notes: summary(gh.Body), Page: gh.HTMLURL}
 	if file := releaseFile(kind, version, arch); file != "" {
 		for _, a := range gh.Assets {
 			if a.Name == file {
@@ -185,6 +377,22 @@ func latestRelease(ctx context.Context, client *http.Client, api, kind, arch, ru
 		}
 	}
 	return r, nil
+}
+
+// markdownLink matches a link of Markdown, its text first.
+var markdownLink = regexp.MustCompile(`\[([^\]]*)\]\([^)]*\)`)
+
+// summary returns what release notes tell before their first heading, the
+// first paragraph, in plain text: the summary of the changelog's section.
+func summary(notes string) string {
+	notes = strings.TrimSpace(strings.ReplaceAll(notes, "\r\n", "\n"))
+	first, _, _ := strings.Cut(notes, "\n\n")
+	if strings.HasPrefix(first, "#") {
+		return ""
+	}
+	first = markdownLink.ReplaceAllString(first, "$1")
+	first = strings.NewReplacer("**", "", "`", "").Replace(first)
+	return strings.Join(strings.Fields(first), " ")
 }
 
 // releaseFile names the file of a release that replaces a copy installed

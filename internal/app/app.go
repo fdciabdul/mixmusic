@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"sync"
+	"time"
 
 	"github.com/egoist/mygo"
 
@@ -80,6 +81,10 @@ type App struct {
 	colors       *memo[string]
 
 	presence presence
+	// updates keeps the user's choices of updates.
+	updates *store.File[updatePrefs]
+	// checkUpdates has MixMusic look for a new version at once.
+	checkUpdates chan struct{}
 	// updating is held while an update installs.
 	updating sync.Mutex
 
@@ -92,6 +97,11 @@ type App struct {
 	main, mini *mygo.Window
 	tray       *mygo.Tray
 	mediaKeys  bool
+	// offer is the new version the main window offers, until the user
+	// answers; putOff the one they put off until putOffUntil.
+	offer       *Release
+	putOff      string
+	putOffUntil time.Time
 }
 
 // New opens what the app keeps in opts.DataDir and opts.CacheDir.
@@ -104,6 +114,10 @@ func New(opts Options) (*App, error) {
 	if a.library, err = library.Open(filepath.Join(opts.DataDir, "library.json")); err != nil {
 		return nil, fmt.Errorf("opening the library: %w", err)
 	}
+	if a.updates, err = store.Open(filepath.Join(opts.DataDir, "updater.json"), updatePrefs{}); err != nil {
+		return nil, fmt.Errorf("opening the update preferences: %w", err)
+	}
+	a.checkUpdates = make(chan struct{}, 1)
 	matches, err := store.Open(filepath.Join(opts.CacheDir, "matches.json"), map[string]media.Track{})
 	if err != nil {
 		return nil, fmt.Errorf("opening matches: %w", err)

@@ -4,9 +4,12 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/fzn0x/mixmusic/internal/store"
 )
 
 func TestNewerVersion(t *testing.T) {
@@ -86,6 +89,7 @@ func TestLatestRelease(t *testing.T) {
 		"tag_name": "v0.3.0",
 		"html_url": "https://github.com/fzn0x/mixmusic/releases/tag/v0.3.0",
 		"published_at": "2026-10-21T10:00:00Z",
+		"body": "Playlists of your own, and an [About page](https://example.com) that shows the newest version.\r\n\r\n### Added\r\n\r\n- Make playlists.",
 		"assets": [
 			{"name": "mixmusic-0.3.0-linux-amd64.deb", "browser_download_url": "https://example.com/amd64.deb"},
 			{"name": "mixmusic-0.3.0-linux-arm64.deb", "browser_download_url": "https://example.com/arm64.deb"},
@@ -107,6 +111,7 @@ func TestLatestRelease(t *testing.T) {
 		Version:  "0.3.0",
 		Newer:    true,
 		Date:     "2026-10-21T10:00:00Z",
+		Notes:    "Playlists of your own, and an About page that shows the newest version.",
 		Page:     "https://github.com/fzn0x/mixmusic/releases/tag/v0.3.0",
 		Download: "https://example.com/arm64.deb",
 		File:     "mixmusic-0.3.0-linux-arm64.deb",
@@ -136,5 +141,65 @@ func TestLatestReleaseRateLimited(t *testing.T) {
 	_, err := latestRelease(context.Background(), srv.Client(), srv.URL, "installer", "amd64", "0.2.0")
 	if err == nil || !strings.Contains(err.Error(), "try again in an hour") {
 		t.Errorf("err = %v, want one that says to try again later", err)
+	}
+}
+
+func TestSummary(t *testing.T) {
+	for _, c := range []struct{ notes, want string }{
+		{"MixMusic tells you when a yt-dlp you installed\nis out of date, and offers `its own`.\n\n### Added\n\n- More.", "MixMusic tells you when a yt-dlp you installed is out of date, and offers its own."},
+		{"**Discord** shows what plays, on [Windows](https://example.com) too.", "Discord shows what plays, on Windows too."},
+		{"### Fixed\n\n- A crash.", ""},
+		{"", ""},
+	} {
+		if got := summary(c.notes); got != c.want {
+			t.Errorf("summary(%q) = %q, want %q", c.notes, got, c.want)
+		}
+	}
+}
+
+func TestDecideUpdate(t *testing.T) {
+	on := true
+	newer := Release{Version: "0.5.0", Newer: true}
+	for _, c := range []struct {
+		name       string
+		r          Release
+		p          updatePrefs
+		installed  string
+		canInstall bool
+		want       updateAction
+	}{
+		{"up to date", Release{Version: "0.4.0"}, updatePrefs{}, "", true, updateNothing},
+		{"asks", newer, updatePrefs{AutomaticChecks: &on}, "", true, updateOffer},
+		{"installs without asking", newer, updatePrefs{AutomaticDownloads: true}, "", true, updateInstall},
+		{"offers a copy that cannot install", newer, updatePrefs{AutomaticDownloads: true}, "", false, updateOffer},
+		{"installed already", newer, updatePrefs{}, "0.5.0", true, updateNothing},
+		{"newer than the one installed", newer, updatePrefs{}, "0.4.1", true, updateOffer},
+		{"skipped", newer, updatePrefs{SkippedVersion: "0.5.0"}, "", true, updateNothing},
+		{"a version after the one skipped", newer, updatePrefs{SkippedVersion: "0.4.1"}, "", true, updateOffer},
+	} {
+		if got := decideUpdate(c.r, c.p, c.installed, c.canInstall); got != c.want {
+			t.Errorf("%s: decideUpdate = %v, want %v", c.name, got, c.want)
+		}
+	}
+}
+
+func TestUpdatePrefsOfTheUpdateWindow(t *testing.T) {
+	// updater.json as MyGo's update window wrote it.
+	path := filepath.Join(t.TempDir(), "updater.json")
+	data := `{"automaticChecks":false,"automaticDownloads":true,"skippedVersion":"0.3.1","lastCheck":"2026-10-20T04:04:16.7979378+07:00"}`
+	if err := os.WriteFile(path, []byte(data), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	f, err := store.Open(path, updatePrefs{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := f.Get()
+	if p.checks() || !p.AutomaticDownloads || p.SkippedVersion != "0.3.1" || p.LastCheck.IsZero() {
+		t.Errorf("prefs = %+v", p)
+	}
+	// Until the user chose, MixMusic checks.
+	if !(updatePrefs{}).checks() {
+		t.Error("new prefs do not check")
 	}
 }

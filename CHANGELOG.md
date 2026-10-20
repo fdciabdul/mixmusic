@@ -6,8 +6,18 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- A new version asks to install in a pop-up, unless MixMusic installs
+  updates without asking. Later asks again at the next start, skip this
+  version at the next version. Copies that cannot replace themselves, the
+  .deb, the .rpm and the AppImage, offer the new version's download there.
+
 ### Changed
 
+- MixMusic looks for a new version at start and every few hours, no longer
+  once a day. Copies that cannot replace themselves look too, and Settings ›
+  About turns that off.
 - A Spotify track that plays from YouTube Music instead says why once, not
   at every track.
 
