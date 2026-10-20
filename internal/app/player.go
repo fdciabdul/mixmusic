@@ -186,12 +186,16 @@ func (p *Player) ConnectPlay(ctx context.Context, track media.Track, positionMs 
 	err = p.a.spotify.Play(ctx, device, []string{spotify.URI("track", id)}, positionMs)
 	var apiErr *spotify.APIError
 	if errors.As(err, &apiErr) && apiErr.Status == 404 && device == "" {
-		// No device is active: wake up the first one there is.
+		// No device is active: wake up the first one that takes commands.
 		devices, derr := p.a.spotify.Devices(ctx)
-		if derr != nil || len(devices) == 0 {
+		if derr != nil {
 			return err
 		}
-		return p.a.spotify.Play(ctx, devices[0].ID, []string{spotify.URI("track", id)}, positionMs)
+		for _, d := range devices {
+			if !d.Restricted {
+				return p.a.spotify.Play(ctx, d.ID, []string{spotify.URI("track", id)}, positionMs)
+			}
+		}
 	}
 	return err
 }

@@ -12,7 +12,7 @@ import {
   type Track,
 } from "../mygo";
 import { AudioEngine, type EngineEvents } from "./audio";
-import { ConnectEngine } from "./connect";
+import { ConnectEngine, connectDevice } from "./connect";
 import { settings, update as updateSettings } from "../state/settings";
 import { isLiked, likedIds, toggleLiked } from "../state/library";
 import { toast } from "../state/ui";
@@ -99,7 +99,7 @@ const engineEvents: EngineEvents = {
 };
 
 const audio = new AudioEngine(engineEvents);
-const connect = new ConnectEngine(engineEvents);
+const connect = new ConnectEngine(engineEvents, connectDevice);
 
 /** analyser exposes the audio for visualizers; null until playback starts. */
 export const analyser = (): AnalyserNode | null => audio.analyser;
@@ -136,20 +136,25 @@ export async function playAt(i: number, startMs = 0, autoplay = true): Promise<v
     if (token !== loadToken) return;
     if (src.mode === "connect") {
       audio.stop();
+      if (!autoplay) {
+        connect.stop(false);
+        // A device cannot wait paused on a track: it starts from here on play.
+        batch(() => {
+          source.value = src;
+          buffering.value = false;
+        });
+        return;
+      }
       try {
         await connect.play(entry.track, startMs);
         if (token !== loadToken) return;
         source.value = src;
         buffering.value = false;
         failures = 0;
-        if (!autoplay) await connect.pause();
         return;
       } catch (err) {
         if (token !== loadToken) return;
-        toast(`${errorMessage(err)} — playing it from YouTube Music instead`, {
-          tone: "error",
-          action: { label: "settings", run: () => navigate("/settings/playback") },
-        });
+        fellBack(errorMessage(err));
         src = await Player.prepareStream(entry.track);
         if (token !== loadToken) return;
       }
@@ -161,6 +166,19 @@ export async function playAt(i: number, startMs = 0, autoplay = true): Promise<v
     if (token !== loadToken) return;
     fail(errorMessage(err));
   }
+}
+
+/** warned keeps what fellBack told, to tell it once. */
+const warned = new Set<string>();
+
+/** fellBack tells why a Spotify track plays from YouTube Music instead, once for each reason. */
+function fellBack(why: string): void {
+  if (warned.has(why)) return;
+  warned.add(why);
+  toast(`${why.replace(/\.$/, "")} — playing it from YouTube Music instead`, {
+    tone: "error",
+    action: { label: "settings", run: () => navigate("/settings/playback") },
+  });
 }
 
 /**

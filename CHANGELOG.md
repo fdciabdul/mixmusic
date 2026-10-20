@@ -6,6 +6,25 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- A Spotify track that plays from YouTube Music instead says why once, not
+  at every track.
+
+### Fixed
+
+- On Spotify Connect, a track no longer shows paused while your device plays
+  it: MixMusic took Spotify's late reports, and the copy of a track Spotify
+  plays in your country, for someone else playing on the device.
+- On Spotify Connect, the next track plays when one ends, where MixMusic
+  waited on the track that ended.
+- A Spotify device that takes a track but waits, paused, is told once more to
+  play it.
+- Skipping a track in its last seconds on Spotify Connect no longer skips the
+  next one too.
+- Moving through a Spotify track before it plays, as after a restart, no
+  longer starts it on your device behind MixMusic's back.
+
 ## [0.4.0] - 2026-10-20
 
 MixMusic tells you when a yt-dlp you installed yourself is out of date,
