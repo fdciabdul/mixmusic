@@ -6,6 +6,12 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-10-20
+
+A track whose audio fails to load says why, and stops the queue only when
+three in a row cannot play. MixMusic 0.3.0 and 0.3.1 offer this version in
+Settings › About.
+
 ### Fixed
 
 - A track whose audio fails to load says why, such as YouTube refusing it
@@ -152,7 +158,8 @@ player, for macOS, Windows and Linux.
 - Apps for macOS 12 and later (Apple silicon and Intel), Windows 10 and 11,
   and Linux, on x64 and Arm64.
 
-[Unreleased]: https://github.com/fzn0x/mixmusic/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/fzn0x/mixmusic/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/fzn0x/mixmusic/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/fzn0x/mixmusic/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/fzn0x/mixmusic/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/fzn0x/mixmusic/compare/v0.1.0...v0.2.0
