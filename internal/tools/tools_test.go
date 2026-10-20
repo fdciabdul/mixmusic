@@ -173,9 +173,9 @@ func TestUpdateCommand(t *testing.T) {
 		"/usr/local/Cellar/yt-dlp/2025.01.15/bin/yt-dlp":                        "brew upgrade yt-dlp",
 		"/home/linuxbrew/.linuxbrew/bin/yt-dlp":                                 "brew upgrade yt-dlp",
 		"/home/a/.local/share/pipx/venvs/yt-dlp/bin/yt-dlp":                     "pipx upgrade yt-dlp",
-		"/snap/bin/yt-dlp":                                                      "sudo snap refresh yt-dlp",
-		"/usr/bin/yt-dlp":                                                       "",
-		`C:\Users\a\Downloads\yt-dlp.exe`:                                       "",
+		"/snap/bin/yt-dlp":                "sudo snap refresh yt-dlp",
+		"/usr/bin/yt-dlp":                 "",
+		`C:\Users\a\Downloads\yt-dlp.exe`: "",
 	} {
 		if got := updateCommand(path); got != want {
 			t.Errorf("updateCommand(%s) = %q, want %q", path, got, want)
