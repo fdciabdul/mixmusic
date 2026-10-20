@@ -6,6 +6,15 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-20
+
+Playlists of your own and a brand channel on YouTube Music, an About page
+that shows the newest version and installs it, and downloads for more
+systems. Signing in to YouTube Music no longer freezes MixMusic, and the
+name of every page fits the window, with all of its sections. Copies of
+0.2.0 from an installer or install.sh offer to update to this version;
+install the .deb by hand.
+
 ### Added
 
 - Make playlists on YouTube Music, from the library or from a track's or a
@@ -124,6 +133,7 @@ player, for macOS, Windows and Linux.
 - Apps for macOS 12 and later (Apple silicon and Intel), Windows 10 and 11,
   and Linux, on x64 and Arm64.
 
-[Unreleased]: https://github.com/fzn0x/mixmusic/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/fzn0x/mixmusic/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/fzn0x/mixmusic/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/fzn0x/mixmusic/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/fzn0x/mixmusic/releases/tag/v0.1.0
