@@ -6,6 +6,14 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- A track whose audio fails to load says why, such as YouTube refusing it
+  or its servers out of reach, instead of "the audio format is not
+  supported", and the log keeps the reason. It counts as one track that
+  could not play, not two or three, so the queue no longer stops at the
+  first.
+
 ## [0.3.1] - 2026-10-20
 
 Discord shows what you play on Windows, which it never did. MixMusic 0.3.0

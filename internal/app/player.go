@@ -77,6 +77,17 @@ func (p *Player) PrepareStream(ctx context.Context, track media.Track) (Playback
 	return src, nil
 }
 
+// StreamFailure tells why the audio of a track, the recording PrepareStream
+// returned, failed to load, which the audio element cannot: in plain words,
+// or "" when its audio arrived, and the page could not play it.
+func (p *Player) StreamFailure(track media.Track) string {
+	_, videoID, err := media.ParseID(track.ID)
+	if err != nil {
+		return ""
+	}
+	return p.a.proxy.Failure(videoID)
+}
+
 // ForgetMatch drops the YouTube Music recording found for a Spotify track,
 // so that the next play searches again.
 func (p *Player) ForgetMatch(trackID string) error {

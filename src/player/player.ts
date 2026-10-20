@@ -189,9 +189,16 @@ function fail(message: string): void {
 async function onStreamError(message: string): Promise<void> {
   const entry = currentItem.value;
   if (!entry) return;
-  if (retried === entry.uid) return fail(message);
-  retried = entry.uid;
   const token = loadToken;
+  if (retried === entry.uid) {
+    // The audio element tells only that its source cannot play; the stream
+    // tells why, as when YouTube refused it.
+    const src = source.value;
+    const why = src?.mode === "stream" ? await Player.streamFailure(src.track).catch(() => "") : "";
+    if (token === loadToken) fail(why || message);
+    return;
+  }
+  retried = entry.uid;
   const at = position.value;
   try {
     const src = await Player.prepareStream(entry.track);

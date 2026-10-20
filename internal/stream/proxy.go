@@ -5,9 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -15,6 +18,9 @@ import (
 // serves ranges of a few megabytes at full speed, and throttles requests
 // for whole files.
 const chunkSize = 4 << 20
+
+// maxFailures is how many videos the proxy remembers the failure of.
+const maxFailures = 64
 
 // Proxy serves the audio of YouTube videos at /yt/<video id>, fetching it
 // from YouTube in chunks. It answers range requests, so the audio element
@@ -24,6 +30,9 @@ type Proxy struct {
 	HTTP     *http.Client
 	// Cache keeps the audio of tracks played to their end, if set.
 	Cache *Cache
+
+	mu       sync.Mutex
+	failures map[string]string // why the last request of a video failed
 }
 
 // NewProxy returns a proxy of the streams r resolves.
@@ -44,17 +53,18 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
+	p.setFailure(videoID, "")
 	if p.Cache != nil && p.Cache.Serve(w, r, videoID) {
 		return
 	}
 	s, err := p.Resolver.Resolve(r.Context(), videoID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadGateway)
+		p.fail(w, videoID, err)
 		return
 	}
 	if s.Size == 0 {
 		if s.Size, err = p.probeSize(r.Context(), s); err != nil {
-			http.Error(w, err.Error(), http.StatusBadGateway)
+			p.fail(w, videoID, err)
 			return
 		}
 	}
@@ -75,7 +85,7 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadGateway)
+		p.fail(w, videoID, err)
 		return
 	}
 	defer first.Close()
@@ -108,7 +118,8 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	for off := start; off <= end; off += chunkSize {
 		if off > start {
 			if body, err = p.fetch(r.Context(), s, off, min(off+chunkSize-1, end)); err != nil {
-				return // the response has started: all we can do is stop
+				p.fail(nil, videoID, err) // the response has started: all we can do is stop
+				return
 			}
 		}
 		_, err := io.Copy(out, body)
@@ -125,9 +136,78 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Failure returns why the last request of a video's audio failed, in plain
+// words, or "" when it did not fail. The audio element that made it only
+// tells that its source cannot play.
+func (p *Proxy) Failure(videoID string) string {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return p.failures[videoID]
+}
+
+// setFailure remembers why the last request of a video failed, or that it
+// did not when why is "".
+func (p *Proxy) setFailure(videoID, why string) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if why == "" {
+		delete(p.failures, videoID)
+		return
+	}
+	if p.failures == nil || len(p.failures) >= maxFailures {
+		p.failures = map[string]string{}
+	}
+	p.failures[videoID] = why
+}
+
+// fail answers a request whose audio could not be served with err, when w
+// is not nil, remembers why and logs it. A request the player gave up on,
+// as when it skipped the track, is no failure.
+func (p *Proxy) fail(w http.ResponseWriter, videoID string, err error) {
+	if w != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+	}
+	if errors.Is(err, context.Canceled) {
+		return
+	}
+	// A request's error quotes the stream URL, which carries the user's IP
+	// address: the log keeps what went wrong, without it.
+	logged := err
+	var ue *url.Error
+	if errors.As(err, &ue) {
+		logged = ue.Err
+	}
+	log.Printf("mixmusic: the audio of %s: %v", videoID, logged)
+	p.setFailure(videoID, plainFailure(err))
+}
+
+// plainFailure says in plain words why the audio of a video could not be
+// served.
+func plainFailure(err error) string {
+	var status statusError
+	var ue *url.Error
+	switch {
+	case errors.Is(err, errExpired):
+		return "YouTube refused to send its audio; updating yt-dlp in Settings › Playback often fixes it"
+	case errors.As(err, &status) && status == http.StatusTooManyRequests:
+		return "YouTube is turning down requests from this network for now; try again in a while"
+	case errors.As(err, &status):
+		return fmt.Sprintf("YouTube answered HTTP %d for its audio", int(status))
+	case errors.As(err, &ue):
+		return "MixMusic could not reach YouTube's audio servers, which a firewall, a VPN or a DNS filter may block"
+	}
+	return strings.TrimPrefix(err.Error(), "stream: ")
+}
+
 // errExpired is returned when YouTube refuses a stream URL, which happens
 // once it expired.
 var errExpired = errors.New("stream: URL refused")
+
+// statusError is returned when YouTube answers a stream request with an
+// unexpected HTTP status.
+type statusError int
+
+func (e statusError) Error() string { return fmt.Sprintf("stream: YouTube answered HTTP %d", int(e)) }
 
 // fetch requests bytes start to end of a stream.
 func (p *Proxy) fetch(ctx context.Context, s Stream, start, end int64) (io.ReadCloser, error) {
@@ -155,7 +235,7 @@ func (p *Proxy) fetch(ctx context.Context, s Stream, start, end int64) (io.ReadC
 		return nil, errExpired
 	}
 	res.Body.Close()
-	return nil, fmt.Errorf("stream: YouTube answered HTTP %d", res.StatusCode)
+	return nil, statusError(res.StatusCode)
 }
 
 // probeSize asks YouTube for the length of a stream yt-dlp did not know.

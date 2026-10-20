@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -120,6 +122,47 @@ func TestProxyCachesWholePlays(t *testing.T) {
 	rec := get(t, p, "")
 	if rec.Code != 200 || !bytes.Equal(rec.Body.Bytes(), data) {
 		t.Errorf("from the cache: %d, %d bytes", rec.Code, rec.Body.Len())
+	}
+}
+
+func TestProxyTellsWhyItFailed(t *testing.T) {
+	var logs bytes.Buffer
+	log.SetOutput(&logs)
+	t.Cleanup(func() { log.SetOutput(os.Stderr) })
+
+	var minGen atomic.Int32
+	srv, _ := upstream(t, 1000, &minGen)
+	p := testProxy(srv, 1000)
+	minGen.Store(100) // YouTube refuses every URL, also resolved again
+	if rec := get(t, p, ""); rec.Code != http.StatusBadGateway {
+		t.Fatalf("refused: %d", rec.Code)
+	}
+	if got := p.Failure(testID); !strings.HasPrefix(got, "YouTube refused to send its audio") {
+		t.Errorf("refused: Failure = %q", got)
+	}
+	minGen.Store(0)
+	if rec := get(t, p, ""); rec.Code != 200 || p.Failure(testID) != "" {
+		t.Errorf("served again: %d, Failure = %q", rec.Code, p.Failure(testID))
+	}
+
+	limited := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusTooManyRequests)
+	}))
+	t.Cleanup(limited.Close)
+	p = testProxy(limited, 1000)
+	get(t, p, "")
+	if got := p.Failure(testID); !strings.HasPrefix(got, "YouTube is turning down requests") {
+		t.Errorf("rate limited: Failure = %q", got)
+	}
+
+	srv.Close()
+	p = testProxy(srv, 1000)
+	get(t, p, "")
+	if got := p.Failure(testID); !strings.HasPrefix(got, "MixMusic could not reach YouTube's audio servers") {
+		t.Errorf("unreachable: Failure = %q", got)
+	}
+	if strings.Contains(logs.String(), "gen=") || !strings.Contains(logs.String(), testID) {
+		t.Errorf("the log names the stream URL, or not the video:\n%s", logs.String())
 	}
 }
 

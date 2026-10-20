@@ -181,7 +181,10 @@ export class AudioEngine {
     try {
       await this.current.el.play();
     } catch (err) {
-      if ((err as DOMException).name !== "AbortError") throw err;
+      // A newer load aborts the play. A source that cannot play rejects it
+      // too, and its error event reports the failure.
+      const name = (err as DOMException).name;
+      if (name !== "AbortError" && name !== "NotSupportedError") throw err;
     }
   }
 

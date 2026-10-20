@@ -856,6 +856,14 @@ export const Player = {
   report(np: NowPlaying): Promise<void> {
     return call("Player.Report", np);
   },
+  /**
+   * StreamFailure tells why the audio of a track, the recording PrepareStream
+   * returned, failed to load, which the audio element cannot: in plain words,
+   * or "" when its audio arrived, and the page could not play it.
+   */
+  streamFailure(track: Track): Promise<string> {
+    return call("Player.StreamFailure", track);
+  },
 } as const;
 
 /**
