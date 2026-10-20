@@ -1,9 +1,9 @@
-// The page header: the page names itself in one giant light lowercase word
-// that runs off the right edge of the pane. Scrolling the page slides the
-// word left, bringing its cropped tail into view. Pivots below it switch
-// the page's sections, the next one peeking from the edge.
+// The page header: the page names itself in one giant light lowercase word.
+// The word and the pivots under it, which switch the page's sections,
+// shrink to fit the pane on one line; past a floor, they wrap instead, so
+// nothing is ever cut off.
 import type { ComponentChildren } from "preact";
-import { useEffect, useRef } from "preact/hooks";
+import { useLayoutEffect, useRef } from "preact/hooks";
 
 export interface Pivot {
   id: string;
@@ -21,29 +21,30 @@ interface Props {
 }
 
 export function PageHeader({ title, pivots, active, onPivot, children }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
-  useTailReveal(ref);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const pivotsRef = useRef<HTMLDivElement>(null);
+  const hasPivots = !!pivots && pivots.length > 0;
+  // A long name wraps small, the pivots at their full size.
+  useFit(titleRef, 0.45, 0.45, true);
+  useFit(pivotsRef, 0.85, 1, hasPivots);
   return (
     <header class="mm-page-header">
-      <div class="mm-page-title-frame" ref={ref}>
-        <h1 class="mm-page-title" title={title}>
+      <div class="mm-page-title-frame">
+        <h1 class="mm-page-title" title={title} ref={titleRef}>
           {title.toLocaleLowerCase()}
         </h1>
       </div>
       {children && <div class="mm-page-header-body">{children}</div>}
-      {pivots && pivots.length > 0 && (
-        <div class="mm-pivots" role="tablist" aria-label={`${title} sections`}>
-          {pivots.map((p) => (
+      {hasPivots && (
+        <div class="mm-pivots" role="tablist" aria-label={`${title} sections`} ref={pivotsRef}>
+          {pivots!.map((p) => (
             <button
               key={p.id}
               type="button"
               role="tab"
               aria-selected={p.id === active}
               class="mm-pivot"
-              onClick={(e) => {
-                (e.currentTarget as HTMLElement).scrollIntoView({ inline: "nearest", block: "nearest" });
-                onPivot?.(p.id);
-              }}
+              onClick={() => onPivot?.(p.id)}
             >
               {p.label}
               {p.count != null && <span class="mm-pivot-count mm-num">{p.count}</span>}
@@ -56,33 +57,49 @@ export function PageHeader({ title, pivots, active, onPivot, children }: Props) 
 }
 
 /**
- * useTailReveal slides the title left as the page scrolls, up to the width
- * it overflows, so the cropped end of a long word comes into view.
+ * useFit scales the text of an element down, through --mm-fit, until one
+ * line of it fits the width of its parent. Below min, the smallest scale,
+ * it sets data-wrap instead, and the element wraps at the scale wrap. It
+ * fits again when the pane resizes, a font loads, or the text, the text
+ * size or the theme change the element's size. shown is whether the
+ * element is rendered.
  */
-function useTailReveal(ref: { current: HTMLDivElement | null }) {
-  useEffect(() => {
-    const frame = ref.current;
-    const scroller = frame?.closest<HTMLElement>(".mm-scroll");
-    const title = frame?.firstElementChild as HTMLElement | null;
-    if (!frame || !scroller || !title) return;
-    let overflow = 0;
-    const measure = () => {
-      overflow = Math.max(0, title.scrollWidth - scroller.clientWidth + 48);
-      frame.style.setProperty("--mm-title-overflow", `${overflow}px`);
+function useFit(ref: { current: HTMLElement | null }, min: number, wrap: number, shown: boolean) {
+  useLayoutEffect(() => {
+    const el = ref.current;
+    const box = el?.parentElement;
+    if (!el || !box) return;
+    let frame = 0;
+    const fit = () => {
+      frame = 0;
+      // One line at the full size, as wide as its text.
+      el.style.setProperty("--mm-fit", "1");
+      el.removeAttribute("data-wrap");
+      const natural = el.scrollWidth;
+      const room = box.clientWidth - 1;
+      const scale = natural > room && natural > 0 ? room / natural : 1;
+      if (scale >= min) {
+        el.style.setProperty("--mm-fit", String(Math.floor(scale * 1000) / 1000));
+      } else {
+        el.style.setProperty("--mm-fit", String(wrap));
+        el.setAttribute("data-wrap", "");
+      }
     };
-    const onScroll = () => {
-      const progress = Math.min(1, scroller.scrollTop / 280);
-      frame.style.setProperty("--mm-title-progress", String(progress));
+    const later = () => {
+      frame ||= requestAnimationFrame(fit);
     };
-    measure();
-    onScroll();
-    const ro = new ResizeObserver(measure);
-    ro.observe(scroller);
-    ro.observe(title);
-    scroller.addEventListener("scroll", onScroll, { passive: true });
+    fit();
+    const resized = new ResizeObserver(later);
+    resized.observe(box);
+    resized.observe(el);
+    const changed = new MutationObserver(later);
+    changed.observe(el, { childList: true, characterData: true, subtree: true });
+    document.fonts?.addEventListener("loadingdone", later);
     return () => {
-      ro.disconnect();
-      scroller.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+      resized.disconnect();
+      changed.disconnect();
+      document.fonts?.removeEventListener("loadingdone", later);
     };
-  }, []);
+  }, [shown]);
 }

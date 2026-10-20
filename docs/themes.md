@@ -147,7 +147,7 @@ The colors above as `--mm-<name>`, plus:
 | `--mm-rule` | the accent hairline under section titles |
 | `--mm-outline` | the 2px outline of secondary buttons and inputs |
 | `--mm-scrim` | the veil behind dialogs and the command palette |
-| `--mm-size-poster`, `--mm-size-hero`, `--mm-size-title`, `--mm-size-pivot`, `--mm-size-subtitle`, `--mm-size-body`, `--mm-size-small`, `--mm-size-caption` | the type scale |
+| `--mm-size-poster`, `--mm-size-pivots`, `--mm-size-hero`, `--mm-size-title`, `--mm-size-pivot`, `--mm-size-subtitle`, `--mm-size-body`, `--mm-size-small`, `--mm-size-caption` | the type scale; the page word (`poster`), its pivots and the empty-state titles (`hero`) follow the width of the main pane |
 | `--mm-row`, `--mm-sidebar-width`, `--mm-queue-width`, `--mm-player-height`, `--mm-page-gutter` | measures of the shell |
 | `--mm-ease-out`, `--mm-ease-in-out`, `--mm-fast`, `--mm-medium`, `--mm-slow` | motion, all 0 when the user asks for reduced motion |
 
@@ -171,7 +171,7 @@ The colors above as `--mm-<name>`, plus:
 | `.mm-live` | the live tile of what plays, in the sidebar |
 | `.mm-topbar`, `.mm-search` | the top bar and the search box |
 | `.mm-main`, `.mm-page` | the main pane and the page in it |
-| `.mm-page-header`, `.mm-page-title`, `.mm-pivots`, `.mm-pivot` | the page's giant word and its pivots; the active pivot has `aria-selected="true"` |
+| `.mm-page-header`, `.mm-page-title`, `.mm-pivots`, `.mm-pivot` | the page's giant word and its pivots; the active pivot has `aria-selected="true"`. The word and the pivot row shrink to fit the pane by `--mm-fit` (1 is full size), and wrap with `data-wrap` when they would get too small |
 | `.mm-section`, `.mm-section-title`, `.mm-shelf`, `.mm-shelf-row` | sections and shelves |
 | `.mm-tile` (`[data-tone="1"]` … `"4"`), `.mm-tile-title`, `.mm-tile-caption` | flat tiles |
 | `.mm-art-tile`, `.mm-art-frame`, `.mm-artwork` | artwork of albums, playlists, artists and tracks |

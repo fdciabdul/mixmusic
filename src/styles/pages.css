@@ -507,6 +507,24 @@
   width: 300px;
 }
 
+/* In a narrow pane the control goes under its text, which keeps the
+   width to wrap in. */
+@container main (max-width: 600px) {
+  .mm-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--mm-space-3);
+  }
+  .mm-row-control {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  .mm-row-control .mm-input,
+  .mm-row-control .mm-slider {
+    width: 100%;
+  }
+}
+
 .mm-theme-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));

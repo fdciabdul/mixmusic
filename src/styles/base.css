@@ -74,10 +74,12 @@
   --mm-outline: color-mix(in srgb, var(--mm-text) 85%, transparent);
   --mm-scrim: color-mix(in srgb, var(--mm-bg) 72%, transparent);
 
-  /* The type scale, multiplied by the user's text size. */
+  /* The type scale, multiplied by the user's text size. The page word and
+     its pivots follow the width of the pane (cqi), not of the window. */
   --mm-font-scale: 1;
-  --mm-size-poster: calc(clamp(5.5rem, 10vw, 9rem) * var(--mm-font-scale));
-  --mm-size-hero: calc(3.5rem * var(--mm-font-scale));
+  --mm-size-poster: calc(clamp(3.5rem, 14cqi, 9rem) * var(--mm-font-scale));
+  --mm-size-pivots: calc(clamp(1.75rem, 4cqi, 3rem) * var(--mm-font-scale));
+  --mm-size-hero: calc(clamp(2.25rem, 7cqi, 3.5rem) * var(--mm-font-scale));
   --mm-size-title: calc(2.125rem * var(--mm-font-scale));
   --mm-size-pivot: calc(1.75rem * var(--mm-font-scale));
   --mm-size-subtitle: calc(1.375rem * var(--mm-font-scale));

@@ -4,7 +4,9 @@
  * docs/themes.md.
  */
 
-/* The page header: one giant word, cropped by the pane's edge. */
+/* The page header: one giant word, and the pivots under it. PageHeader
+   scales both through --mm-fit until one line fits the pane, and sets
+   data-wrap when even its smallest scale does not. */
 
 .mm-page-header {
   position: relative;
@@ -14,18 +16,25 @@
 
 .mm-page-title-frame {
   margin-left: -0.06em;
-  transform: translateX(calc(var(--mm-title-overflow, 0px) * -1 * var(--mm-title-progress, 0)));
-  will-change: transform;
 }
 
 .mm-page-title {
+  width: max-content;
   font-family: var(--mm-font-display);
-  font-size: var(--mm-size-poster);
+  font-size: calc(var(--mm-size-poster) * var(--mm-fit, 1));
   font-weight: 300;
   line-height: 0.86;
   letter-spacing: -0.045em;
   white-space: nowrap;
   padding-bottom: 0.1em;
+}
+
+.mm-page-title[data-wrap] {
+  width: auto;
+  line-height: 0.95;
+  white-space: normal;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .mm-page-header-body {
@@ -34,23 +43,22 @@
 
 .mm-pivots {
   display: flex;
-  gap: var(--mm-space-6);
+  column-gap: 0.66em;
+  width: max-content;
   margin-top: var(--mm-space-4);
-  overflow-x: auto;
-  scrollbar-width: none;
+  font-family: var(--mm-font-display);
+  font-size: calc(var(--mm-size-pivots) * var(--mm-fit, 1));
   white-space: nowrap;
-  margin-right: calc(-1 * var(--mm-page-gutter));
-  padding-right: var(--mm-page-gutter);
 }
 
-.mm-pivots::-webkit-scrollbar {
-  display: none;
+.mm-pivots[data-wrap] {
+  flex-wrap: wrap;
+  width: auto;
 }
 
 .mm-pivot {
   flex: none;
-  font-family: var(--mm-font-display);
-  font-size: calc(clamp(2.25rem, 3.6vw, 3rem) * var(--mm-font-scale));
+  font-size: 1em;
   line-height: 1.1;
   font-weight: 300;
   letter-spacing: -0.02em;
@@ -181,15 +189,16 @@
   position: relative;
   z-index: 1;
   font-family: var(--mm-font-display);
-  font-size: calc(clamp(1.75rem, 2.6vw, 2.375rem) * var(--mm-font-scale));
+  font-size: calc(clamp(1.5rem, 3.4cqi, 2.375rem) * var(--mm-font-scale));
   font-weight: 300;
   line-height: 0.95;
   letter-spacing: -0.035em;
   text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 .mm-tile-large .mm-tile-title {
-  font-size: calc(clamp(2.5rem, 4.4vw, 3.75rem) * var(--mm-font-scale));
+  font-size: calc(clamp(2rem, 5.6cqi, 3.75rem) * var(--mm-font-scale));
 }
 
 .mm-tile-caption {
@@ -1088,6 +1097,8 @@
   letter-spacing: -0.035em;
   line-height: 1;
   color: var(--mm-accent);
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .mm-empty-message {

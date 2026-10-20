@@ -24,6 +24,10 @@ All notable changes to MixMusic are documented here. The format follows
 
 ### Changed
 
+- The name of a page and its sections shrink to fit the window, and a long
+  name, such as a search, an album or a playlist, wraps, instead of running
+  off the edge: every section of Settings shows, About included. Tiles,
+  empty pages and settings follow the room the side panels leave too.
 - Tracks play signed out also when you signed in to YouTube Music: with your
   session, yt-dlp found fewer streams, often none it could play. No file
   keeps a copy of the session for it any more, and the audio quality of

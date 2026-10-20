@@ -23,19 +23,19 @@ colors:
 typography:
   display:
     fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
-    fontSize: "clamp(5.5rem, 10vw, 9rem)"
+    fontSize: "clamp(3.5rem, 14cqi, 9rem)"
     fontWeight: 300
     lineHeight: 0.86
     letterSpacing: "-0.045em"
   headline:
     fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
-    fontSize: "3.5rem"
+    fontSize: "clamp(2.25rem, 7cqi, 3.5rem)"
     fontWeight: 300
     lineHeight: 1
     letterSpacing: "-0.035em"
   pivot:
     fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
-    fontSize: "clamp(2.25rem, 3.6vw, 3rem)"
+    fontSize: "clamp(1.75rem, 4cqi, 3rem)"
     fontWeight: 300
     lineHeight: 1.1
     letterSpacing: "-0.02em"
@@ -47,7 +47,7 @@ typography:
     letterSpacing: "-0.025em"
   tile-title:
     fontFamily: "Selawik, Segoe UI, Noto Sans, DejaVu Sans, system-ui, sans-serif"
-    fontSize: "clamp(1.75rem, 2.6vw, 2.375rem)"
+    fontSize: "clamp(1.5rem, 3.4cqi, 2.375rem)"
     fontWeight: 300
     lineHeight: 0.95
     letterSpacing: "-0.035em"
@@ -260,14 +260,14 @@ components:
 
 **Creative North Star: "The Typographic Tile Wall"**
 
-MixMusic is a wall of type and colour on true black. Every place in the player names itself in one giant, light, lowercase word that runs off the right edge of the pane; beneath it, pivot words peek in from the same edge to say there is more to the side. Music sits on flat fields of colour (cyan, magenta, lime, amber) and on square artwork, never on rounded cards floating over charcoal. The interface is drawn almost entirely in white ink at light weights, with a single live colour that floods whatever is current.
+MixMusic is a wall of type and colour on true black. Every place in the player names itself in one giant, light, lowercase word that fills the width of the pane and is never cut; beneath it, a row of pivot words names the page's sections. Music sits on flat fields of colour (cyan, magenta, lime, amber) and on square artwork, never on rounded cards floating over charcoal. The interface is drawn almost entirely in white ink at light weights, with a single live colour that floods whatever is current.
 
 Density is that of a tool kept open for hours: a 248px rail of outlined icon boxes, a main pane of giant words, tiles and shelves, a 340px queue column that always shows what plays next, and a 92px player bar. The pane is scrolled, the shell never is. Motion is short and directional: pages swing in from the right like a turnstile, pressed tiles tilt toward the pointer, the live tile in the rail flips over to show the next track.
 
 The system is a public contract. Every colour, face, radius and measure is a `--mm-*` variable that a theme sets, and the `mm-*` class hooks and root attributes listed in `docs/themes.md` are stable. The default theme (Mix) is the reference expression; Daylight, Midnight, Sakura, Terminal and Aurora are token variants of the same grammar (light ground, other accents, other radii, other faces), not separate designs.
 
 **Key Characteristics:**
-- Giant lowercase light-weight words as the primary navigation landmark, cropped by the pane.
+- Giant lowercase light-weight words as the primary navigation landmark, shrunk to fit the pane, never cropped.
 - Flat colour tiles with ink in `tile-text`; texture printed only inside tiles.
 - One live colour (the accent, or the artwork's colour when dynamic) for every current, selected or playing thing, applied as a flood.
 - Secondary controls are 2px white outlines; pressing inverts them to solid ink.
@@ -316,17 +316,17 @@ Derived tints, computed from the above so every theme inherits them: hover is in
 **Character:** one humanist sans carries the whole interface, with the hierarchy made by size and weight alone: enormous and light at the top, plain and regular at reading size. Large type is always light (300) and tightly tracked.
 
 ### Hierarchy
-- **Display** (300, clamp(5.5rem, 10vw, 9rem), 0.86): the page word. One per page, lowercase, single line, cropped by the pane.
-- **Headline** (300, 3.5rem, 1): empty-state titles, set in the accent.
-- **Pivot** (300, clamp(2.25rem, 3.6vw, 3rem), 1.1): the page's section switches under the page word.
+- **Display** (300, clamp(3.5rem, 14cqi, 9rem), 0.86): the page word. One per page, lowercase, on one line shrunk to fit the pane, down to 45% of its size; a name longer than that wraps, balanced, at 0.95.
+- **Headline** (300, clamp(2.25rem, 7cqi, 3.5rem), 1): empty-state titles, set in the accent.
+- **Pivot** (300, clamp(1.75rem, 4cqi, 3rem), 1.1): the page's section switches under the page word, 0.66em apart, on one line shrunk to fit the pane, down to 85%; past that the row wraps at full size.
 - **Title** (300, 2.125rem, 1.1): section titles over shelves and lists, and dialog titles; the queue column's title is the smaller 1.75rem pivot token.
-- **Tile title** (300, clamp(1.75rem, 2.6vw, 2.375rem), 0.95; 2.5 to 3.75rem on large tiles): lowercase words on tiles.
+- **Tile title** (300, clamp(1.5rem, 3.4cqi, 2.375rem), 0.95; clamp(2rem, 5.6cqi, 3.75rem) on large tiles): lowercase words on tiles; a word too long for its tile breaks.
 - **Subtitle** (300, 1.375rem, 1.3): now-playing artists, the stats sentence, choice and marketplace card names, the palette input, lyrics in the side panel (2rem on the lyrics page).
 - **Body** (400, 0.9375rem, 1.45): track titles, nav labels (17px at weight 350), list items, buttons. Prose is capped at 56 to 72ch.
 - **Label** (400, 0.8125rem): artists, albums, durations, captions on tiles, chips, field labels, hints.
 - **Caption** (400, 0.75rem): times, shortcuts, palette groups, marketplace meta.
 
-The scale is multiplied by `--mm-font-scale`, the user's text size. Numbers that change in place (times, counts) use tabular figures.
+The scale is multiplied by `--mm-font-scale`, the user's text size. Sizes in `cqi` follow the width of the main pane, not of the window, so they shrink as the rail and the side panel take room. Numbers that change in place (times, counts) use tabular figures.
 
 ### Named Rules
 **The Lowercase Voice Rule.** Page words, pivots, tile titles, section titles and nav labels are lowercase. Names of tracks, artists, albums and services keep their own capitalisation.
@@ -336,7 +336,7 @@ The scale is multiplied by `--mm-font-scale`, the user's text size. Numbers that
 ### Marketing Site Ramp
 The landing page in `site/` reads at a larger size than the app, because it is read once rather than used for hours. Same family, same weights, same rules:
 - **Hero word** (300, clamp(7rem, 21vw, 21rem), 0.8): the single "mixmusic" that opens the page, cropped by the main column.
-- **Section word** (300, clamp(5.5rem, 13vw, 13rem), 0.86): one lowercase word per section, cropped by the column and sliding left as it scrolls, like the app's page word; it swings in 44px from the right the first time it arrives. Under a 720px viewport the hero and section words become clamp(6rem, 30vw, 9rem) and clamp(4.5rem, 24vw, 7rem).
+- **Section word** (300, clamp(5.5rem, 13vw, 13rem), 0.86): one lowercase word per section, cropped by the column and sliding left as it scrolls; it swings in 44px from the right the first time it arrives. Under a 720px viewport the hero and section words become clamp(6rem, 30vw, 9rem) and clamp(4.5rem, 24vw, 7rem).
 - **Hook** (300, clamp(1.625rem, 2.3vw, 2.375rem), 1.12): the one line under the hero that says what the player is.
 - **Lead** (300, clamp(1.5rem, 2.3vw, 2.125rem), 1.18): the opening sentence of each section, capped at 26ch (34ch when wide) and balanced.
 - **Body** (400, 1.0625rem, 1.5): marketing prose, capped at 60ch and set in ink at 80%; 1rem under a 720px viewport.
@@ -351,7 +351,7 @@ Pivots under the hero word follow the app's pivot at up to 3.25rem; under sectio
 
 A fixed shell grid: rail (248px, 224px compact, 76px collapsed) and a top bar of 48px across the top; the main pane, then the side panel (340px, 300px under 1100px wide) when the queue or lyrics are open; the player bar (92px, 80px compact) across the bottom. The shell clips; only the pane, the rail's library list and the panel scroll.
 
-The page sits inside a 40px gutter (28px compact). The page word and the pivot row deliberately ignore the right gutter: the word runs past the pane's edge, and as the page scrolls its frame slides left to reveal the cropped tail; pivots and shelves scroll horizontally out to the edge so the next item peeks.
+The page sits inside a 40px gutter (28px compact), and the page word and the pivot row keep inside it: whatever the window, the rail and the side panel leave, every word of the header shows. Shelves scroll horizontally out to the edge so the next item peeks. Under a 600px pane a setting's control goes under its text.
 
 Spacing steps are 4, 8, 12, 16, 24, 32, 48 and 64px. Sections and shelves are 48px apart; the header leaves 32px; a section title sits on a 1px accent rule with 8px under it and 16px before content. Track rows are 52px (40px compact).
 
@@ -424,7 +424,7 @@ Plain and blunt: a filled accent block or a white outline, nothing in between.
 - **Command palette:** 640px, opened from the top bar or the keyboard; a light subtitle-size accent input; the selected row floods with the accent.
 
 ### Page Header (signature)
-The page's name as one giant lowercase word in display type, never wrapped and never truncated with an ellipsis; it overflows the pane on the right and slides left as the page scrolls (over the first 280px) to show its tail. Pivots below are lowercase light words; the selected one is full ink, the rest 38% ink, with an optional count in small accent superscript. The pivot row scrolls to the pane's edge so the next pivot is always cut, inviting the swipe.
+The page's name as one giant lowercase word in display type, never cropped and never truncated with an ellipsis: it shrinks to fit the pane on one line, and a name too long to fit at 45% of the display size (a long search, album or playlist) wraps, balanced. Pivots below are lowercase light words; the selected one is full ink, the rest 38% ink, with an optional count in small accent superscript. The pivot row shrinks to fit too, a little, and past 85% wraps at its full size, so every section shows.
 
 ### Flat Tile
 Lowercase light title at the top left, an optional small caption at the foot (two-thirds width), in tile ink on one of four tile colours. Pressing tilts it up to 5 degrees toward the pointer and scales it to 0.97. In the Mix theme a dot-matrix (or pinstripe, or slash) texture is printed in the lower-right 30% at 55% opacity.
@@ -471,5 +471,5 @@ Ease-out `cubic-bezier(0.16, 1, 0.3, 1)` with 120, 260 and 520ms steps; ease-in-
 - **Don't** introduce a second highlight colour; the service colours tag sources and nothing else.
 - **Don't** set display, pivot, title or tile type in a heavy weight, or capitalise page words, pivots and tile titles.
 - **Don't** round corners with a literal value; corners come from `--mm-radius` and `--mm-radius-sm`, and circles are reserved for transport, play buttons, artists and stats.
-- **Don't** wrap or ellipsis-truncate the page word; it is cropped by the pane.
+- **Don't** crop or ellipsis-truncate the page word or the pivots; they shrink to fit the pane, then wrap.
 - **Don't** print tile textures outside tiles.
