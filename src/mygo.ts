@@ -301,7 +301,7 @@ export interface Play {
 }
 
 /** PlaybackMode is how a track plays. */
-export type PlaybackMode = "stream" | "connect";
+export type PlaybackMode = "stream" | "connect" | "spotify";
 
 /** PlaybackSource tells the player how to play a track. */
 export interface PlaybackSource {
@@ -567,10 +567,15 @@ export interface SpotifyAccount {
   redirectUri: string;
   /** Error tells why the profile could not be read, if it could not. */
   error?: string;
+  /**
+   * Streaming is set when the sign-in lets Spotify play in MixMusic;
+   * sign-ins of MixMusic 0.4.0 and before do not.
+   */
+  streaming: boolean;
 }
 
 /** SpotifyPlayback chooses how Spotify tracks play. */
-export type SpotifyPlayback = "match" | "connect";
+export type SpotifyPlayback = "match" | "connect" | "here";
 
 /** Stats sums up what the user listened to. */
 export interface Stats {
@@ -851,9 +856,17 @@ export const Player = {
     return call("Player.NowPlaying");
   },
   /**
+   * PlayHere plays a Spotify track from positionMs on the device of the Web
+   * Playback SDK, MixMusic's own, by its ID. Spotify may not know a device
+   * that just connected for a moment, so it asks again a few times.
+   */
+  playHere(deviceID: string, track: Track, positionMs: number): Promise<void> {
+    return call("Player.PlayHere", deviceID, track, positionMs);
+  },
+  /**
    * Prepare finds how to play a track: the URL of its audio, found ahead so
-   * that errors such as a missing yt-dlp show before playback starts, or a
-   * Spotify Connect device.
+   * that errors such as a missing yt-dlp show before playback starts, a
+   * Spotify Connect device, or Spotify in the page.
    */
   prepare(track: Track): Promise<PlaybackSource> {
     return call("Player.Prepare", track);
@@ -873,6 +886,13 @@ export const Player = {
    */
   report(np: NowPlaying): Promise<void> {
     return call("Player.Report", np);
+  },
+  /**
+   * SpotifyToken returns an access token of the signed-in Spotify user, for
+   * the Web Playback SDK, which plays Spotify in the page.
+   */
+  spotifyToken(): Promise<string> {
+    return call("Player.SpotifyToken");
   },
   /**
    * StreamFailure tells why the audio of a track, the recording PrepareStream

@@ -149,7 +149,7 @@ export interface MixMusicAPI {
     enqueue(tracks: Track[]): void;
     /** Listens to the player; returns the function that stops listening. */
     on(event: PlayerEvent, listener: () => void): () => void;
-    /** The Web Audio analyser of MixMusic's own player, null until it played. Tracks on Spotify Connect devices do not reach it. */
+    /** The Web Audio analyser of MixMusic's own player, null until it played. Spotify's audio, played in MixMusic or on a Spotify Connect device, does not reach it. */
     analyser(): AnalyserNode | null;
   };
 

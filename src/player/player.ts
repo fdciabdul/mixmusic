@@ -1,5 +1,6 @@
 // The player: one queue of tracks of every service, played by MixMusic's
-// own audio engine or on a Spotify Connect device, as each track needs.
+// own audio engine, by Spotify in MixMusic, or on a Spotify Connect device,
+// as each track needs.
 import { batch, computed, effect, signal } from "@preact/signals";
 import {
   Catalog,
@@ -13,6 +14,7 @@ import {
 } from "../mygo";
 import { AudioEngine, type EngineEvents } from "./audio";
 import { ConnectEngine, connectDevice } from "./connect";
+import { spotifyDevice } from "./spotify";
 import { settings, update as updateSettings } from "../state/settings";
 import { isLiked, likedIds, toggleLiked } from "../state/library";
 import { toast } from "../state/ui";
@@ -100,6 +102,11 @@ const engineEvents: EngineEvents = {
 
 const audio = new AudioEngine(engineEvents);
 const connect = new ConnectEngine(engineEvents, connectDevice);
+/** spotify plays Spotify tracks in MixMusic, its own Spotify device. */
+const spotify = new ConnectEngine(engineEvents, spotifyDevice);
+
+/** remote returns the engine of the Spotify device the current track plays on, if it plays on one. */
+const remote = (): ConnectEngine | null => (connect.active ? connect : spotify.active ? spotify : null);
 
 /** analyser exposes the audio for visualizers; null until playback starts. */
 export const analyser = (): AnalyserNode | null => audio.analyser;
@@ -134,10 +141,12 @@ export async function playAt(i: number, startMs = 0, autoplay = true): Promise<v
   try {
     let src = await Player.prepare(entry.track);
     if (token !== loadToken) return;
-    if (src.mode === "connect") {
+    if (src.mode === "connect" || src.mode === "spotify") {
+      const engine = src.mode === "connect" ? connect : spotify;
       audio.stop();
+      (engine === connect ? spotify : connect).stop(false);
       if (!autoplay) {
-        connect.stop(false);
+        engine.stop(false);
         // A device cannot wait paused on a track: it starts from here on play.
         batch(() => {
           source.value = src;
@@ -146,7 +155,7 @@ export async function playAt(i: number, startMs = 0, autoplay = true): Promise<v
         return;
       }
       try {
-        await connect.play(entry.track, startMs);
+        await engine.play(entry.track, startMs);
         if (token !== loadToken) return;
         source.value = src;
         buffering.value = false;
@@ -160,6 +169,7 @@ export async function playAt(i: number, startMs = 0, autoplay = true): Promise<v
       }
     }
     connect.stop(false);
+    spotify.stop(false);
     source.value = src;
     await audio.load(src.url ?? "", startMs, autoplay);
   } catch (err) {
@@ -295,13 +305,15 @@ export async function play(): Promise<void> {
     if (queue.value.length > 0) await playAt(0);
     return;
   }
-  if (connect.active) return connect.resume();
+  const r = remote();
+  if (r) return r.resume();
   if (!audio.loaded || error.value) return playAt(index.value, position.value);
   await audio.play();
 }
 
 export async function pause(): Promise<void> {
-  if (connect.active) return connect.pause();
+  const r = remote();
+  if (r) return r.pause();
   audio.pause();
 }
 
@@ -312,7 +324,8 @@ export function toggle(): Promise<void> {
 export async function seek(ms: number): Promise<void> {
   const clamped = Math.max(0, Math.min(ms, duration.value || ms));
   position.value = clamped;
-  if (connect.active) await connect.seek(clamped);
+  const r = remote();
+  if (r) await r.seek(clamped);
   else if (audio.loaded) audio.seek(clamped);
   else if (currentItem.value) await playAt(index.value, clamped, false);
   emit("progress");
@@ -414,6 +427,7 @@ function apply(): void {
   const v = muted.value ? 0 : volume.value;
   audio.setVolume(v);
   connect.setVolume(v);
+  spotifyDevice.setVolume(v).catch(() => {});
   report();
 }
 
@@ -683,6 +697,15 @@ export function initPlayer(): void {
     likedIds.value; // the heart of what plays follows likes made anywhere
     report();
   });
+  // Spotify tracks played another way, the one that plays goes on that way
+  // from where it was.
+  let mode = settings.peek()?.spotifyPlayback;
+  effect(() => {
+    const now = settings.value?.spotifyPlayback;
+    if (now === mode) return;
+    mode = now;
+    if (currentTrack.peek()?.source === "spotify" && source.peek()) void playAt(index.peek(), position.peek(), playing.peek());
+  });
   events.playerCommand.on(command);
   if ("mediaSession" in navigator) {
     const ms = navigator.mediaSession;
@@ -692,7 +715,10 @@ export function initPlayer(): void {
     ms.setActionHandler("previoustrack", () => void previous());
     ms.setActionHandler("seekto", (d) => d.seekTime != null && void seek(d.seekTime * 1000));
   }
-  addEventListener("beforeunload", () => connect.stop(false));
+  addEventListener("beforeunload", () => {
+    connect.stop(false);
+    spotify.stop(false);
+  });
   report();
 }
 

@@ -34,6 +34,7 @@ import { commands, eventShortcut, shortcutLabel, shortcutOf } from "../lib/comma
 import { appInfo } from "../lib/runtime";
 import { activeTheme, inventory, optionValues, themePatch, themes } from "../theme/theme";
 import { BANDS, PRESETS, bandLabel } from "../player/eq";
+import { canPlaySpotify } from "../player/spotify";
 import { confirm, toast } from "../state/ui";
 import { failures } from "../plugins/host";
 
@@ -275,7 +276,10 @@ function CustomCSS({ value }: { value: string }) {
 // Playback.
 
 function Playback({ s }: { s: SettingsData }) {
-  const signedIn = accounts.value?.spotify.signedIn ?? false;
+  const sp = accounts.value?.spotify;
+  const signedIn = sp?.signedIn ?? false;
+  // Until the webview answered, MixMusic may play Spotify itself.
+  const here = useAsync(() => canPlaySpotify(), []).data !== false;
   return (
     <>
       <Group title="spotify tracks">
@@ -284,6 +288,14 @@ function Playback({ s }: { s: SettingsData }) {
           label="How Spotify tracks play"
           onChange={(v) => save({ spotifyPlayback: v })}
           choices={[
+            {
+              value: "here",
+              title: "here, from spotify",
+              description: here
+                ? "MixMusic plays them itself, at Spotify's own quality, and shows among your Spotify devices. Needs Spotify Premium, and no Spotify app."
+                : "This system's webview cannot play Spotify's protected audio, so MixMusic cannot play Spotify itself.",
+              disabled: !here,
+            },
             {
               value: "connect",
               title: "on spotify connect",
@@ -305,6 +317,7 @@ function Playback({ s }: { s: SettingsData }) {
             to play your Spotify library.
           </p>
         )}
+        {signedIn && s.spotifyPlayback === "here" && !sp?.streaming && <SignInAgain />}
         {signedIn && s.spotifyPlayback === "connect" && <DeviceRow s={s} />}
       </Group>
 
@@ -335,6 +348,30 @@ function Playback({ s }: { s: SettingsData }) {
       <Cache s={s} />
       <Tools s={s} />
     </>
+  );
+}
+
+/** SignInAgain asks for a new sign-in to Spotify, which lets MixMusic play it itself. */
+function SignInAgain() {
+  const [busy, setBusy] = useState(false);
+  const signIn = async () => {
+    setBusy(true);
+    try {
+      toast("Finish signing in in your browser");
+      await Accounts.spotifyLogin();
+      await refreshAccounts();
+    } catch (err) {
+      toast(errorMessage(err), { tone: "error" });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Problem
+      title="Sign in to Spotify again"
+      message="You signed in before MixMusic played Spotify itself, which your sign-in does not allow yet. Until you sign in again, Spotify tracks play from YouTube Music."
+      action={{ label: busy ? "waiting for the browser…" : "sign in again", run: () => void (busy || signIn()) }}
+    />
   );
 }
 
@@ -369,7 +406,7 @@ function Equalizer({ s }: { s: SettingsData }) {
       title="equalizer"
       action={<Switch on={eq.enabled} label="Equalizer" onChange={(on) => save({ equalizer: { ...eq, enabled: on } })} />}
     >
-      <p class="mm-hint">It shapes what MixMusic plays itself; Spotify Connect devices have their own.</p>
+      <p class="mm-hint">It shapes the audio of YouTube Music. Spotify's plays as Spotify sends it, and Spotify Connect devices have an equalizer of their own.</p>
       <div class="mm-chips" role="radiogroup" aria-label="Presets">
         {PRESETS.map((p) => (
           <button
@@ -580,7 +617,7 @@ function AccountsTab({ s }: { s: SettingsData }) {
     <>
       <Group title="spotify">
         {sp?.signedIn && sp.profile ? (
-          <Row title={`Signed in as ${sp.profile.name}`} description="Search, your library and playback on Spotify Connect.">
+          <Row title={`Signed in as ${sp.profile.name}`} description="Search, your library and playback of Spotify.">
             <button
               type="button"
               class="mm-button mm-button-outline"

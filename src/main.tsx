@@ -15,6 +15,7 @@ import { loadAccounts } from "./state/accounts";
 import { loadLibrary } from "./state/library";
 import { initTheme, loadInventory, themePatch, themes } from "./theme/theme";
 import { currentTrack, initPlayer } from "./player/player";
+import { initSpotifyPlayer } from "./player/spotify";
 import { initPlugins } from "./plugins/host";
 import { initShortcuts, registerCommand } from "./lib/commands";
 import { registerBuiltinCommands } from "./app/commands";
@@ -37,6 +38,7 @@ async function boot(): Promise<void> {
     }
     await Promise.all([loadAccounts(), loadLibrary()]);
     initPlayer();
+    initSpotifyPlayer();
     registerBuiltinCommands();
     effect(() => {
       // Theme commands follow the themes installed.

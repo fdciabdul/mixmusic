@@ -1,4 +1,5 @@
-// Playback on a Spotify Connect device: the player sends commands and polls
+// Playback on a Spotify device: a Spotify Connect device, or MixMusic's own
+// player of Spotify (see ./spotify). The player sends commands and polls
 // what the device plays. Spotify's reports lag its commands by a few
 // seconds, and may name a track by another ID, that of the copy Spotify
 // relinked for the user's country, so the engine waits for the device to

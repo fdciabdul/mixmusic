@@ -68,7 +68,7 @@ export function Group({ title, children, action }: { title: string; children: Co
 
 interface ChoiceProps<T extends string> {
   value: T;
-  choices: { value: T; title: string; description: string }[];
+  choices: { value: T; title: string; description: string; disabled?: boolean }[];
   label: string;
   onChange: (value: T) => void;
 }
@@ -78,7 +78,15 @@ export function Choices<T extends string>({ value, choices, label, onChange }: C
   return (
     <div class="mm-choices" role="radiogroup" aria-label={label}>
       {choices.map((c) => (
-        <button key={c.value} type="button" role="radio" aria-checked={c.value === value} class="mm-choice" onClick={() => onChange(c.value)}>
+        <button
+          key={c.value}
+          type="button"
+          role="radio"
+          aria-checked={c.value === value}
+          class="mm-choice"
+          disabled={c.disabled && c.value !== value}
+          onClick={() => onChange(c.value)}
+        >
           <span class="mm-choice-title">{c.title}</span>
           <span class="mm-choice-description">{c.description}</span>
         </button>

@@ -29,7 +29,7 @@ func TestCleanClampsAndRepairs(t *testing.T) {
 		RegistryURL:     "http://insecure.example",
 		YouTubeChannel:  "1234; x",
 	}.Clean()
-	if s.Theme != "mix" || s.Accent != "" || s.FontScale != 1 || s.SpotifyPlayback != SpotifyPlaybackConnect {
+	if s.Theme != "mix" || s.Accent != "" || s.FontScale != 1 || s.SpotifyPlayback != Default().SpotifyPlayback {
 		t.Errorf("appearance and playback not repaired: %+v", s)
 	}
 	if s.Crossfade != 12 || s.Volume != 0 || len(s.Equalizer.Gains) != len(Bands) {
@@ -91,5 +91,20 @@ func TestShortcutsClean(t *testing.T) {
 	}
 	if (Settings{}).Clean().Shortcuts == nil {
 		t.Error("Clean must give an empty map, not nil")
+	}
+}
+
+func TestDefaultSpotifyPlayback(t *testing.T) {
+	for goos, want := range map[string]SpotifyPlayback{
+		"windows": SpotifyPlaybackHere,
+		"darwin":  SpotifyPlaybackConnect,
+		"linux":   SpotifyPlaybackConnect,
+	} {
+		if got := defaultSpotifyPlayback(goos); got != want {
+			t.Errorf("defaultSpotifyPlayback(%q) = %q, want %q", goos, got, want)
+		}
+	}
+	if c := (Settings{SpotifyPlayback: SpotifyPlaybackHere}).Clean(); c.SpotifyPlayback != SpotifyPlaybackHere {
+		t.Errorf("Clean dropped playback here: %q", c.SpotifyPlayback)
 	}
 }

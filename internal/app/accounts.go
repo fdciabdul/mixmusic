@@ -71,6 +71,9 @@ type SpotifyAccount struct {
 	RedirectURI string `json:"redirectUri"`
 	// Error tells why the profile could not be read, if it could not.
 	Error string `json:"error,omitempty"`
+	// Streaming is set when the sign-in lets Spotify play in MixMusic;
+	// sign-ins of MixMusic 0.4.0 and before do not.
+	Streaming bool `json:"streaming"`
 }
 
 // AccountsStatus is the state of the user's accounts.
@@ -93,6 +96,7 @@ func (a *App) accountsStatus(ctx context.Context) AccountsStatus {
 		Configured:  a.auth.ClientID() != "",
 		SignedIn:    a.spotify.SignedIn(),
 		RedirectURI: spotify.RedirectURI,
+		Streaming:   a.spotify.Granted("streaming"),
 	}
 	if sp.SignedIn {
 		me, err := a.spotifyProfile(ctx)

@@ -1,8 +1,8 @@
 # Spotify
 
 MixMusic reads your Spotify library and searches Spotify through the Spotify
-Web API, and plays Spotify tracks on Spotify Connect, or from their recording
-on YouTube Music.
+Web API, and plays Spotify tracks itself, on Spotify Connect, or from their
+recording on YouTube Music.
 
 ## Sign in
 
@@ -35,7 +35,17 @@ folder.
 
 Settings › Playback chooses:
 
-- **On Spotify Connect** (the default). A Spotify device plays the track: your
+- **Here, from Spotify** (the default on Windows). MixMusic plays the track
+  itself, with Spotify's Web Playback SDK, at Spotify's own quality, and no
+  Spotify app needs to be open: MixMusic shows among your Spotify devices
+  while it plays. It needs Spotify Premium, and a webview that plays
+  Spotify's protected audio: WebView2 on Windows does, WebKitGTK on Linux
+  does not, and macOS's is not known to; Settings › Playback says when yours
+  does not. The equalizer, crossfade and visualizer leave Spotify's audio as
+  it is. Sign-ins made before MixMusic played Spotify itself do not allow it:
+  Settings › Playback asks you to sign in again. When Spotify cannot play
+  here, MixMusic plays the track from YouTube Music instead, and says why.
+- **On Spotify Connect** (the default elsewhere). A Spotify device plays the track: your
   Spotify app on this computer, your phone, a speaker. It needs Spotify
   Premium, and a device with Spotify open. The devices button of the player
   bar chooses which device plays; by default, the active one. When no device

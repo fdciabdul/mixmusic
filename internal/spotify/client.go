@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -81,6 +82,20 @@ func (c *Client) SignedIn() bool {
 	return c.token.RefreshToken != "" || c.token.AccessToken != ""
 }
 
+// Granted reports whether the user's sign-in grants scope. Sign-ins made
+// before MixMusic asked for a scope do not.
+func (c *Client) Granted(scope string) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return slices.Contains(strings.Fields(c.token.Scope), scope)
+}
+
+// AccessToken returns a valid access token of the signed-in user, for
+// Spotify's own code, such as the Web Playback SDK.
+func (c *Client) AccessToken(ctx context.Context) (string, error) {
+	return c.accessToken(ctx, false)
+}
+
 // accessToken returns a valid access token, refreshing it when it expires
 // or when force is set.
 func (c *Client) accessToken(ctx context.Context, force bool) (string, error) {
@@ -98,6 +113,9 @@ func (c *Client) accessToken(ctx context.Context, force bool) (string, error) {
 	t, err := c.Auth.Refresh(ctx, c.token.RefreshToken)
 	if err != nil {
 		return "", err
+	}
+	if t.Scope == "" {
+		t.Scope = c.token.Scope // a refresh keeps the scopes granted
 	}
 	c.token = t
 	if c.OnToken != nil {

@@ -95,3 +95,15 @@ func TestClientNotSignedIn(t *testing.T) {
 		t.Error("SignedIn without a token")
 	}
 }
+
+func TestGranted(t *testing.T) {
+	c := NewClient(NewAuth("client"))
+	c.SetToken(Token{AccessToken: "A", Scope: "user-library-read streaming"})
+	if !c.Granted("streaming") || c.Granted("user-read-private") || c.Granted("stream") {
+		t.Error("Granted does not read the token's scopes")
+	}
+	c.SetToken(Token{})
+	if c.Granted("streaming") {
+		t.Error("a signed-out client grants streaming")
+	}
+}

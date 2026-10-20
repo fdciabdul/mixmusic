@@ -51,6 +51,10 @@ var Scopes = []string{
 	"user-read-currently-playing",
 	"user-read-recently-played",
 	"user-top-read",
+	// The Web Playback SDK plays in MixMusic with these.
+	"streaming",
+	"user-read-email",
+	"user-read-private",
 }
 
 // Token grants access to the API on the user's behalf.

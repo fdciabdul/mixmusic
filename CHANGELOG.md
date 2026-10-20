@@ -6,8 +6,18 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+Spotify plays in MixMusic itself, with no Spotify app open, and a new
+version asks to install in a pop-up. Spotify Connect no longer shows a
+track paused while your device plays it, and goes on to the next track.
+
 ### Added
 
+- Spotify plays in MixMusic itself: choose here, from spotify in Settings ›
+  Playback. MixMusic plays at Spotify's own quality, with no Spotify app
+  open, and shows among your Spotify devices while it plays. It needs
+  Spotify Premium, and a webview that plays Spotify's protected audio, as
+  that of Windows does; new installs on Windows play Spotify tracks this
+  way. Sign in to Spotify again once, for Spotify to let MixMusic play.
 - A new version asks to install in a pop-up, unless MixMusic installs
   updates without asking. Later asks again at the next start, skip this
   version at the next version. Copies that cannot replace themselves, the

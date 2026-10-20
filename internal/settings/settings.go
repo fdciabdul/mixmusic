@@ -3,6 +3,7 @@ package settings
 
 import (
 	"regexp"
+	"runtime"
 	"slices"
 	"strings"
 )
@@ -17,6 +18,10 @@ const (
 	// SpotifyPlaybackConnect plays Spotify tracks on a Spotify Connect
 	// device, which needs Spotify Premium.
 	SpotifyPlaybackConnect SpotifyPlayback = "connect"
+	// SpotifyPlaybackHere plays Spotify tracks in MixMusic, which Spotify's
+	// Web Playback SDK makes a Spotify Connect device of its own. It needs
+	// Spotify Premium, and no Spotify app.
+	SpotifyPlaybackHere SpotifyPlayback = "here"
 )
 
 // Density chooses how much room the interface gives each element.
@@ -138,7 +143,7 @@ func Default() Settings {
 		DynamicAccent:   true,
 		Density:         DensityComfortable,
 		FontScale:       1,
-		SpotifyPlayback: SpotifyPlaybackConnect,
+		SpotifyPlayback: defaultSpotifyPlayback(runtime.GOOS),
 		Quality:         QualityBest,
 		Autoplay:        true,
 		Equalizer:       Equalizer{Preset: "flat", Gains: make([]float64, len(Bands))},
@@ -153,6 +158,16 @@ func Default() Settings {
 		EnabledPlugins:  []string{},
 		RegistryURL:     DefaultRegistryURL,
 	}
+}
+
+// defaultSpotifyPlayback is how Spotify tracks play in a new install on
+// goos: in MixMusic where its webview, WebView2, decrypts Spotify's audio,
+// else on Spotify Connect.
+func defaultSpotifyPlayback(goos string) SpotifyPlayback {
+	if goos == "windows" {
+		return SpotifyPlaybackHere
+	}
+	return SpotifyPlaybackConnect
 }
 
 var (
@@ -206,7 +221,9 @@ func (s Settings) Clean() Settings {
 	if s.FontScale < 0.85 || s.FontScale > 1.3 {
 		s.FontScale = d.FontScale
 	}
-	if s.SpotifyPlayback != SpotifyPlaybackMatch && s.SpotifyPlayback != SpotifyPlaybackConnect {
+	switch s.SpotifyPlayback {
+	case SpotifyPlaybackMatch, SpotifyPlaybackConnect, SpotifyPlaybackHere:
+	default:
 		s.SpotifyPlayback = d.SpotifyPlayback
 	}
 	if s.Quality != QualitySaver {

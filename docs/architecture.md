@@ -35,7 +35,8 @@ page owns the interface and the player.
   Live` (`MIXMUSIC_YT_COOKIES` adds a signed-in account).
 - **`internal/spotify`** signs in with PKCE on a loopback callback, refreshes
   tokens, reads the Web API (search, albums, artists, playlists, the
-  library) and controls Spotify Connect devices.
+  library), controls Spotify Connect devices, and hands the page the token of
+  Spotify's player.
 - **`internal/stream`** finds the audio of a YouTube video with yt-dlp, keeps
   it until its URL expires, and serves it at `stream://localhost/yt/<id>`:
   range requests, chunked fetches from YouTube, a new URL when YouTube
@@ -73,9 +74,12 @@ from the Go code; `bun run dev` and `bun run build` keep it current.
   matched to their recording, play in `AudioEngine`: two `<audio>` elements
   routed through Web Audio (preamp, ten bands, an optional compressor that
   levels loudness, an analyser), the idle one preloading the next track and
-  fading it in for crossfades. Spotify tracks play on Spotify Connect through
-  `ConnectEngine`, which polls the device. The player reports what plays to
-  the Go side, which feeds the tray, notifications and the mini player.
+  fading it in for crossfades. Spotify tracks play on a Spotify device through
+  `ConnectEngine`, which sends it commands and polls what it plays: a Spotify
+  Connect device, through the Web API, or MixMusic itself, whose page Spotify's
+  Web Playback SDK makes a device of its own (`spotify.ts`). The player
+  reports what plays to the Go side, which feeds the tray, notifications and
+  the mini player.
 - **`src/theme`** applies the theme's manifest as `--mm-*` variables, its options
   as `data-opt-*` attributes, its stylesheet, and the accent of the artwork.
 - **`src/plugins`** starts the plugins the user enabled, with the API of

@@ -45,9 +45,10 @@ bundled browser to download or keep in memory.
   YouTube Music history, which its recommendations come from.
 - **Explore.** New releases, trending songs, the charts, moods and genres,
   and related songs under what plays.
-- **Spotify your way.** Spotify tracks play on Spotify Connect (your own
-  Spotify app, at Spotify's quality), or here, from their recording on
-  YouTube Music, with no Premium needed.
+- **Spotify your way.** Spotify tracks play in MixMusic itself, at Spotify's
+  quality, with no Spotify app open (Premium, on Windows), on Spotify
+  Connect (your Spotify app, your phone, a speaker), or here, from their
+  recording on YouTube Music, with no Premium needed.
 - **A real player.** Crossfade, volume levelling, a 10-band equalizer with
   presets, a visualizer, synced lyrics that follow the song or read as plain
   text, and an offline cache of tracks you played.
@@ -206,6 +207,10 @@ time it starts.
 - **Google refuses the sign-in window** with "This browser or app may not
   be secure". Google decides this; try again later, or from another
   network.
+- **Spotify plays from YouTube Music, not in MixMusic.** Spotify plays in
+  MixMusic with Premium, and with a sign-in made since MixMusic played
+  Spotify itself: Settings › Playback asks you to sign in again when yours
+  is older, and says when your system's webview cannot play Spotify.
 - **Spotify says the app is not allowed.** In development mode a Spotify
   app serves only the users its owner added in the dashboard, by their
   Spotify email: see [docs/spotify.md](docs/spotify.md).
@@ -225,6 +230,9 @@ time it starts.
 - YouTube Music has no sign-in for other apps: MixMusic signs in with a
   browser session, which can do with your account what YouTube Music can.
   Treat it like a password; sign out in Settings › Accounts to delete it.
+- Spotify plays in MixMusic itself only where the system's webview plays
+  its protected audio: WebView2 on Windows does, WebKitGTK on Linux does not,
+  and macOS's is not known to. Elsewhere, Spotify Connect plays it.
 - Spotify allows apps in development mode a few users, and lets them read
   less: search shows ten results of each kind, and the tracks of playlists
   you do not own stay hidden.
@@ -244,8 +252,9 @@ talks to:
   yt-dlp, and the artwork. Signed in, your library there, and, unless you
   turn it off in Settings › Accounts, the tracks you play, which join your
   YouTube Music history.
-- **Spotify,** once you sign in: your library and, with Spotify Connect,
-  your devices.
+- **Spotify,** once you sign in: your library, your devices with Spotify
+  Connect, and Spotify's player, loaded from `sdk.scdn.co`, when Spotify
+  plays in MixMusic.
 - **LRCLIB:** the title, artists, album and length of the track playing,
   to find its lyrics.
 - **GitHub:** a check for a new version at start and every few hours,

@@ -22,7 +22,7 @@ One queue and one library across Spotify and YouTube Music, in an open-source de
 
 ## Operating Context
 
-- Spotify tracks play on a Spotify Connect device by default (the user's own Spotify app, Premium required); matching their recording on YouTube Music and playing it in MixMusic's own player is the alternative, and the fallback when no device can play.
+- Spotify tracks play in MixMusic itself through Spotify's Web Playback SDK, by default on Windows, where the webview plays Spotify's protected audio, or on a Spotify Connect device (the user's own Spotify app, a phone, a speaker), the default elsewhere; both need Premium. Matching their recording on YouTube Music and playing it in MixMusic's own player is the alternative, and the fallback when Spotify cannot play.
 - YouTube Music needs no account. Its audio streams are found by yt-dlp, which MixMusic installs on request, with a JavaScript runtime (Deno, Node, Bun or QuickJS) found on the system. Signing in to YouTube Music, optional, happens on Google's own page in a window of MixMusic; MixMusic keeps the session's cookies encrypted, and YouTube does not offer this to apps officially.
 - Spotify sign-in uses each user's own Client ID from the Spotify developer dashboard, with the redirect URI `http://127.0.0.1:47823/callback`. Spotify's development mode limits apps: ten search results per kind, no access to the tracks of playlists the user does not own, no artist top-tracks endpoint.
 - Lyrics come from LRCLIB (synchronized when available) and YouTube Music.

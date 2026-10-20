@@ -981,8 +981,13 @@
   text-align: left;
 }
 
-.mm-choice:hover {
+.mm-choice:hover:not(:disabled) {
   background: var(--mm-hover);
+}
+
+.mm-choice:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .mm-choice[aria-checked="true"] {

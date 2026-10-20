@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"log"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/egoist/mygo"
 
@@ -22,6 +24,9 @@ const (
 	PlaybackStream PlaybackMode = "stream"
 	// PlaybackConnect plays the track on a Spotify Connect device.
 	PlaybackConnect PlaybackMode = "connect"
+	// PlaybackSpotify plays the track in the page, with Spotify's Web
+	// Playback SDK.
+	PlaybackSpotify PlaybackMode = "spotify"
 )
 
 // PlaybackSource tells the player how to play a track.
@@ -43,12 +48,16 @@ type PlaybackSource struct {
 type Player struct{ a *App }
 
 // Prepare finds how to play a track: the URL of its audio, found ahead so
-// that errors such as a missing yt-dlp show before playback starts, or a
-// Spotify Connect device.
+// that errors such as a missing yt-dlp show before playback starts, a
+// Spotify Connect device, or Spotify in the page.
 func (p *Player) Prepare(ctx context.Context, track media.Track) (PlaybackSource, error) {
-	s := p.a.settings.Get()
-	if track.Source == media.SourceSpotify && s.SpotifyPlayback == settings.SpotifyPlaybackConnect {
-		return PlaybackSource{Mode: PlaybackConnect, Track: track}, nil
+	if track.Source == media.SourceSpotify {
+		switch p.a.settings.Get().SpotifyPlayback {
+		case settings.SpotifyPlaybackConnect:
+			return PlaybackSource{Mode: PlaybackConnect, Track: track}, nil
+		case settings.SpotifyPlaybackHere:
+			return PlaybackSource{Mode: PlaybackSpotify, Track: track}, nil
+		}
 	}
 	return p.PrepareStream(ctx, track)
 }
@@ -198,6 +207,37 @@ func (p *Player) ConnectPlay(ctx context.Context, track media.Track, positionMs 
 		}
 	}
 	return err
+}
+
+// SpotifyToken returns an access token of the signed-in Spotify user, for
+// the Web Playback SDK, which plays Spotify in the page.
+func (p *Player) SpotifyToken(ctx context.Context) (string, error) {
+	return p.a.spotify.AccessToken(ctx)
+}
+
+// playHereRetry is how long PlayHere waits before asking Spotify again.
+var playHereRetry = time.Second
+
+// PlayHere plays a Spotify track from positionMs on the device of the Web
+// Playback SDK, MixMusic's own, by its ID. Spotify may not know a device
+// that just connected for a moment, so it asks again a few times.
+func (p *Player) PlayHere(ctx context.Context, deviceID string, track media.Track, positionMs int) error {
+	_, id, err := media.ParseID(track.ID)
+	if err != nil || track.Source != media.SourceSpotify {
+		return errors.New("only Spotify tracks play with Spotify")
+	}
+	for try := 0; ; try++ {
+		err = p.a.spotify.Play(ctx, deviceID, []string{spotify.URI("track", id)}, positionMs)
+		var apiErr *spotify.APIError
+		if try == 4 || !errors.As(err, &apiErr) || apiErr.Status != http.StatusNotFound {
+			return err
+		}
+		select {
+		case <-time.After(playHereRetry):
+		case <-ctx.Done():
+			return ctx.Err()
+		}
+	}
 }
 
 // ConnectPause pauses the Spotify Connect device.
