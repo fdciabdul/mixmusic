@@ -36,6 +36,9 @@ All notable changes to MixMusic are documented here. The format follows
 
 ### Fixed
 
+- Signing in to YouTube Music no longer leaves a blank window and freezes
+  MixMusic, its search included, once Google sends the window back to
+  YouTube Music, which it does at once when it remembers you.
 - Home shows all of its shelves, not only those YouTube sends first.
 - Your saved playlists, albums and artists of YouTube Music show in full,
   not only their first page.

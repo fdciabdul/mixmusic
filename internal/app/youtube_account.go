@@ -235,7 +235,12 @@ func (s *Accounts) YouTubeLogin(ctx context.Context) (AccountsStatus, error) {
 			}
 		}
 	}
-	win.Page().OnDidNavigate(check)
+	// Navigation events run on the UI thread, inside the webview's own
+	// handler, where a cookie call waits for a webview that cannot answer
+	// until the handler returns: the windows freeze, this one blank.
+	// Google sends a session it knows straight back to YouTube Music, so
+	// the first navigation already gets here.
+	win.Page().OnDidNavigate(func(url string) { go check(url) })
 	win.OnClosed(func() { close(closed) })
 	defer win.Close()
 
