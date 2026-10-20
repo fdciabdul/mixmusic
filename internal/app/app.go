@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/egoist/mygo"
@@ -85,6 +86,9 @@ type App struct {
 	updates *store.File[updatePrefs]
 	// checkUpdates has MixMusic look for a new version at once.
 	checkUpdates chan struct{}
+	// readingProfiles is set while the accounts' profiles are read in the
+	// background.
+	readingProfiles atomic.Bool
 	// updating is held while an update installs.
 	updating sync.Mutex
 

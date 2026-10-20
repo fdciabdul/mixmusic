@@ -1103,7 +1103,13 @@ export const Accounts = {
   spotifyLogout(): Promise<void> {
     return call("Accounts.SpotifyLogout");
   },
-  /** Status returns the state of the user's accounts. */
+  /**
+   * Status returns the state of the user's accounts at once, without asking
+   * the services: whether the user is signed in, and the profiles read
+   * before. The main window waits for it before it shows anything, so the
+   * profiles not read yet are read in the background, and AccountsChanged
+   * brings them to every window.
+   */
   status(): Promise<AccountsStatus> {
     return call("Accounts.Status");
   },

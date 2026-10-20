@@ -616,8 +616,8 @@ function AccountsTab({ s }: { s: SettingsData }) {
   return (
     <>
       <Group title="spotify">
-        {sp?.signedIn && sp.profile ? (
-          <Row title={`Signed in as ${sp.profile.name}`} description="Search, your library and playback of Spotify.">
+        {sp?.signedIn && !sp.error ? (
+          <Row title={sp.profile ? `Signed in as ${sp.profile.name}` : "Signed in"} description="Search, your library and playback of Spotify.">
             <button
               type="button"
               class="mm-button mm-button-outline"

@@ -33,6 +33,9 @@ track paused while your device plays it, and goes on to the next track.
 
 ### Fixed
 
+- MixMusic no longer opens on a black window for up to 40 seconds when
+  Spotify or YouTube Music is slow to answer: it shows at once, and the
+  names of your accounts follow.
 - On Spotify Connect, a track no longer shows paused while your device plays
   it: MixMusic took Spotify's late reports, and the copy of a track Spotify
   plays in your country, for someone else playing on the device.
