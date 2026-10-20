@@ -53,6 +53,13 @@ func testPipe(t *testing.T) string {
 	return fmt.Sprintf(`\\.\pipe\mixmusic-discord-test-%d-%s`, os.Getpid(), t.Name())
 }
 
+func TestPipeNames(t *testing.T) {
+	names := pipeNames()
+	if len(names) != 10 || names[0] != `\\.\pipe\discord-ipc-0` || names[9] != `\\.\pipe\discord-ipc-9` {
+		t.Errorf("pipeNames() = %q", names)
+	}
+}
+
 func TestDialPipesNotRunning(t *testing.T) {
 	_, err := dialPipes([]string{testPipe(t) + "-0", testPipe(t) + "-1"})
 	if !errors.Is(err, ErrNotRunning) {

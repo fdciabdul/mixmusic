@@ -12,14 +12,19 @@ import (
 	"syscall"
 )
 
-// dial opens the first named pipe of the Discord app that is open:
-// \.\pipe\discord-ipc-0 to \.\pipe\discord-ipc-9.
+// dial opens the first named pipe of the Discord app that is open.
 func dial(context.Context) (io.ReadWriteCloser, error) {
+	return dialPipes(pipeNames())
+}
+
+// pipeNames returns the named pipes the Discord app may open, in the order
+// to try them: \\.\pipe\discord-ipc-0 to \\.\pipe\discord-ipc-9.
+func pipeNames() []string {
 	names := make([]string, 10)
 	for i := range names {
-		names[i] = `\.\pipe\discord-ipc-` + strconv.Itoa(i)
+		names[i] = `\\.\pipe\discord-ipc-` + strconv.Itoa(i)
 	}
-	return dialPipes(names)
+	return names
 }
 
 // dialPipes opens the first of the named pipes that exists, for overlapped
