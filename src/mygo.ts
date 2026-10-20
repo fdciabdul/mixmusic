@@ -628,6 +628,16 @@ export interface Tool {
   version?: string;
   /** Managed is set for tools MixMusic installed, which it can update. */
   managed?: boolean;
+  /**
+   * Latest is the version of the latest yt-dlp release, set when the
+   * yt-dlp found is older.
+   */
+  latest?: string;
+  /**
+   * UpdateCommand updates an old yt-dlp the user installed, when where it
+   * is tells how they installed it: "winget upgrade yt-dlp" and the like.
+   */
+  updateCommand?: string;
 }
 
 /** Track is a song or a music video. */

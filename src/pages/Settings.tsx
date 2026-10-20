@@ -23,6 +23,7 @@ import {
   type Settings as SettingsData,
   type SpotifyPlayback,
   type Theme,
+  type Tool,
 } from "../mygo";
 import { settings, update } from "../state/settings";
 import { accounts, refreshAccounts } from "../state/accounts";
@@ -438,15 +439,23 @@ function Cache({ s }: { s: SettingsData }) {
   );
 }
 
-/** InstallYTDLP downloads yt-dlp, showing the download's progress. */
-export function InstallYTDLP({ onDone, update: isUpdate }: { onDone?: () => void; update?: boolean }) {
+/**
+ * InstallYTDLP downloads yt-dlp, showing the download's progress, and has
+ * MixMusic run it rather than a yt-dlp of the user's own.
+ */
+export function InstallYTDLP({ onDone, update: isUpdate, label }: { onDone?: () => void; update?: boolean; label?: string }) {
   const [progress, setProgress] = useState<InstallProgress | null>(null);
   const [busy, setBusy] = useState(false);
   const run = async () => {
     setBusy(true);
     try {
       const ch = new Channel<InstallProgress>((p) => setProgress(p));
-      const status = await System.installYTDLP(ch);
+      let status = await System.installYTDLP(ch);
+      if (settings.value?.ytdlpPath) {
+        // The yt-dlp the user chose would go on running instead.
+        await save({ ytdlpPath: "" });
+        status = await System.tools();
+      }
       toast(`yt-dlp ${status.ytdlp.version} is ready`, { tone: "success" });
       onDone?.();
     } catch (err) {
@@ -460,8 +469,28 @@ export function InstallYTDLP({ onDone, update: isUpdate }: { onDone?: () => void
   return (
     <button type="button" class="mm-button mm-button-primary" disabled={busy} onClick={run}>
       <Icon name="download" size={16} />
-      {busy ? (pct != null ? `downloading ${pct}%` : "downloading…") : isUpdate ? "update yt-dlp" : "install yt-dlp"}
+      {busy ? (pct != null ? `downloading ${pct}%` : "downloading…") : (label ?? (isUpdate ? "update yt-dlp" : "install yt-dlp"))}
     </button>
+  );
+}
+
+/** outdatedYTDLP tells whether yt-dlp is the user's own, and older than the latest release. */
+export const outdatedYTDLP = (t: Tool | undefined): boolean => !!t?.found && !t.managed && !!t.latest;
+
+/** YTDLPUpdateHint tells how to update a yt-dlp of the user's own that is out of date. */
+export function YTDLPUpdateHint({ tool }: { tool: Tool }) {
+  return (
+    <>
+      Update it{" "}
+      {tool.updateCommand ? (
+        <>
+          with <code class="mm-code">{tool.updateCommand}</code>
+        </>
+      ) : (
+        "the way you installed it"
+      )}
+      , or use MixMusic's own, which it keeps up to date.
+    </>
   );
 }
 
@@ -473,12 +502,25 @@ function Tools({ s }: { s: SettingsData }) {
       <Row
         title="yt-dlp"
         description={
-          t?.ytdlp.found
-            ? `${t.ytdlp.version} · ${t.ytdlp.path}${t.ytdlp.managed ? " · MixMusic updates it every day" : ""}`
-            : "Finds the audio of YouTube Music tracks. Not installed yet."
+          t?.ytdlp.found ? (
+            <>
+              {t.ytdlp.version} · {t.ytdlp.path}
+              {t.ytdlp.managed && " · MixMusic updates it every day"}
+              {t.ytdlp.latest && ` · ${t.ytdlp.latest} is out.`}
+              {outdatedYTDLP(t.ytdlp) && (
+                <>
+                  {" "}
+                  <YTDLPUpdateHint tool={t.ytdlp} />
+                </>
+              )}
+            </>
+          ) : (
+            "Finds the audio of YouTube Music tracks. Not installed yet."
+          )
         }
       >
         {t && (!t.ytdlp.found || t.ytdlp.managed) && <InstallYTDLP onDone={tools.reload} update={t.ytdlp.found} />}
+        {t && outdatedYTDLP(t.ytdlp) && <InstallYTDLP onDone={tools.reload} label="use MixMusic's yt-dlp" />}
       </Row>
       <Row
         title="JavaScript runtime"

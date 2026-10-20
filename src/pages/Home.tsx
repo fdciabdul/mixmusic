@@ -5,21 +5,26 @@ import { Tile } from "../components/Tile";
 import { Shelves } from "../components/Shelf";
 import { LoadingTiles, Problem } from "../components/States";
 import { Catalog, Collection, System, type Shelf as ShelfData, type Source } from "../mygo";
-import { useAsync } from "../lib/async";
+import { local, useAsync } from "../lib/async";
 import { navigate } from "../lib/router";
 import { artwork, artists, plural } from "../lib/format";
 import { mixes, likedIds } from "../state/library";
 import { currentTrack, playTracks } from "../player/player";
 import { accounts } from "../state/accounts";
-import { InstallYTDLP } from "./Settings";
+import { InstallYTDLP, outdatedYTDLP, YTDLPUpdateHint } from "./Settings";
 
 type Filter = "all" | "local" | Source;
+
+/** skippedKey keeps the yt-dlp release the user was told of and put off. */
+const skippedKey = "mm.ytdlpSkipped";
 
 export function Home() {
   const [filter, setFilter] = useState<Filter>("all");
   const home = useAsync(() => Catalog.home(), []);
   const recent = useAsync(() => Collection.history(1), []);
   const tools = useAsync(() => System.tools(), []);
+  const [skipped, setSkipped] = useState(() => local.get(skippedKey, ""));
+  const ytdlp = tools.data?.ytdlp;
 
   const shelves = useMemo(() => {
     const all: ShelfData[] = home.data ?? [];
@@ -50,6 +55,28 @@ export function Home() {
           message="MixMusic finds the audio of YouTube Music tracks with yt-dlp. Install it once, and it stays up to date from Settings."
         >
           <InstallYTDLP onDone={tools.reload} />
+        </Problem>
+      )}
+
+      {ytdlp && outdatedYTDLP(ytdlp) && skipped !== ytdlp.latest && (
+        <Problem title="Your yt-dlp is out of date">
+          <p class="mm-problem-message">
+            yt-dlp {ytdlp.version} finds the audio of your tracks, and {ytdlp.latest} is out. As YouTube changes, an old yt-dlp stops finding it.{" "}
+            <YTDLPUpdateHint tool={ytdlp} />
+          </p>
+          <div class="mm-actions">
+            <InstallYTDLP onDone={tools.reload} label="use MixMusic's yt-dlp" />
+            <button
+              type="button"
+              class="mm-button mm-button-outline"
+              onClick={() => {
+                local.set(skippedKey, ytdlp.latest);
+                setSkipped(ytdlp.latest ?? "");
+              }}
+            >
+              not now
+            </button>
+          </div>
         </Problem>
       )}
 

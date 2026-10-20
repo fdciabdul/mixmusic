@@ -6,6 +6,14 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- When the yt-dlp MixMusic runs is your own, as from winget, Homebrew or
+  pip, and older than the latest release, Home and Settings › Playback say
+  so. They give the command that updates it, when its folder tells how you
+  installed it, and offer MixMusic's own yt-dlp, which stays up to date.
+  A report of a problem says when yt-dlp is out of date.
+
 ## [0.3.2] - 2026-10-20
 
 A track whose audio fails to load says why, and stops the queue only when

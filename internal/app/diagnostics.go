@@ -54,13 +54,17 @@ func (s *System) ReportURL(ctx context.Context) string {
 	tools := s.a.tools.Status(ctx)
 	var b strings.Builder
 	fmt.Fprintf(&b, "MixMusic %s on %s %s\n", info.Version, runtime.GOOS, runtime.GOARCH)
+	outdated := ""
+	if tools.YTDLP.Latest != "" {
+		outdated = ", older than the latest, " + tools.YTDLP.Latest
+	}
 	switch {
 	case !tools.YTDLP.Found:
 		b.WriteString("yt-dlp: not installed\n")
 	case tools.YTDLP.Managed:
-		fmt.Fprintf(&b, "yt-dlp %s, installed by MixMusic\n", tools.YTDLP.Version)
+		fmt.Fprintf(&b, "yt-dlp %s, installed by MixMusic%s\n", tools.YTDLP.Version, outdated)
 	default:
-		fmt.Fprintf(&b, "yt-dlp %s, the system's\n", tools.YTDLP.Version)
+		fmt.Fprintf(&b, "yt-dlp %s, the system's%s\n", tools.YTDLP.Version, outdated)
 	}
 	if tools.JSRuntime.Found {
 		fmt.Fprintf(&b, "JavaScript runtime: %s %s\n", tools.JSRuntime.Name, tools.JSRuntime.Version)

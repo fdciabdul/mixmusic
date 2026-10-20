@@ -17,6 +17,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -34,6 +36,13 @@ var latestURL = "https://github.com/yt-dlp/yt-dlp/releases/latest"
 // ErrNoYTDLP is returned when yt-dlp is not installed.
 var ErrNoYTDLP = errors.New("yt-dlp is not installed: install it from Settings › Playback")
 
+// latestTTL is how long the latest yt-dlp release found is trusted before
+// GitHub is asked again, and retryTTL how long a failure to find it is.
+const (
+	latestTTL = 6 * time.Hour
+	retryTTL  = 10 * time.Minute
+)
+
 // Manager finds the tools, and installs yt-dlp into Dir.
 type Manager struct {
 	// Dir holds the tools MixMusic installs.
@@ -42,8 +51,10 @@ type Manager struct {
 	HTTP *http.Client
 
 	mu        sync.Mutex
-	ytdlpPath string // a path the user chose, overriding the search
-	jsRuntime string // a runtime the user chose: "deno", "node", "bun" or "quickjs"
+	ytdlpPath string    // a path the user chose, overriding the search
+	jsRuntime string    // a runtime the user chose: "deno", "node", "bun" or "quickjs"
+	latest    string    // the latest yt-dlp release, as last found
+	checked   time.Time // when GitHub was last asked for it
 }
 
 // New returns a manager that installs tools into dir.
@@ -185,6 +196,12 @@ type Tool struct {
 	Version string `json:"version,omitempty"`
 	// Managed is set for tools MixMusic installed, which it can update.
 	Managed bool `json:"managed,omitempty"`
+	// Latest is the version of the latest yt-dlp release, set when the
+	// yt-dlp found is older.
+	Latest string `json:"latest,omitempty"`
+	// UpdateCommand updates an old yt-dlp the user installed, when where it
+	// is tells how they installed it: "winget upgrade yt-dlp" and the like.
+	UpdateCommand string `json:"updateCommand,omitempty"`
 }
 
 // Status describes the tools MixMusic runs.
@@ -193,11 +210,12 @@ type Status struct {
 	JSRuntime Tool `json:"jsRuntime"`
 }
 
-// Status finds the tools and asks them their versions.
+// Status finds the tools and asks them their versions, and GitHub the
+// latest yt-dlp release.
 func (m *Manager) Status(ctx context.Context) Status {
 	var s Status
 	if p, err := m.YTDLP(); err == nil {
-		s.YTDLP = Tool{Found: true, Name: "yt-dlp", Path: p, Version: version(ctx, p, "--version"), Managed: p == m.managedPath()}
+		s.YTDLP = m.ytdlpTool(ctx, p, version(ctx, p, "--version"))
 	}
 	if name, p, ok := m.JSRuntime(); ok {
 		flag := "--version"
@@ -207,6 +225,106 @@ func (m *Manager) Status(ctx context.Context) Status {
 		s.JSRuntime = Tool{Found: true, Name: name, Path: p, Version: version(ctx, p, flag)}
 	}
 	return s
+}
+
+// ytdlpTool describes the yt-dlp at path, whose version is v.
+func (m *Manager) ytdlpTool(ctx context.Context, path, v string) Tool {
+	t := Tool{Found: true, Name: "yt-dlp", Path: path, Version: v, Managed: path == m.managedPath()}
+	if latest := m.knownLatest(ctx); older(v, latest) {
+		t.Latest = latest
+		if !t.Managed {
+			t.UpdateCommand = updateCommand(path)
+		}
+	}
+	return t
+}
+
+// knownLatest returns the version of the latest yt-dlp release, asking
+// GitHub at most every latestTTL, or "" while it is not known, as offline.
+func (m *Manager) knownLatest(ctx context.Context) string {
+	m.mu.Lock()
+	latest, checked := m.latest, m.checked
+	m.mu.Unlock()
+	ttl := latestTTL
+	if latest == "" {
+		ttl = retryTTL
+	}
+	if !checked.IsZero() && time.Since(checked) < ttl {
+		return latest
+	}
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	v, err := m.LatestYTDLP(ctx)
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.checked = time.Now()
+	if err == nil {
+		m.latest = v
+	}
+	return m.latest
+}
+
+// older reports whether the yt-dlp version v, such as 2025.01.15 or the
+// nightly 2026.08.20.232811, is older than latest. A version that is not
+// numbers between dots is not.
+func older(v, latest string) bool {
+	a, okA := versionNumbers(v)
+	b, okB := versionNumbers(latest)
+	return okA && okB && slices.Compare(a, b) < 0
+}
+
+// versionNumbers returns the numbers of a version such as 2026.08.19.
+func versionNumbers(v string) ([]int, bool) {
+	parts := strings.Split(strings.TrimSpace(v), ".")
+	if len(parts) < 2 {
+		return nil, false
+	}
+	nums := make([]int, len(parts))
+	for i, p := range parts {
+		n, err := strconv.Atoi(p)
+		if err != nil || n < 0 {
+			return nil, false
+		}
+		nums[i] = n
+	}
+	return nums, true
+}
+
+// updateCommands tell how a yt-dlp was installed by the folders of its
+// path, all of which it has, with the command that updates it: the first
+// that matches applies.
+var updateCommands = []struct {
+	dirs    []string
+	command string
+}{
+	{[]string{"/winget/"}, "winget upgrade yt-dlp"},
+	{[]string{"/scoop/"}, "scoop update yt-dlp"},
+	{[]string{"/chocolatey/"}, "choco upgrade yt-dlp"},
+	{[]string{"/pipx/"}, "pipx upgrade yt-dlp"},
+	{[]string{"/python", "/scripts/"}, "python -m pip install -U yt-dlp"},
+	{[]string{"/homebrew/"}, "brew upgrade yt-dlp"},
+	{[]string{"/linuxbrew/"}, "brew upgrade yt-dlp"},
+	{[]string{"/cellar/"}, "brew upgrade yt-dlp"},
+	{[]string{"/snap/"}, "sudo snap refresh yt-dlp"},
+}
+
+// updateCommand returns the command that updates the yt-dlp at path, when
+// its path, or the path its link leads to, tells how it was installed;
+// else "".
+func updateCommand(path string) string {
+	paths := []string{path}
+	if real, err := filepath.EvalSymlinks(path); err == nil && real != path {
+		paths = append(paths, real)
+	}
+	for _, p := range paths {
+		p = strings.ReplaceAll(strings.ToLower(p), `\`, "/")
+		for _, c := range updateCommands {
+			if !slices.ContainsFunc(c.dirs, func(d string) bool { return !strings.Contains(p, d) }) {
+				return c.command
+			}
+		}
+	}
+	return ""
 }
 
 // version returns the first line a program prints for flag.

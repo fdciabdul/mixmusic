@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"sync/atomic"
 	"testing"
 )
 
@@ -138,6 +139,106 @@ func TestLatestYTDLP(t *testing.T) {
 	// Nothing MixMusic installed: nothing to update.
 	if updated, err := m.UpdateYTDLP(context.Background()); updated || err != nil {
 		t.Errorf("UpdateYTDLP() = %v, %v without a managed yt-dlp", updated, err)
+	}
+}
+
+func TestOlder(t *testing.T) {
+	for _, c := range []struct {
+		v, latest string
+		want      bool
+	}{
+		{"2025.01.15", "2026.09.01", true},
+		{"2026.08.19", "2026.09.01", true},
+		{"2026.09.01", "2026.09.01", false},
+		{"2026.09.01.232811", "2026.09.01", false}, // a nightly after the release
+		{"2026.08.31.232811", "2026.09.01", true},
+		{"2026.10.02", "2026.09.01", false},
+		{"", "2026.09.01", false},
+		{"2025.01.15", "", false}, // the latest is not known
+		{"yt-dlp 2025.01.15", "2026.09.01", false},
+	} {
+		if got := older(c.v, c.latest); got != c.want {
+			t.Errorf("older(%q, %q) = %v, want %v", c.v, c.latest, got, c.want)
+		}
+	}
+}
+
+func TestUpdateCommand(t *testing.T) {
+	for path, want := range map[string]string{
+		`C:\Users\a\AppData\Local\Microsoft\WinGet\Links\yt-dlp.exe`:            "winget upgrade yt-dlp",
+		`C:\Users\a\scoop\shims\yt-dlp.exe`:                                     "scoop update yt-dlp",
+		`C:\ProgramData\chocolatey\bin\yt-dlp.exe`:                              "choco upgrade yt-dlp",
+		`C:\Users\a\AppData\Local\Programs\Python\Python312\Scripts\yt-dlp.exe`: "python -m pip install -U yt-dlp",
+		"/opt/homebrew/bin/yt-dlp":                                              "brew upgrade yt-dlp",
+		"/usr/local/Cellar/yt-dlp/2025.01.15/bin/yt-dlp":                        "brew upgrade yt-dlp",
+		"/home/linuxbrew/.linuxbrew/bin/yt-dlp":                                 "brew upgrade yt-dlp",
+		"/home/a/.local/share/pipx/venvs/yt-dlp/bin/yt-dlp":                     "pipx upgrade yt-dlp",
+		"/snap/bin/yt-dlp":                                                      "sudo snap refresh yt-dlp",
+		"/usr/bin/yt-dlp":                                                       "",
+		`C:\Users\a\Downloads\yt-dlp.exe`:                                       "",
+	} {
+		if got := updateCommand(path); got != want {
+			t.Errorf("updateCommand(%s) = %q, want %q", path, got, want)
+		}
+	}
+}
+
+// fakeLatest has GitHub answer that the latest yt-dlp is *latest, or fail
+// while it is empty, and counts the requests.
+func fakeLatest(t *testing.T, latest *string) *atomic.Int32 {
+	t.Helper()
+	var asked atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		asked.Add(1)
+		if *latest == "" {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+		http.Redirect(w, r, "/yt-dlp/yt-dlp/releases/tag/"+*latest, http.StatusFound)
+	}))
+	t.Cleanup(srv.Close)
+	saved := latestURL
+	latestURL = srv.URL + "/yt-dlp/yt-dlp/releases/latest"
+	t.Cleanup(func() { latestURL = saved })
+	return &asked
+}
+
+func TestYTDLPToolTellsANewerRelease(t *testing.T) {
+	latest := "2026.09.01"
+	asked := fakeLatest(t, &latest)
+	ctx := context.Background()
+	m := New(t.TempDir())
+
+	got := m.ytdlpTool(ctx, "/opt/homebrew/bin/yt-dlp", "2025.01.15")
+	if got.Latest != "2026.09.01" || got.UpdateCommand != "brew upgrade yt-dlp" || got.Managed {
+		t.Errorf("an old yt-dlp of the user's: %+v", got)
+	}
+	if got := m.ytdlpTool(ctx, "/opt/homebrew/bin/yt-dlp", "2026.09.01"); got.Latest != "" || got.UpdateCommand != "" {
+		t.Errorf("a current yt-dlp: %+v", got)
+	}
+	if got := m.ytdlpTool(ctx, m.managedPath(), "2025.01.15"); got.Latest != "2026.09.01" || got.UpdateCommand != "" || !got.Managed {
+		t.Errorf("an old yt-dlp of MixMusic's: %+v", got)
+	}
+	if n := asked.Load(); n != 1 {
+		t.Errorf("GitHub was asked %d times, want once", n)
+	}
+}
+
+func TestYTDLPToolOffline(t *testing.T) {
+	latest := ""
+	asked := fakeLatest(t, &latest)
+	m := New(t.TempDir())
+	if got := m.ytdlpTool(context.Background(), "/usr/bin/yt-dlp", "2025.01.15"); got.Latest != "" {
+		t.Errorf("without the latest release: %+v", got)
+	}
+	latest = "2026.09.01"
+	m.ytdlpTool(context.Background(), "/usr/bin/yt-dlp", "2025.01.15")
+	if n := asked.Load(); n != 1 {
+		t.Errorf("GitHub was asked %d times within %s of a failure, want once", n, retryTTL)
+	}
+	m.checked = m.checked.Add(-retryTTL)
+	if got := m.ytdlpTool(context.Background(), "/usr/bin/yt-dlp", "2025.01.15"); got.Latest != "2026.09.01" {
+		t.Errorf("after %s: %+v", retryTTL, got)
 	}
 }
 
