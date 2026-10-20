@@ -46,6 +46,10 @@ rules keep the project healthy:
   `sdk/index.d.ts` together; the typecheck fails when they differ.
 - **Tests do not need the network.** Parsers are tested on recorded
   responses in `testdata/`; live tests run only with `MIXMUSIC_LIVE=1`.
+  The Opus decoder's conformance test runs when `OPUS_TESTVECTORS` names
+  the folder of the
+  [RFC 8251 test vectors](https://opus-codec.org/static/testvectors/opus_testvectors-rfc8251.tar.gz),
+  which CI downloads.
 - **Honest errors.** When a service refuses something, say what and how to
   get past it, in the words of the interface.
 

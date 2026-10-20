@@ -31,8 +31,26 @@ jobs:
           GOOS=linux go vet ./...
           GOOS=windows go vet ./...
           GOOS=darwin go vet ./...
+      # The Opus decoder's conformance test decodes the test vectors of RFC
+      # 8251. They never change: download them once, and check them.
+      - name: Cache the Opus test vectors
+        if: runner.os == 'Linux'
+        id: opus-vectors
+        uses: actions/cache@v6
+        with:
+          path: ${{ runner.temp }}/opus-vectors
+          key: opus-testvectors-rfc8251
+      - name: Download the Opus test vectors
+        if: runner.os == 'Linux' && steps.opus-vectors.outputs.cache-hit != 'true'
+        run: |
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/opus-vectors.tar.gz" https://opus-codec.org/static/testvectors/opus_testvectors-rfc8251.tar.gz
+          echo "6b26a22f9ba87b2b836906a9bb7afec5f8e54d49553b1200382520ee6fedfa55  $RUNNER_TEMP/opus-vectors.tar.gz" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/opus-vectors"
+          tar -xzf "$RUNNER_TEMP/opus-vectors.tar.gz" -C "$RUNNER_TEMP/opus-vectors"
       - name: Test
         run: go test ./...
+        env:
+          OPUS_TESTVECTORS: ${{ runner.os == 'Linux' && format('{0}/opus-vectors/opus_newvectors', runner.temp) || '' }}
       - name: Community registry
         run: go run ./tools/registry -check
 
