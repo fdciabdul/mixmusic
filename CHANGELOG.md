@@ -6,6 +6,12 @@ All notable changes to MixMusic are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-20
+
+MixMusic tells you when a yt-dlp you installed yourself is out of date,
+how to update it, and offers its own, which stays up to date. MixMusic
+0.3.0 and later offer this version in Settings › About.
+
 ### Added
 
 - When the yt-dlp MixMusic runs is your own, as from winget, Homebrew or
@@ -166,7 +172,8 @@ player, for macOS, Windows and Linux.
 - Apps for macOS 12 and later (Apple silicon and Intel), Windows 10 and 11,
   and Linux, on x64 and Arm64.
 
-[Unreleased]: https://github.com/fzn0x/mixmusic/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/fzn0x/mixmusic/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/fzn0x/mixmusic/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/fzn0x/mixmusic/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/fzn0x/mixmusic/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/fzn0x/mixmusic/compare/v0.2.0...v0.3.0
