@@ -414,6 +414,26 @@ export interface Registry {
   plugins: Entry[];
 }
 
+/** Release is the newest release of MixMusic, as this copy gets it. */
+export interface Release {
+  /** Version is the newest version, without its "v". */
+  version: string;
+  /** Newer is whether it is newer than this copy. */
+  newer: boolean;
+  /** Date is when it was published, as RFC 3339. */
+  date: string;
+  /** Page is the release's page: its notes and all of its downloads. */
+  page: string;
+  /**
+   * Download is the address of the release's file made for this copy,
+   * such as its .deb, which copies that do not update themselves are
+   * replaced with; "" when the release has none.
+   */
+  download: string;
+  /** File is the name of that file. */
+  file: string;
+}
+
 /** Repeat is the repeat mode of the queue. */
 export type Repeat = "off" | "all" | "one";
 
@@ -650,6 +670,12 @@ export interface UpdateStatus {
    * of development, and installs of a package manager.
    */
   enabled: boolean;
+  /**
+   * Kind is how this copy was installed, which decides the download of
+   * a release that replaces it: "installer", "portable", "app",
+   * "archive", "deb", "rpm", "appimage" or "development".
+   */
+  kind: string;
   /** AutomaticChecks checks for a new version once a day. */
   automaticChecks: boolean;
   /**
@@ -659,6 +685,11 @@ export interface UpdateStatus {
   automaticDownloads: boolean;
   /** LastCheck is when MixMusic last checked, as RFC 3339, or "". */
   lastCheck: string;
+  /**
+   * Installed is the version InstallUpdate put in place of this one,
+   * which runs once MixMusic restarts, or "".
+   */
+  installed: string;
 }
 
 /** YouTubeAccount is the state of the YouTube Music sign-in. */
@@ -1151,13 +1182,6 @@ export const System = {
   cacheUsage(): Promise<CacheUsage> {
     return call("System.CacheUsage");
   },
-  /**
-   * CheckForUpdates checks for a new version now, in the update window,
-   * which says when MixMusic is up to date.
-   */
-  checkForUpdates(): Promise<void> {
-    return call("System.CheckForUpdates");
-  },
   /** ClearCache empties the audio cache. */
   clearCache(): Promise<void> {
     return call("System.ClearCache");
@@ -1174,6 +1198,14 @@ export const System = {
     return call("System.Info");
   },
   /**
+   * InstallUpdate downloads the newest version, checks its signature and
+   * puts it in place of this one, reporting the download's progress. It
+   * runs once MixMusic restarts. It returns the version installed.
+   */
+  installUpdate(progress: Channel<InstallProgress>): Promise<string> {
+    return call("System.InstallUpdate", progress);
+  },
+  /**
    * InstallYTDLP downloads the latest yt-dlp into the app's data, reporting
    * the download's progress.
    */
@@ -1186,6 +1218,10 @@ export const System = {
    */
   lastCrash(): Promise<string> {
     return call("System.LastCrash");
+  },
+  /** LatestRelease asks GitHub for the newest release of MixMusic. */
+  latestRelease(): Promise<Release> {
+    return call("System.LatestRelease");
   },
   /**
    * LogsFolder returns the folder of MixMusic's log and of its crash
@@ -1217,6 +1253,10 @@ export const System = {
    */
   reportURL(): Promise<string> {
     return call("System.ReportURL");
+  },
+  /** Restart quits MixMusic and starts it again, as the update it installed. */
+  restart(): Promise<void> {
+    return call("System.Restart");
   },
   /**
    * SetUpdates turns the daily check and the installs without asking on or

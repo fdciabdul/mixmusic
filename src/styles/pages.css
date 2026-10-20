@@ -671,6 +671,22 @@
   font-weight: 300;
 }
 
+/* The newest version under it: what to do about it, or that this is it. */
+.mm-update {
+  display: grid;
+  gap: var(--mm-space-3);
+  justify-items: start;
+  margin-bottom: var(--mm-space-4);
+}
+
+.mm-update-text {
+  font-size: var(--mm-size-body);
+}
+
+.mm-update .mm-hint {
+  margin: 0;
+}
+
 /* The marketplace. */
 
 .mm-market-grid {

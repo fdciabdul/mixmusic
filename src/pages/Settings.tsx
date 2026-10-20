@@ -1,5 +1,6 @@
 // Settings: appearance, playback, accounts, plugins, the desktop,
 // shortcuts, and about.
+import type { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { Channel } from "mygo-runtime";
 import { PageHeader } from "../components/PageHeader";
@@ -1023,43 +1024,159 @@ function Shortcuts({ s }: { s: SettingsData }) {
   );
 }
 
+/** builds says how each kind of copy was installed, after its version. */
+const builds: Record<string, string> = {
+  installer: "installed with the setup",
+  portable: "portable",
+  app: "app",
+  archive: "installed with install.sh",
+  deb: ".deb package",
+  rpm: ".rpm package",
+  appimage: "AppImage",
+  development: "development build",
+};
+
+/** downloads names the file of a release that replaces each kind of copy. */
+const downloads: Record<string, string> = {
+  installer: "download the installer",
+  portable: "download the portable zip",
+  app: "download the disk image",
+  archive: "download the archive",
+  deb: "download the .deb",
+  rpm: "download the .rpm",
+  appimage: "download the AppImage",
+};
+
+/** replacing tells how a downloaded file takes the place of this copy. */
+function replacing(kind: string, file: string): ComponentChildren {
+  const name = <code class="mm-code">{file}</code>;
+  switch (kind) {
+    case "deb":
+      return <>Open {name} with your software center, or run <code class="mm-code">sudo apt install ./{file}</code>. Your library and settings stay.</>;
+    case "rpm":
+      return <>Open {name} with your software center, or run <code class="mm-code">sudo dnf install ./{file}</code>. Your library and settings stay.</>;
+    case "appimage":
+      return <>Make {name} executable and use it in place of this AppImage. Your library and settings stay.</>;
+    case "development":
+      return "Development builds do not update themselves.";
+    default:
+      return file ? <>MixMusic cannot write where it is installed, so it cannot replace itself: run {name}. Your library and settings stay.</> : "";
+  }
+}
+
+/** Version shows this copy's version, and the newest one, which it installs or links to. */
+function Version() {
+  const info = appInfo();
+  const status = useAsync(() => System.updates(), []);
+  useEffect(() => events.updatesChanged.on((u) => status.set(u)), []);
+  const release = useAsync(() => System.latestRelease(), []);
+  const [progress, setProgress] = useState<InstallProgress | null>(null);
+  const [installing, setInstalling] = useState(false);
+  const u = status.data;
+  const r = release.data;
+  const open = (url: string) => (e: MouseEvent) => (e.preventDefault(), System.openExternal(url));
+
+  const install = async () => {
+    setInstalling(true);
+    try {
+      const version = await System.installUpdate(new Channel<InstallProgress>((p) => setProgress(p)));
+      toast(`MixMusic ${version} is installed`, { tone: "success" });
+    } catch (err) {
+      toast(`Couldn't install the update: ${errorMessage(err)}`, { tone: "error" });
+    } finally {
+      setInstalling(false);
+      setProgress(null);
+    }
+  };
+  const pct = progress && progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : null;
+  const date = r?.date ? new Date(r.date).toLocaleDateString(undefined, { dateStyle: "medium" }) : "";
+
+  let state: ComponentChildren = null;
+  if (u?.installed) {
+    state = (
+      <>
+        <p class="mm-update-text">MixMusic {u.installed} is installed. It runs once MixMusic restarts.</p>
+        <div class="mm-actions">
+          <button type="button" class="mm-button mm-button-primary" onClick={() => System.restart()}>
+            restart now
+          </button>
+        </div>
+      </>
+    );
+  } else if (release.loading) {
+    state = <p class="mm-update-text mm-muted">Looking for a newer version…</p>;
+  } else if (release.error) {
+    state = <p class="mm-hint mm-hint-error">Couldn't look for a newer version: {release.error}</p>;
+  } else if (r && u && r.newer) {
+    state = (
+      <>
+        <p class="mm-update-text">
+          MixMusic {r.version} is out{date ? `, since ${date}` : ""}.
+        </p>
+        <div class="mm-actions">
+          {u.enabled ? (
+            <button type="button" class="mm-button mm-button-primary" disabled={installing} onClick={install}>
+              <Icon name="download" size={16} />
+              {installing ? (pct != null ? `downloading ${pct}%` : "downloading…") : `install ${r.version}`}
+            </button>
+          ) : (
+            r.download && (
+              <a class="mm-button mm-button-primary" href={r.download} onClick={open(r.download)}>
+                <Icon name="download" size={16} />
+                {downloads[u.kind] ?? "download it"}
+              </a>
+            )
+          )}
+          <a class="mm-button mm-button-outline" href={r.page} onClick={open(r.page)}>
+            what's new
+          </a>
+        </div>
+        {!u.enabled && <p class="mm-hint">{replacing(u.kind, r.file)}</p>}
+      </>
+    );
+  } else if (r) {
+    state = <p class="mm-update-text mm-muted">This is the newest version.</p>;
+  }
+
+  return (
+    <>
+      <p class="mm-about-line">
+        Version {info.version} · {info.platform} {info.arch}
+        {u?.kind && builds[u.kind] ? ` · ${builds[u.kind]}` : ""}
+      </p>
+      <div class="mm-update" aria-live="polite">
+        {state}
+        {!u?.installed && !release.loading && (
+          <button type="button" class="mm-text-button" disabled={installing} onClick={release.reload}>
+            check again
+          </button>
+        )}
+      </div>
+    </>
+  );
+}
+
+/** Updates turns the daily check and the installs without asking on or off. */
 function Updates() {
   const status = useAsync(() => System.updates(), []);
   useEffect(() => events.updatesChanged.on((u) => status.set(u)), []);
   const u = status.data;
-  if (!u) return null;
+  if (!u?.enabled) return null;
   const set = (checks: boolean, downloads: boolean) =>
     System.setUpdates(checks, downloads).then(status.set, (err) => toast(errorMessage(err), { tone: "error" }));
   const last = u.lastCheck ? new Date(u.lastCheck).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "";
   return (
-    <Group
-      title="updates"
-      action={
-        u.enabled ? (
-          <button type="button" class="mm-text-button" onClick={() => System.checkForUpdates()}>
-            check now
-          </button>
-        ) : undefined
-      }
-    >
-      {u.enabled ? (
-        <>
-          <Row title="Check for updates" description={last ? `Once a day. Last checked ${last}.` : "Once a day, from the releases on GitHub."}>
-            <Switch on={u.automaticChecks} label="Check for updates" onChange={(v) => void set(v, u.automaticDownloads)} />
-          </Row>
-          <Row title="Install updates without asking" description="New versions download in the background and run at the next launch.">
-            <Switch
-              on={u.automaticChecks && u.automaticDownloads}
-              label="Install updates without asking"
-              onChange={(v) => void set(u.automaticChecks || v, v)}
-            />
-          </Row>
-        </>
-      ) : (
-        <p class="mm-hint">
-          This copy of MixMusic does not update itself: development builds, the .deb and .rpm packages and the AppImage cannot replace their own files. Download the next version from the releases page; the installers, the portable zip and the Linux archive update themselves.
-        </p>
-      )}
+    <Group title="updates">
+      <Row title="Check for updates" description={last ? `Once a day. Last checked ${last}.` : "Once a day, from the releases on GitHub."}>
+        <Switch on={u.automaticChecks} label="Check for updates" onChange={(v) => void set(v, u.automaticDownloads)} />
+      </Row>
+      <Row title="Install updates without asking" description="New versions download in the background and run at the next launch.">
+        <Switch
+          on={u.automaticChecks && u.automaticDownloads}
+          label="Install updates without asking"
+          onChange={(v) => void set(u.automaticChecks || v, v)}
+        />
+      </Row>
     </Group>
   );
 }
@@ -1079,12 +1196,8 @@ function About() {
   const open = (url: string) => (e: MouseEvent) => (e.preventDefault(), System.openExternal(url));
   return (
     <>
-    <Updates />
     <Group title="mixmusic">
-      <p class="mm-about-line">
-        Version {info.version} · {info.platform} {info.arch}
-        {info.dev ? " · development build" : ""}
-      </p>
+      <Version />
       <p class="mm-hint">
         Spotify and YouTube Music in one player, open source under the MIT license. Audio of YouTube Music comes through yt-dlp; synced lyrics from LRCLIB.
       </p>
@@ -1104,6 +1217,7 @@ function About() {
       </div>
       <p class="mm-hint">Your data lives in {info.dataDir}. MixMusic writes what goes wrong to a log, without your sign-ins; open logs folder shows it.</p>
     </Group>
+    <Updates />
     </>
   );
 }

@@ -21,6 +21,9 @@ All notable changes to MixMusic are documented here. The format follows
 - Going back or forward returns to where the page was scrolled.
 - Downloads for more systems: a portable zip for Windows, an RPM package
   for Fedora and openSUSE, and an AppImage for any Linux.
+- Settings › About shows the newest version. A copy that updates itself
+  installs it there, with its progress, and restarts into it; the `.deb`,
+  the `.rpm` and the AppImage download their own file of it.
 
 ### Changed
 

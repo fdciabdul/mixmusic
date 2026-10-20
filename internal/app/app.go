@@ -80,8 +80,11 @@ type App struct {
 	colors       *memo[string]
 
 	presence presence
+	// updating is held while an update installs.
+	updating sync.Mutex
 
 	mu         sync.Mutex
+	installed  string // the version installed to run at the next start
 	lastfm     *scrobbles
 	youtubeMe  *youtube.Account
 	spotifyMe  *spotify.Profile

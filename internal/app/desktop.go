@@ -37,7 +37,7 @@ func (a *App) Start() {
 	a.captureFromEnv(win)
 	a.setupTray()
 	a.applyMediaKeys(a.settings.Get().MediaKeys)
-	watchUpdates()
+	a.watchUpdates()
 	go a.keepYTDLPCurrent()
 }
 

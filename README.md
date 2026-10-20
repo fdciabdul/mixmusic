@@ -60,6 +60,8 @@ bundled browser to download or keep in memory.
   time left.
 - **Updates.** MixMusic looks for a new release once a day, checks its
   signature, and installs it when you agree, or by itself if you choose.
+  Settings › About shows the newest version and installs it, or, for a
+  copy that cannot replace itself, downloads its file of the same kind.
 - **Keyboard first.** Shortcuts for everything common, a key of your own for
   any command, plugins' too, and a command palette
   (<kbd>Ctrl</kbd> <kbd>K</kbd>) for the rest.
@@ -91,7 +93,8 @@ are what installed apps update from: you need none of them.
 
 The installers, the portable zip and the Linux archive update themselves.
 The `.deb`, the `.rpm` and the AppImage cannot replace their own files:
-download the next version when MixMusic tells you of it. Unpack the
+Settings › About tells you when a new version is out, and downloads its
+`.deb`, `.rpm` or AppImage. Unpack the
 portable zip anywhere and open `MixMusic.exe` in it; your settings and
 library stay in your Windows profile, as with the installer. Make the
 AppImage executable (`chmod +x`) and open it.
@@ -245,8 +248,8 @@ talks to:
 - **LRCLIB:** the title, artists, album and length of the track playing,
   to find its lyrics.
 - **GitHub:** a check for a new version once a day, which you can turn off
-  in Settings › About, the community registry when you open the
-  marketplace, and the downloads of yt-dlp.
+  in Settings › About, and each time you open that page; the community
+  registry when you open the marketplace, and the downloads of yt-dlp.
 - **Last.fm,** once you connect it: what you play. **Discord**, once you
   turn it on: what plays, to the Discord app on your computer, which shows
   it on your profile.
