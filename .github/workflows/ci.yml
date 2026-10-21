@@ -90,6 +90,13 @@ jobs:
         env:
           MIXMUSIC_AUDIO: "1"
         run: |
+          if [ "$RUNNER_OS" = Linux ]; then
+            # An idle null sink wakes every 2 seconds, and starts a new
+            # stream at its next waking, as a sound card or PipeWire doesn't:
+            # silence played at a low latency keeps it awake.
+            pacat --latency-msec=10 --format=s16le --rate=48000 --channels=2 /dev/zero &
+            sleep 2
+          fi
           go test ./internal/audio/... -run 'TestStream|TestStartStop|TestRenderPanic|TestEngineOnTheDevice' -count=1 -v | tee audio.log
           if grep -q -- '--- SKIP' audio.log; then
             echo "A test skipped: the runner has no audio device."
