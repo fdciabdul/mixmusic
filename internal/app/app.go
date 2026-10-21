@@ -86,6 +86,8 @@ type App struct {
 	// native is MixMusic's own audio engine, made at its first use.
 	native     *audio.Engine
 	nativeOnce sync.Once
+	// controls shows the engine's track in the system's media controls.
+	controls controls
 	// updates keeps the user's choices of updates.
 	updates *store.File[updatePrefs]
 	// checkUpdates has MixMusic look for a new version at once.

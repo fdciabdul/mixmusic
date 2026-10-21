@@ -56,6 +56,10 @@ page owns the interface and the player.
   they match sample for sample. `internal/audio/output` plays it on the
   system's output, without cgo: through WASAPI on Windows, an Audio Queue on
   macOS, and PulseAudio, which PipeWire serves too, or ALSA on Linux.
+- **`internal/nowplaying`** shows what the native engine plays in the
+  system's media controls, which the webview does for what it plays, and
+  passes on what they ask: Now Playing on macOS, through MediaPlayer, and an
+  MPRIS player on Linux, served by GIO's GDBus, both called with purego.
 - **`internal/tools`** finds yt-dlp and a JavaScript runtime, and installs
   yt-dlp from its releases, checked against their published checksums.
 - **`internal/match`** finds a Spotify track's recording on YouTube Music, by

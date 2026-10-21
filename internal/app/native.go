@@ -118,7 +118,11 @@ func (p *Player) NativeLoad(url string, startMs float64, autoplay bool) error {
 	if e == nil {
 		return errNoNative
 	}
-	return e.Load(url, fromMs(startMs), autoplay)
+	if err := e.Load(url, fromMs(startMs), autoplay); err != nil {
+		return err
+	}
+	p.a.setNative(true)
+	return nil
 }
 
 // NativePreload starts loading url in the native engine, for the next track.
@@ -135,7 +139,11 @@ func (p *Player) NativeCrossfade(url string, seconds float64) error {
 	if e == nil {
 		return errNoNative
 	}
-	return e.Crossfade(url, fromMs(seconds*1000))
+	if err := e.Crossfade(url, fromMs(seconds*1000)); err != nil {
+		return err
+	}
+	p.a.setNative(true)
+	return nil
 }
 
 // NativePlay plays the native engine's track.
@@ -159,6 +167,7 @@ func (p *Player) NativeStop() {
 	if e := p.a.nativeEngine(); e != nil {
 		e.Stop()
 	}
+	p.a.setNative(false)
 }
 
 // NativeSeek moves the native engine's track to ms.

@@ -116,6 +116,7 @@ func (p *Player) Report(np NowPlaying) {
 	s := p.a.settings.Get()
 	p.a.scrobble(np)
 	p.a.presence.update(s.DiscordPresence, s.DiscordAppID, np)
+	p.a.reportControls(np)
 
 	changed := np.Track != nil && (prev.Track == nil || prev.Track.ID != np.Track.ID)
 	if tray != nil && (changed || prev.Playing != np.Playing) {

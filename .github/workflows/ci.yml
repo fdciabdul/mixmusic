@@ -102,6 +102,22 @@ jobs:
             echo "A test skipped: the runner has no audio device."
             exit 1
           fi
+      # The engine shows what it plays in the system's media controls: an
+      # MPRIS player that these call as a desktop does, on a session bus of
+      # their own, on Linux, and Now Playing on macOS.
+      - name: Show in the system's media controls
+        shell: bash
+        run: |
+          bus=""
+          if [ "$RUNNER_OS" = Linux ]; then
+            sudo apt-get install -y dbus
+            bus="dbus-run-session --"
+          fi
+          $bus go test ./internal/nowplaying/ -run 'TestMPRIS|TestNowPlaying' -count=1 -v | tee controls.log
+          if grep -q -- '--- SKIP' controls.log; then
+            echo "A test skipped."
+            exit 1
+          fi
 
   frontend:
     name: Frontend
