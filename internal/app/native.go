@@ -16,7 +16,7 @@ import (
 	"github.com/egoist/mygo"
 
 	"github.com/fzn0x/mixmusic/internal/audio"
-	"github.com/fzn0x/mixmusic/internal/audio/wasapi"
+	"github.com/fzn0x/mixmusic/internal/audio/output"
 	"github.com/fzn0x/mixmusic/internal/settings"
 	"github.com/fzn0x/mixmusic/internal/stream"
 )
@@ -98,11 +98,11 @@ func (a *App) openNative(ctx context.Context, rawURL string, interrupted func() 
 	return src, nil
 }
 
-// startNative starts the output of the native engine: WASAPI's.
+// startNative starts the output of the native engine.
 func startNative(render func([]float32), failed func(error)) (audio.Output, error) {
-	s, err := wasapi.Start(render, failed)
+	s, err := output.Start(render, failed)
 	switch {
-	case errors.Is(err, wasapi.ErrNoDevice):
+	case errors.Is(err, output.ErrNoDevice):
 		return nil, errors.New("no audio output device")
 	case err != nil:
 		return nil, fmt.Errorf("the audio device couldn't start (%v)", err)

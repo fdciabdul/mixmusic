@@ -9,7 +9,9 @@ import (
 	"github.com/egoist/mygo"
 
 	"github.com/fzn0x/mixmusic/internal/audio"
+	"github.com/fzn0x/mixmusic/internal/audio/output"
 	"github.com/fzn0x/mixmusic/internal/opus"
+	"github.com/fzn0x/mixmusic/internal/settings"
 	"github.com/fzn0x/mixmusic/internal/spotify"
 	"github.com/fzn0x/mixmusic/internal/tools"
 )
@@ -27,6 +29,9 @@ type Info struct {
 	AddonsURL   string `json:"addonsUrl"`
 	DataDir     string `json:"dataDir"`
 	RedirectURI string `json:"redirectUri"`
+	// NativeAudio is set where MixMusic's own audio engine can play: on
+	// 64-bit Windows, macOS and Linux, with its audio library installed.
+	NativeAudio bool `json:"nativeAudio"`
 }
 
 // System gives pages what they need of the desktop and the app.
@@ -44,6 +49,7 @@ func (s *System) Info() Info {
 		AddonsURL:   schemeURL(addonsScheme),
 		DataDir:     s.a.opts.DataDir,
 		RedirectURI: spotify.RedirectURI,
+		NativeAudio: settings.NativeAudio && output.Available() == nil,
 	}
 }
 

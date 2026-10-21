@@ -1,6 +1,6 @@
-//go:build windows && (amd64 || arm64)
+//go:build (windows || darwin || linux) && (amd64 || arm64)
 
-package wasapi
+package output
 
 import (
 	"errors"
@@ -29,7 +29,7 @@ func TestStream(t *testing.T) {
 		calls.Add(1)
 	}
 	s, err := Start(render, func(err error) { t.Errorf("the stream failed: %v", err) })
-	if errors.Is(err, ErrNoDevice) {
+	if errors.Is(err, ErrNoDevice) || errors.Is(err, ErrUnsupported) {
 		t.Skip("no audio output device")
 	}
 	if err != nil {
@@ -67,7 +67,7 @@ func TestStartStop(t *testing.T) {
 	for i := range 5 {
 		var n atomic.Int64
 		s, err := Start(func(out []float32) { clear(out); n.Add(1) }, nil)
-		if errors.Is(err, ErrNoDevice) {
+		if errors.Is(err, ErrNoDevice) || errors.Is(err, ErrUnsupported) {
 			t.Skip("no audio output device")
 		}
 		if err != nil {
@@ -95,7 +95,7 @@ func TestRenderPanic(t *testing.T) {
 			panic("boom")
 		}
 	}, func(err error) { failed <- err })
-	if errors.Is(err, ErrNoDevice) {
+	if errors.Is(err, ErrNoDevice) || errors.Is(err, ErrUnsupported) {
 		t.Skip("no audio output device")
 	}
 	if err != nil {

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/fzn0x/mixmusic/internal/audio/wasapi"
+	"github.com/fzn0x/mixmusic/internal/audio/output"
 )
 
 // TestEngineOnTheDevice plays a 3-second track through the device, at
@@ -18,7 +18,7 @@ func TestEngineOnTheDevice(t *testing.T) {
 		t.Skip("MIXMUSIC_AUDIO=1 runs the tests that open the audio device")
 	}
 	start := func(render func([]float32), failed func(error)) (Output, error) {
-		return wasapi.Start(render, failed)
+		return output.Start(render, failed)
 	}
 	rec := newRecorder()
 	e := NewEngine(fileOpener, start, rec)
@@ -27,7 +27,7 @@ func TestEngineOnTheDevice(t *testing.T) {
 	e.master = newSmoother(0, glide)
 	began := time.Now()
 	err := e.Load(cuesFront, 0, true)
-	if errors.Is(err, wasapi.ErrNoDevice) || errors.Is(err, wasapi.ErrUnsupported) {
+	if errors.Is(err, output.ErrNoDevice) || errors.Is(err, output.ErrUnsupported) {
 		t.Skip(err)
 	}
 	if err != nil {

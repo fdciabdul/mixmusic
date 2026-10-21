@@ -1,9 +1,9 @@
-// MixMusic's own audio engine, outside the webview: on Windows, the Go side
-// decodes the audio of a track and plays it on the device itself, with the
-// sound of AudioEngine: the same equalizer, levelling, volume, crossfades
-// and analyser, which it computes as Web Audio does. This has AudioEngine's
-// API, and drives it through the Player service. It plays Opus, which
-// YouTube serves for nearly every track; the web engine plays the others.
+// MixMusic's own audio engine, outside the webview: the Go side decodes the
+// audio of a track and plays it on the device itself, with the sound of
+// AudioEngine: the same equalizer, levelling, volume, crossfades and
+// analyser, which it computes as Web Audio does. This has AudioEngine's API,
+// and drives it through the Player service. It plays Opus, which YouTube
+// serves for nearly every track; the web engine plays the others.
 import { events as appEvents, Player, type NativeAnalysis } from "../mygo";
 import type { Engine, EngineEvents } from "./audio";
 

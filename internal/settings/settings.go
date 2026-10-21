@@ -31,12 +31,14 @@ const (
 	// AudioEngineWeb plays it in the page, with Web Audio.
 	AudioEngineWeb AudioEngine = "web"
 	// AudioEngineNative plays it outside the webview: MixMusic decodes the
-	// audio itself and plays it on the device. Only on Windows, 64-bit.
+	// audio itself and plays it on the device. Only on 64-bit Windows, macOS
+	// and Linux.
 	AudioEngineNative AudioEngine = "native"
 )
 
 // NativeAudio reports whether this system can play with AudioEngineNative.
-const NativeAudio = runtime.GOOS == "windows" && (runtime.GOARCH == "amd64" || runtime.GOARCH == "arm64")
+const NativeAudio = (runtime.GOOS == "windows" || runtime.GOOS == "darwin" || runtime.GOOS == "linux") &&
+	(runtime.GOARCH == "amd64" || runtime.GOARCH == "arm64")
 
 // Density chooses how much room the interface gives each element.
 type Density string

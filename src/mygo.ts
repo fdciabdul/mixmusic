@@ -183,6 +183,11 @@ export interface Info {
   addonsUrl: string;
   dataDir: string;
   redirectUri: string;
+  /**
+   * NativeAudio is set where MixMusic's own audio engine can play: on
+   * 64-bit Windows, macOS and Linux, with its audio library installed.
+   */
+  nativeAudio: boolean;
 }
 
 /** InstallProgress is how far a download went. */

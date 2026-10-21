@@ -54,6 +54,48 @@ jobs:
       - name: Community registry
         run: go run ./tools/registry -check
 
+  # MixMusic's own audio engine plays through each system's audio output:
+  # these play silence, and a track at volume 0, on Linux and macOS, whose
+  # runners have no sound card: a PulseAudio null sink, which keeps time as
+  # one does, and BlackHole, a virtual device, stand in for one.
+  audio:
+    name: Audio output (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - name: A sound server
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pulseaudio
+          pulseaudio --start --exit-idle-time=-1
+          pactl info
+      - name: An audio device
+        if: runner.os == 'macOS'
+        run: |
+          brew install --cask blackhole-2ch
+          sudo killall coreaudiod || true
+          sleep 5
+          system_profiler SPAudioDataType
+      # A test that skips found no device: here, that fails.
+      - name: Play through the device
+        shell: bash
+        env:
+          MIXMUSIC_AUDIO: "1"
+        run: |
+          go test ./internal/audio/... -run 'TestStream|TestStartStop|TestRenderPanic|TestEngineOnTheDevice' -count=1 -v | tee audio.log
+          if grep -q -- '--- SKIP' audio.log; then
+            echo "A test skipped: the runner has no audio device."
+            exit 1
+          fi
+
   frontend:
     name: Frontend
     runs-on: ubuntu-latest

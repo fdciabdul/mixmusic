@@ -1,6 +1,6 @@
 //go:build windows && (amd64 || arm64)
 
-package wasapi
+package output
 
 // The COM interfaces of WASAPI that the stream uses. Each is a pointer to
 // its vtable, which lists the methods after those of IUnknown, in order.
@@ -122,13 +122,13 @@ type hresult uint32
 func (h hresult) Error() string {
 	switch h {
 	case eNotFound:
-		return "wasapi: no audio output device"
+		return "output: WASAPI: no audio output device"
 	case audclntEInvalidated:
-		return "wasapi: the audio device was removed or changed"
+		return "output: WASAPI: the audio device was removed or changed"
 	case audclntEServiceNotRunning:
-		return "wasapi: the Windows audio service is not running"
+		return "output: WASAPI: the Windows audio service is not running"
 	}
-	return "wasapi: error " + hex(uint32(h))
+	return "output: WASAPI: error " + hex(uint32(h))
 }
 
 func hex(v uint32) string {

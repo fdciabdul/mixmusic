@@ -53,8 +53,9 @@ page owns the interface and the player.
   `internal/webm` and decodes it with `internal/opus` into a ring the audio
   thread plays from, and the web player's preamp, equalizer, levelling
   compressor, volume and analyser, ported from Chromium's Web Audio, which
-  they match sample for sample. `internal/audio/wasapi` plays it on Windows,
-  without cgo.
+  they match sample for sample. `internal/audio/output` plays it on the
+  system's output, without cgo: through WASAPI on Windows, an Audio Queue on
+  macOS, and PulseAudio, which PipeWire serves too, or ALSA on Linux.
 - **`internal/tools`** finds yt-dlp and a JavaScript runtime, and installs
   yt-dlp from its releases, checked against their published checksums.
 - **`internal/match`** finds a Spotify track's recording on YouTube Music, by
@@ -89,8 +90,8 @@ from the Go code; `bun run dev` and `bun run build` keep it current.
   tracks matched to their recording, play in `AudioEngine`: two `<audio>`
   elements routed through Web Audio (preamp, ten bands, an optional compressor
   that levels loudness, an analyser), the idle one preloading the next track
-  and fading it in for crossfades. With MixMusic's own audio engine on, on
-  Windows, `NativeEngine` (`native.ts`) plays them instead, through the native
+  and fading it in for crossfades. With MixMusic's own audio engine on,
+  `NativeEngine` (`native.ts`) plays them instead, through the native
   engine of the Go side, and gives, for the AnalyserNode, an object with its
   reading methods; tracks without Opus fall back to `AudioEngine`. Spotify
   tracks play on a Spotify device through `ConnectEngine`, which sends it

@@ -1,6 +1,6 @@
 //go:build windows && (amd64 || arm64)
 
-package wasapi
+package output
 
 import (
 	"errors"
@@ -83,7 +83,7 @@ func openDefault(e *iMMDeviceEnumerator) (*device, error) {
 	}
 	h, _, errno := syscall.SyscallN(procCreateEventW.Addr(), 0, 0, 0, 0)
 	if h == 0 {
-		return fail(fmt.Errorf("wasapi: CreateEvent: %w", errno))
+		return fail(fmt.Errorf("output: WASAPI: CreateEvent: %w", errno))
 	}
 	d.event = syscall.Handle(h)
 	if err := d.client.setEventHandle(d.event); err != nil {
@@ -102,10 +102,13 @@ func openDefault(e *iMMDeviceEnumerator) (*device, error) {
 		return fail(err)
 	}
 	if d.freq == 0 {
-		return fail(errors.New("wasapi: the device's clock has no frequency"))
+		return fail(errors.New("output: WASAPI: the device's clock has no frequency"))
 	}
 	return d, nil
 }
+
+// Available returns nil: Windows always has WASAPI, if not a device.
+func Available() error { return nil }
 
 // Stream plays what its render function makes on the default output
 // device of Windows, following the default device when it changes.
@@ -209,7 +212,7 @@ func (s *Stream) fill(d *device, n uint32) (err error) {
 		if v := recover(); v != nil {
 			clear(out)
 			d.render.releaseBuffer(n)
-			err = fmt.Errorf("wasapi: rendering the audio failed: %v", v)
+			err = fmt.Errorf("output: WASAPI: rendering the audio failed: %v", v)
 		}
 	}()
 	s.render(out)
@@ -234,7 +237,7 @@ func (s *Stream) loop(e *iMMDeviceEnumerator, d *device) error {
 	lastCheck := time.Now()
 	for !s.stopping.Load() {
 		if _, err := syscall.WaitForSingleObject(d.event, 200); err != nil {
-			return fmt.Errorf("wasapi: waiting for the device: %w", err)
+			return fmt.Errorf("output: WASAPI: waiting for the device: %w", err)
 		}
 		// Whether signaled or not, the device's padding tells what to
 		// render, and whether it is still there.

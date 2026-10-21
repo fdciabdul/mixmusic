@@ -31,7 +31,7 @@ import { useAsync } from "../lib/async";
 import { navigate } from "../lib/router";
 import { bytes, errorMessage } from "../lib/format";
 import { commands, eventShortcut, shortcutLabel, shortcutOf } from "../lib/commands";
-import { appInfo, platform } from "../lib/runtime";
+import { appInfo } from "../lib/runtime";
 import { activeTheme, inventory, optionValues, themePatch, themes } from "../theme/theme";
 import { BANDS, PRESETS, bandLabel } from "../player/eq";
 import { canPlaySpotify } from "../player/spotify";
@@ -339,7 +339,7 @@ function Playback({ s }: { s: SettingsData }) {
         <Row title="Volume levelling" description="Evens out loud and quiet tracks.">
           <Switch on={s.normalize} label="Volume levelling" onChange={(v) => save({ normalize: v })} />
         </Row>
-        {platform() === "win32" && (
+        {appInfo().nativeAudio && (
           <Row
             title="MixMusic's own audio engine"
             description="Beta. MixMusic plays YouTube Music itself, outside the webview, with the same equalizer, crossfade, levelling and visualizer. Off, the webview plays it."

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// Output is a device stream the engine renders into, as wasapi.Stream.
+// Output is a device stream the engine renders into, as output.Stream.
 type Output interface {
 	// Stop stops the stream; render is not called after it returns.
 	Stop()
