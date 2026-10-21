@@ -49,19 +49,41 @@ func TestCleanClampsAndRepairs(t *testing.T) {
 	}
 }
 
+func TestDefaultAudioEngine(t *testing.T) {
+	for _, c := range []struct {
+		goos   string
+		native bool
+		want   AudioEngine
+	}{
+		{"darwin", true, AudioEngineNative},
+		{"linux", true, AudioEngineNative},
+		{"windows", true, AudioEngineWeb},
+		{"darwin", false, AudioEngineWeb},
+		{"linux", false, AudioEngineWeb},
+		{"freebsd", false, AudioEngineWeb},
+	} {
+		if got := defaultAudioEngine(c.goos, c.native); got != c.want {
+			t.Errorf("defaultAudioEngine(%q, %v) = %q, want %q", c.goos, c.native, got, c.want)
+		}
+	}
+}
+
 func TestAudioEngine(t *testing.T) {
-	if Default().AudioEngine != AudioEngineWeb {
-		t.Errorf("the default engine is %q", Default().AudioEngine)
-	}
-	if s := (Settings{AudioEngine: "nonsense"}).Clean(); s.AudioEngine != AudioEngineWeb {
-		t.Errorf("an unknown engine was kept: %q", s.AudioEngine)
-	}
-	want := AudioEngineWeb
-	if NativeAudio {
-		want = AudioEngineNative
-	}
-	if s := (Settings{AudioEngine: AudioEngineNative}).Clean(); s.AudioEngine != want {
-		t.Errorf("the native engine became %q here, want %q", s.AudioEngine, want)
+	// An install from before the setting, or a value no version wrote, gets
+	// the default; either engine chosen is kept where the native one plays.
+	d := Default().AudioEngine
+	for in, want := range map[AudioEngine]AudioEngine{
+		"":                d,
+		"nonsense":        d,
+		AudioEngineWeb:    AudioEngineWeb,
+		AudioEngineNative: AudioEngineNative,
+	} {
+		if !NativeAudio {
+			want = AudioEngineWeb
+		}
+		if got := (Settings{AudioEngine: in}).Clean().AudioEngine; got != want {
+			t.Errorf("Clean made %q of %q here, want %q", got, in, want)
+		}
 	}
 }
 

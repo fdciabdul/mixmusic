@@ -94,8 +94,9 @@ from the Go code; `bun run dev` and `bun run build` keep it current.
   tracks matched to their recording, play in `AudioEngine`: two `<audio>`
   elements routed through Web Audio (preamp, ten bands, an optional compressor
   that levels loudness, an analyser), the idle one preloading the next track
-  and fading it in for crossfades. With MixMusic's own audio engine on,
-  `NativeEngine` (`native.ts`) plays them instead, through the native
+  and fading it in for crossfades. With MixMusic's own audio engine on, as it
+  is by default on macOS and Linux, `NativeEngine` (`native.ts`) plays them
+  instead, where the app can play it (`Info.nativeAudio`), through the native
   engine of the Go side, and gives, for the AnalyserNode, an object with its
   reading methods; tracks without Opus fall back to `AudioEngine`. Spotify
   tracks play on a Spotify device through `ConnectEngine`, which sends it

@@ -163,7 +163,7 @@ func Default() Settings {
 		FontScale:       1,
 		SpotifyPlayback: defaultSpotifyPlayback(runtime.GOOS),
 		Quality:         QualityBest,
-		AudioEngine:     AudioEngineWeb,
+		AudioEngine:     defaultAudioEngine(runtime.GOOS, NativeAudio),
 		Autoplay:        true,
 		Equalizer:       Equalizer{Preset: "flat", Gains: make([]float64, len(Bands))},
 		Volume:          0.8,
@@ -177,6 +177,17 @@ func Default() Settings {
 		EnabledPlugins:  []string{},
 		RegistryURL:     DefaultRegistryURL,
 	}
+}
+
+// defaultAudioEngine is what plays MixMusic's own player in a new install on
+// goos, and in one from before the setting: MixMusic's own engine on macOS
+// and Linux, where native reports that it can play, and the webview on
+// Windows.
+func defaultAudioEngine(goos string, native bool) AudioEngine {
+	if native && (goos == "darwin" || goos == "linux") {
+		return AudioEngineNative
+	}
+	return AudioEngineWeb
 }
 
 // defaultSpotifyPlayback is how Spotify tracks play in a new install on
@@ -248,8 +259,11 @@ func (s Settings) Clean() Settings {
 	if s.Quality != QualitySaver {
 		s.Quality = QualityBest
 	}
-	if s.AudioEngine != AudioEngineNative || !NativeAudio {
+	switch {
+	case !NativeAudio:
 		s.AudioEngine = AudioEngineWeb
+	case s.AudioEngine != AudioEngineWeb && s.AudioEngine != AudioEngineNative:
+		s.AudioEngine = d.AudioEngine
 	}
 	s.Crossfade = min(max(s.Crossfade, 0), 12)
 	s.Volume = min(max(s.Volume, 0), 1)

@@ -20,15 +20,16 @@ the next track.
   Spotify Premium, and a webview that plays Spotify's protected audio, as
   that of Windows does; new installs on Windows play Spotify tracks this
   way. Sign in to Spotify again once, for Spotify to let MixMusic play.
-- MixMusic's own audio engine, a beta on Windows, macOS and Linux: turn it
-  on in Settings › Playback. MixMusic decodes the audio of YouTube Music
-  itself and plays it on your audio device, outside the webview, with the
-  sound of the webview: the equalizer, crossfades, volume levelling and
-  visualizer work as before, computed as the webview computes them. On
-  macOS and Linux it shows what plays in the system's media controls, Now
-  Playing and the desktop's player controls, which the media keys and
-  headphones reach as before. A track YouTube serves without Opus plays in
-  the webview. It is the first step toward a native interface (#4).
+- MixMusic's own audio engine, a beta: MixMusic decodes the audio of YouTube
+  Music itself and plays it on your audio device, outside the webview, with
+  the sound of the webview: the equalizer, crossfades, volume levelling and
+  visualizer work as before, computed as the webview computes them. It is on
+  by default on macOS and Linux, and off on Windows: Settings › Playback
+  turns it on or off. On macOS and Linux it shows what plays in the
+  system's media controls, Now Playing and the desktop's player controls,
+  which the media keys and headphones reach as before. A track YouTube
+  serves without Opus plays in the webview. It is the first step toward a
+  native interface (#4).
 - Settings › About shows the licenses of the code MixMusic includes, from
   libopus and Chromium.
 - A new version asks to install in a pop-up, unless MixMusic installs

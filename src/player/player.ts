@@ -22,6 +22,7 @@ import { toast } from "../state/ui";
 import { artwork, artists, errorMessage, trackLine } from "../lib/format";
 import { debounce, local, throttle } from "../lib/async";
 import { navigate } from "../lib/router";
+import { appInfo } from "../lib/runtime";
 
 export interface QueueItem {
   /** uid tells apart two entries of the same track. */
@@ -701,10 +702,10 @@ export function initPlayer(): void {
     audio.setEqualizer(st.equalizer.enabled, st.equalizer.gains, st.equalizer.preamp);
     audio.setNormalize(st.normalize);
   });
-  // The engine the settings choose plays streams; a change carries the
-  // track on in it from where it was.
+  // The engine the settings choose plays streams, the native one where the
+  // app can play it; a change carries the track on in it from where it was.
   effect(() => {
-    const next: Engine = settings.value?.audioEngine === "native" ? native : web;
+    const next: Engine = settings.value?.audioEngine === "native" && appInfo().nativeAudio ? native : web;
     if (next === audio) return;
     const carry = source.peek()?.mode === "stream" && audio.loaded && !!currentItem.peek();
     const at = position.peek();
