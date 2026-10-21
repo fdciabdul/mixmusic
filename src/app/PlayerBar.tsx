@@ -47,7 +47,7 @@ export function PlayerBar() {
                   t.title
                 )}
               </span>
-              <span class="mm-player-artists mm-ellipsis">
+              <span class="mm-player-artists mm-ellipsis" data-badges>
                 <SourceMark source={t.source} />
                 {artists(t.artists)}
                 {matched && <span class="mm-player-via"> · via YouTube Music</span>}

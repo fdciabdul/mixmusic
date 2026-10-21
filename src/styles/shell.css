@@ -555,6 +555,11 @@
   color: var(--mm-text-muted);
 }
 
+.mm-player-artists .mm-source-logo {
+  width: 16px;
+  height: 16px;
+}
+
 .mm-player-via {
   white-space: nowrap;
 }

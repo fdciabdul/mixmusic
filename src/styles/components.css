@@ -396,6 +396,36 @@
   color: var(--mm-accent);
 }
 
+/* Where services mix, as in a search of both, the mark is the service's logo. */
+
+.mm-source-logo {
+  display: none;
+}
+
+[data-badges] .mm-source .mm-source-mark {
+  display: none;
+}
+
+[data-badges] .mm-source .mm-source-logo {
+  display: block;
+}
+
+[data-badges] .mm-source[data-source="spotify"] .mm-source-logo {
+  color: var(--mm-spotify);
+}
+
+[data-badges] .mm-source[data-source="youtube"] .mm-source-logo {
+  color: var(--mm-youtube);
+}
+
+[data-badges] .mm-tracklist {
+  --mm-track-columns: 48px minmax(0, 1fr) 20px 36px 56px 36px;
+}
+
+[data-badges] .mm-tracklist[data-album] {
+  --mm-track-columns: 48px minmax(0, 1.5fr) minmax(0, 1fr) 20px 36px 56px 36px;
+}
+
 /* Track lists. */
 
 .mm-tracklist {

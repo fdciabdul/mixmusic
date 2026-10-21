@@ -48,7 +48,7 @@ function Results({ q }: { q: string }) {
   const play = (tracks: Track[]) => (i: number) => void playTracks(tracks, i);
 
   return (
-    <div class="mm-page">
+    <div class="mm-page" data-badges={scope === "both" || undefined}>
       <PageHeader
         title={q}
         active={pivot}

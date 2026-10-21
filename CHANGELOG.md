@@ -25,6 +25,8 @@ track paused while your device plays it, and goes on to the next track.
 
 ### Changed
 
+- A search of both services marks each result with the logo of its service,
+  and the player bar at the bottom does too.
 - MixMusic looks for a new version at start and every few hours, no longer
   once a day. Copies that cannot replace themselves look too, and Settings ›
   About turns that off.
@@ -33,6 +35,9 @@ track paused while your device plays it, and goes on to the next track.
 
 ### Fixed
 
+- On Linux, YouTube Music tracks play: WebKitGTK failed the audio served
+  from MixMusic's own scheme with "the audio format is not supported", so
+  it is served from a loopback address that only MixMusic's pages may use.
 - On Spotify Connect, a track no longer shows paused while your device plays
   it: MixMusic took Spotify's late reports, and the copy of a track Spotify
   plays in your country, for someone else playing on the device.

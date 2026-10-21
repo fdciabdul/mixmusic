@@ -189,14 +189,25 @@ func (a *App) Bind() {
 	if err := mygo.Protocol.Handle(streamScheme, a.proxy); err != nil {
 		log.Fatal(err)
 	}
+	if runtime.GOOS == "linux" {
+		base, err := serveStreamHTTP(a.proxy)
+		if err != nil {
+			log.Printf("stream: no loopback server, playing from the stream scheme: %v", err)
+		}
+		streamBase = base
+	}
 	if err := mygo.Protocol.Handle(addonsScheme, a.addons); err != nil {
 		log.Fatal(err)
 	}
 }
 
 // schemeURL returns the base URL pages load a custom scheme from: WebView2
-// serves custom schemes at http://<scheme>.localhost.
+// serves custom schemes at http://<scheme>.localhost. On Linux the audio of
+// YouTube videos is served over loopback HTTP instead; see streamBase.
 func schemeURL(scheme string) string {
+	if scheme == streamScheme && streamBase != "" {
+		return streamBase
+	}
 	if runtime.GOOS == "windows" {
 		return "http://" + scheme + ".localhost/"
 	}
